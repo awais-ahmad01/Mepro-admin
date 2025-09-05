@@ -1,0 +1,63 @@
+import { Routes, Route } from "react-router-dom";
+import DashboardLayout from "./layouts/DashboardLayout";
+import Login from "./pages/Login";
+import Register from "./pages/Register";
+import NotFound from "./pages/notfound";
+import Dashboard from "./pages/Dashboard";
+import Customers from "./pages/Customers";
+import Menu from "./pages/Menu";
+import Order from "./pages/Order";
+import LoyaltyProgram from "./pages/LoyaltyProgram";
+import Promotions from "./pages/Promotions";
+import Rewards from "./pages/Rewards";
+import Invoice from "./pages/Invoice";
+import Pricing from "./pages/Pricing";
+import VIPPricing from "./pages/VIPPricing";
+import Feedback from "./pages/Feedback";
+import Settings from "./pages/Settings";
+import Logout from "./pages/Logout";
+import Payment from "./pages/Payment";
+import TestPieChart from "./pages/test";
+import ProtectedRoute from "./components/ProtectedRoute";
+import { ThemeProvider, CssBaseline } from '@mui/material';
+import lightTheme from './theme';
+import { AuthProvider } from "./auth";
+import MerchantManagement from "./pages/merchants";
+import MerchantEditDemo from "./components/edit-merchant";
+import TiersManagement from "./pages/Tiers";
+
+export default function App() {
+  return (
+    <AuthProvider>
+      <ThemeProvider theme={lightTheme}>
+        <CssBaseline />
+        <Routes>
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/test" element={<TestPieChart />} />
+          <Route path="*" element={<NotFound />} />
+
+          {/* Dashboard routes (with sidebar/topbar, protected) */}
+          <Route path="/" element={<ProtectedRoute><DashboardLayout><Dashboard /></DashboardLayout></ProtectedRoute>} />
+          <Route path="/dashboard" element={<ProtectedRoute><DashboardLayout><Dashboard /></DashboardLayout></ProtectedRoute>} />
+          <Route path="/merchant" element={<ProtectedRoute><DashboardLayout><MerchantManagement /></DashboardLayout></ProtectedRoute>} />
+          <Route path="/edit-merchant" element={<ProtectedRoute><DashboardLayout><MerchantEditDemo /></DashboardLayout></ProtectedRoute>} />
+          <Route path="/customers" element={<ProtectedRoute><DashboardLayout><Customers /></DashboardLayout></ProtectedRoute>} />
+          <Route path="/menu" element={<ProtectedRoute><DashboardLayout><Menu /></DashboardLayout></ProtectedRoute>} />
+          <Route path="/order" element={<ProtectedRoute><DashboardLayout><Order /></DashboardLayout></ProtectedRoute>} />
+          <Route path="/loyalty-program" element={<ProtectedRoute><DashboardLayout><LoyaltyProgram /></DashboardLayout></ProtectedRoute>} />
+          <Route path="/promotions" element={<ProtectedRoute><DashboardLayout><Promotions /></DashboardLayout></ProtectedRoute>} />
+          <Route path="/rewards" element={<ProtectedRoute><DashboardLayout><Rewards /></DashboardLayout></ProtectedRoute>} />
+          <Route path="/invoice" element={<ProtectedRoute><DashboardLayout><Invoice /></DashboardLayout></ProtectedRoute>} />
+          <Route path="/pricing" element={<ProtectedRoute><DashboardLayout><Pricing /></DashboardLayout></ProtectedRoute>} />
+          <Route path="/vip-pricing" element={<ProtectedRoute><DashboardLayout><VIPPricing /></DashboardLayout></ProtectedRoute>} />
+          <Route path="/payment" element={<ProtectedRoute><DashboardLayout><Payment /></DashboardLayout></ProtectedRoute>} />
+          <Route path="/feedback" element={<ProtectedRoute><DashboardLayout><Feedback /></DashboardLayout></ProtectedRoute>} />
+          <Route path="/tiers" element={<ProtectedRoute><DashboardLayout><TiersManagement /></DashboardLayout></ProtectedRoute>} />
+          <Route path="/settings" element={<ProtectedRoute><DashboardLayout><Settings /></DashboardLayout></ProtectedRoute>} />
+          <Route path="/logout" element={<ProtectedRoute><DashboardLayout><Logout /></DashboardLayout></ProtectedRoute>} />
+        </Routes>
+      </ThemeProvider>
+    </AuthProvider>
+  );
+}

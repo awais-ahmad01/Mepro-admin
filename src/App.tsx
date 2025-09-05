@@ -26,6 +26,7 @@ import MerchantManagement from "./pages/merchants";
 import MerchantEditDemo from "./components/edit-merchant";
 import TiersManagement from "./pages/Tiers";
 import PointsPricingManagement from "./pages/PointsManagement";
+import TransactionsManagement from "./pages/Transactions";
 
 export default function App() {
   return (
@@ -51,6 +52,7 @@ export default function App() {
           <Route path="/rewards" element={<ProtectedRoute><DashboardLayout><Rewards /></DashboardLayout></ProtectedRoute>} />
           <Route path="/invoice" element={<ProtectedRoute><DashboardLayout><Invoice /></DashboardLayout></ProtectedRoute>} />
           <Route path="/pricing" element={<ProtectedRoute><DashboardLayout><Pricing /></DashboardLayout></ProtectedRoute>} />
+          <Route path="/transactions" element={<ProtectedRoute><DashboardLayout><TransactionsManagement /></DashboardLayout></ProtectedRoute>} />
           <Route path="/vip-pricing" element={<ProtectedRoute><DashboardLayout><VIPPricing /></DashboardLayout></ProtectedRoute>} />
           <Route path="/payment" element={<ProtectedRoute><DashboardLayout><Payment /></DashboardLayout></ProtectedRoute>} />
           <Route path="/feedback" element={<ProtectedRoute><DashboardLayout><Feedback /></DashboardLayout></ProtectedRoute>} />

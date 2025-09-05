@@ -34,6 +34,14 @@ const sidebarItems = [
       <path d="M9.96567 11.602H9.91991" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
     </svg>
   ), path: "/order" },
+   { label: "Transactions", icon: (
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ display: 'block' }}>
+      <path fillRule="evenodd" clipRule="evenodd" d="M17.0137 22H8.6659C5.59954 22 3.24714 20.8925 3.91533 16.4348L4.69336 10.3936C5.10526 8.16937 6.52402 7.31812 7.76888 7.31812H17.9474C19.2105 7.31812 20.5469 8.23345 21.0229 10.3936L21.8009 16.4348C22.3684 20.3891 20.0801 22 17.0137 22Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+      <path d="M17.151 7.09848C17.151 4.71241 15.2167 2.77812 12.8307 2.77812V2.77812C11.6817 2.77325 10.5781 3.22628 9.76386 4.03703C8.94967 4.84778 8.49198 5.94947 8.49199 7.09848V7.09848" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+      <path d="M15.7963 11.602H15.7506" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+      <path d="M9.96567 11.602H9.91991" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+    </svg>
+  ), path: "/transactions" },
   { label: "Loyalty Program", icon: <LoyaltyIcon sx={{ width: 22, height: 22 }} />, path: "/loyalty-program" },
   { label: "Promotions", icon: (
     <svg width="22" height="22" viewBox="0 0 18 16" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ display: 'block' }}>

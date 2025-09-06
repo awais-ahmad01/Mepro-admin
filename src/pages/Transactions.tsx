@@ -29,9 +29,7 @@ import { DayPicker } from "react-day-picker";
 import "react-day-picker/dist/style.css";
 import {
   format,
-  isToday,
-  isYesterday,
-  isTomorrow,
+
   parseISO,
   isSameDay,
 } from "date-fns";
@@ -51,7 +49,7 @@ const TransactionsManagement: React.FC = () => {
   const [selectedTransaction, setSelectedTransaction] =
     useState<Transaction | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
-  const [dateFilter, setDateFilter] = useState("");
+  
   const [merchantFilter, setMerchantFilter] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);

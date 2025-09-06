@@ -27,6 +27,7 @@ import MerchantEditDemo from "./components/edit-merchant";
 import TiersManagement from "./pages/Tiers";
 import PointsPricingManagement from "./pages/PointsManagement";
 import TransactionsManagement from "./pages/Transactions";
+import ReportsAnalytics from "./pages/Reports";
 
 export default function App() {
   return (
@@ -58,6 +59,7 @@ export default function App() {
           <Route path="/feedback" element={<ProtectedRoute><DashboardLayout><Feedback /></DashboardLayout></ProtectedRoute>} />
           <Route path="/tiers" element={<ProtectedRoute><DashboardLayout><TiersManagement /></DashboardLayout></ProtectedRoute>} />
           <Route path="/points-management" element={<ProtectedRoute><DashboardLayout><PointsPricingManagement /></DashboardLayout></ProtectedRoute>} />
+          <Route path="/reports-analytics" element={<ProtectedRoute><DashboardLayout><ReportsAnalytics /></DashboardLayout></ProtectedRoute>} />
           <Route path="/settings" element={<ProtectedRoute><DashboardLayout><Settings /></DashboardLayout></ProtectedRoute>} />
           <Route path="/logout" element={<ProtectedRoute><DashboardLayout><Logout /></DashboardLayout></ProtectedRoute>} />
         </Routes>

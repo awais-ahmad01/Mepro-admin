@@ -1,6 +1,6 @@
 import React from "react";
 import { Box, IconButton, InputBase, Avatar, Typography, Menu, MenuItem, Badge } from "@mui/material";
-import MenuIcon from "@mui/icons-material/Menu";
+
 import SearchIcon from "@mui/icons-material/Search";
 import NotificationsNoneIcon from "@mui/icons-material/NotificationsNone";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
@@ -71,9 +71,9 @@ export default function Topbar() {
     >
       {/* Left: Hamburger + Search */}
       <Box sx={{ display: "flex", alignItems: "center", flex: 1, minWidth: 0 }}>
-        <IconButton sx={{ mr: 2.5, p: 0.5 }}>
+        {/* <IconButton sx={{ mr: 2.5, p: 0.5 }}>
           <MenuIcon sx={{ fontSize: 26 }} />
-        </IconButton>
+        </IconButton> */}
         <Box
           sx={{
             display: "flex",

@@ -16,14 +16,7 @@ import {
 import DeleteIcon from "@mui/icons-material/Delete";
 import DiamondIcon from '@mui/icons-material/Diamond';
 import LockIcon from '@mui/icons-material/Lock';
-
-interface VIPPricingPlan {
-  id: string;
-  type: string;
-  price: number;
-  period: string;
-  features: string[];
-}
+import { VIPPricingPlan } from "../types";
 
 const defaultPlans: VIPPricingPlan[] = [
   {

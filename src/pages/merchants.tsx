@@ -31,26 +31,11 @@ import {
 import { DayPicker } from "react-day-picker";
 import "react-day-picker/dist/style.css";
 import { format, isToday, isYesterday, isTomorrow, parseISO, isSameDay } from "date-fns";
-import MerchantDetails from '../components/merchantDetails';
-
-interface Merchant {
-  id: string;
-  profile: string;
-  merchantName: string;
-  email: string;
-  plan: string;
-  lastVisit: string;
-  status: 'Active' | 'Hold' | 'Inactive';
-  category?: string;
-  description?: string;
-  city?: string;
-  postalCode?: string;
-  location?: string;
-  totalCustomers?: number;
-}
+import MerchantDetails from '../components/MerchantManagement/merchantDetails';
+import { Merchant } from '../types';
 
 const MerchantManagement: React.FC = () => {
-  const [dateFilter, setDateFilter] = useState('');
+
   const [statusFilter, setStatusFilter] = useState('');
   const [nameFilter, setNameFilter] = useState('');
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);

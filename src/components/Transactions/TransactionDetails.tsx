@@ -2,7 +2,7 @@
 import React from 'react';
 import { Box, Typography, Paper, Chip, Button } from '@mui/material';
 import { format, parseISO } from 'date-fns';
-import { Transaction } from './types';
+import { Transaction } from '../../types';
 
 interface TransactionDetailsProps {
   transaction: Transaction;

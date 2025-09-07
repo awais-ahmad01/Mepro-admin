@@ -22,6 +22,7 @@ import {
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import { PieChart, Pie, Cell, ResponsiveContainer, BarChart, Bar, XAxis } from "recharts";
 import PhotoCameraIcon from '@mui/icons-material/PhotoCamera';
+import { Reward } from "../types";
 
 const statusColor = {
   Active: { bg: "#D1FADF", color: "#039855" },
@@ -45,16 +46,7 @@ const barData = [
 ];
 
 
-type Reward = {
-  id: string;
-  name: string;
-  points: number;
-  level: string;
-  type: string;
-  expired: string;
-  status: string;
-  image?: string;
-};
+
 
 const rewards: Reward[] = [
   {

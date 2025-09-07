@@ -1,6 +1,6 @@
 import React, { useRef } from 'react';
 import { Box, Typography, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Button } from '@mui/material';
-import { Transaction } from './types';
+import { Transaction } from '../../types';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 

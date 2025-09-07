@@ -23,14 +23,7 @@ import {
   CheckCircle as CheckCircleIcon
 } from '@mui/icons-material';
 
-interface Tier {
-  id: string;
-  name: string;
-  points: number;
-  level: number;
-  color: string;
-  image?: string;
-}
+import { Tier } from '../types';
 
 const TiersManagement: React.FC = () => {
   const [tiers, setTiers] = useState<Tier[]>([

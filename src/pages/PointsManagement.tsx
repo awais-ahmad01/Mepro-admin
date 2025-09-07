@@ -24,16 +24,7 @@ import {
   Close as CloseIcon,
   CheckCircle as CheckCircleIcon
 } from '@mui/icons-material';
-
-interface PurchaseHistory {
-  id: string;
-  merchantId: string;
-  name: string;
-  pointsPurchased: number;
-  amountPaid: string;
-  paymentMethod: string;
-  status: 'Active';
-}
+import { PurchaseHistory } from '../types';
 
 const PointsPricingManagement: React.FC = () => {
   const [currentPricing, setCurrentPricing] = useState({

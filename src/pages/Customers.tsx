@@ -24,15 +24,7 @@ import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import { DayPicker } from "react-day-picker";
 import "react-day-picker/dist/style.css";
 import { format, isToday, isYesterday, isTomorrow, parseISO, isSameDay } from "date-fns";
-
-type Customer = {
-  avatar: string;
-  name: string;
-  email: string;
-  points: number;
-  lastVisit: string;
-  status: string;
-};
+import { Customer } from "../types";
 
 
 const customers = [

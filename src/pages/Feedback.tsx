@@ -996,9 +996,6 @@
 
 // export default SupportFeedback;
 
-
-
-
 import { JSX, useState } from "react";
 import {
   Box,
@@ -1583,14 +1580,15 @@ export default function Feedback() {
                     onClick={() => handleMessageClick(msg)}
                   >
                     <Checkbox
-                      size="small"
-                      checked={selectedEmails.includes(msg.id)}
-                      onChange={(e) => {
-                        e.stopPropagation();
-                        handleEmailSelect(msg.id);
-                      }}
-                      sx={{ mr: 2 }}
-                    />
+  size="small"
+  checked={selectedEmails.includes(msg.id)}
+  onChange={(e) => {
+    e.stopPropagation();
+    handleEmailSelect(msg.id);
+  }}
+  onClick={(e) => e.stopPropagation()}
+  sx={{ mr: 2 }}
+/>
 
                     <IconButton
                       size="small"

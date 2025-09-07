@@ -13,6 +13,7 @@ import Rewards from "./pages/Rewards";
 import Invoice from "./pages/Invoice";
 import Pricing from "./pages/Pricing";
 import VIPPricing from "./pages/VIPPricing";
+// import SupportFeedback from "./pages/Feedback";
 import Feedback from "./pages/Feedback";
 import Settings from "./pages/Settings";
 import Logout from "./pages/Logout";

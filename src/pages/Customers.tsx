@@ -34,6 +34,7 @@ type Customer = {
   status: string;
 };
 
+
 const customers = [
   {
     avatar: "https://randomuser.me/api/portraits/men/1.jpg",

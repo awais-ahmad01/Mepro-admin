@@ -1,4 +1,1005 @@
-import  { useState } from "react";
+// import React, { useState, useMemo } from 'react';
+// import {
+//   Table,
+//   TableBody,
+//   TableCell,
+//   TableContainer,
+//   TableHead,
+//   TableRow,
+//   Paper,
+//   Chip,
+//   IconButton,
+//   Menu,
+//   MenuItem,
+//   FormControl,
+//   Select,
+//   MenuItem as SelectMenuItem,
+//   Divider,
+//   Box,
+//   Typography,
+//   Button,
+//   Avatar,
+//   TextField,
+//   InputAdornment,
+//   Popover,
+//   InputBase
+// } from '@mui/material';
+// import {
+//   MoreVert as MoreVertIcon,
+//   ArrowForwardIos as ArrowForwardIosIcon,
+//   ArrowBackIosNew as ArrowBackIosNewIcon,
+//   Print as PrintIcon,
+//   Star as StarIcon,
+//   Delete as DeleteIcon,
+//   AttachFile as AttachFileIcon,
+//   Send as SendIcon,
+//   Mic as MicIcon,
+//   Refresh as RefreshIcon,
+// } from '@mui/icons-material';
+// import { format, parseISO } from "date-fns";
+// import { DayPicker } from "react-day-picker";
+// import "react-day-picker/dist/style.css";
+
+// interface SupportTicket {
+//   id: string;
+//   ticketId: string;
+//   merchantName: string;
+//   email: string;
+//   subject: string;
+//   createdOn: string;
+//   status: 'Open' | 'Resolved';
+// }
+
+// interface FeedbackMessage {
+//   id: string;
+//   content: string;
+//   timestamp: string;
+//   isUser: boolean;
+// }
+
+// const SupportFeedback: React.FC = () => {
+//   const [dateFilter, setDateFilter] = useState('');
+//   const [statusFilter, setStatusFilter] = useState('');
+//   const [merchantNameFilter, setMerchantNameFilter] = useState('');
+//   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+//   const [selectedTicket, setSelectedTicket] = useState<string | null>(null);
+//   const [currentPage, setCurrentPage] = useState(1);
+//   const [viewMode, setViewMode] = useState<'list' | 'feedback'>('list');
+//   const [selectedTicketData, setSelectedTicketData] = useState<SupportTicket | null>(null);
+//   const [messageInput, setMessageInput] = useState('');
+
+//   // Missing states for calendar functionality
+//   const [calendarAnchor, setCalendarAnchor] = useState<HTMLElement | null>(null);
+//   const [selectedDates, setSelectedDates] = useState<Date[]>([]);
+
+//   // Missing states for merchant search functionality
+//   const [merchantSearchAnchor, setMerchantSearchAnchor] = useState<HTMLElement | null>(null);
+//   const [merchantSearchValue, setMerchantSearchValue] = useState('');
+
+//   const [feedbackMessages, setFeedbackMessages] = useState<FeedbackMessage[]>([
+//     {
+//       id: '1',
+//       content: 'It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters.',
+//       timestamp: '6:30 pm',
+//       isUser: false
+//     },
+//     {
+//       id: '2',
+//       content: 'There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour.',
+//       timestamp: '6:34 pm',
+//       isUser: true
+//     },
+//     {
+//       id: '3',
+//       content: 'The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using \'Content here, content here\', making it look like readable English. Many desktop publishing packages and web page editors now use Lorem Ipsum as their default.Contrary to popular belief, Lorem Ipsum is not simply random text is the model text for your company.',
+//       timestamp: '6:38 pm',
+//       isUser: false
+//     }
+//   ]);
+
+//   const itemsPerPage = 6;
+
+//   // Sample ticket data
+//   const tickets: SupportTicket[] = [
+//     {
+//       id: '1',
+//       ticketId: '124579657',
+//       merchantName: 'Coffee Bloom',
+//       email: 'info@gmail.com',
+//       subject: 'Issue with points redemption',
+//       createdOn: '2025-07-15',
+//       status: 'Open'
+//     },
+//     {
+//       id: '2',
+//       ticketId: '124579657',
+//       merchantName: 'Coffee Bloom',
+//       email: 'info@gmail.com',
+//       subject: 'Issue with points redemption',
+//       createdOn: '2025-07-15',
+//       status: 'Open'
+//     },
+//     {
+//       id: '3',
+//       ticketId: '124579657',
+//       merchantName: 'Coffee Bloom',
+//       email: 'info@gmail.com',
+//       subject: 'Issue with points redemption',
+//       createdOn: '2025-07-15',
+//       status: 'Resolved'
+//     },
+//     {
+//       id: '4',
+//       ticketId: '124579657',
+//       merchantName: 'Coffee Bloom',
+//       email: 'info@gmail.com',
+//       subject: 'Issue with points redemption',
+//       createdOn: '2025-07-15',
+//       status: 'Open'
+//     },
+//     {
+//       id: '5',
+//       ticketId: '124579657',
+//       merchantName: 'Coffee Bloom',
+//       email: 'info@gmail.com',
+//       subject: 'Issue with points redemption',
+//       createdOn: '2025-07-15',
+//       status: 'Open'
+//     },
+//     {
+//       id: '6',
+//       ticketId: '124579657',
+//       merchantName: 'Coffee Bloom',
+//       email: 'info@gmail.com',
+//       subject: 'Issue with points redemption',
+//       createdOn: '2025-07-15',
+//       status: 'Open'
+//     }
+//   ];
+
+//   const statusColor = {
+//     Open: "#D1FADF",
+//     Resolved: "#FEE4E2"
+//   };
+
+//   const statusTextColor = {
+//     Open: "#039855",
+//     Resolved: "#D92D20"
+//   };
+
+//   // Missing calendar functions
+//   const handleCalendarOpen = (event: React.MouseEvent<HTMLElement>) => {
+//     setCalendarAnchor(event.currentTarget);
+//   };
+
+//   const handleCalendarClose = () => {
+//     setCalendarAnchor(null);
+//     // Apply date filter if dates are selected
+//     if (selectedDates.length > 0) {
+//       setDateFilter(selectedDates.map(date => format(date, 'yyyy-MM-dd')).join(','));
+//     }
+//   };
+
+//   // Missing merchant search functions
+//   const handleMerchantSearchOpen = (event: React.MouseEvent<HTMLElement>) => {
+//     setMerchantSearchAnchor(event.currentTarget);
+//   };
+
+//   const handleMerchantSearchClose = () => {
+//     setMerchantSearchAnchor(null);
+//     // Apply merchant filter
+//     setMerchantNameFilter(merchantSearchValue);
+//   };
+
+//   // Filter tickets based on selected filters
+//   const filteredTickets = useMemo(() => {
+//     return tickets.filter(ticket => {
+//       let statusMatch = true;
+//       let merchantMatch = true;
+//       let dateMatch = true;
+
+//       if (statusFilter && statusFilter !== '') {
+//         statusMatch = ticket.status.toLowerCase() === statusFilter;
+//       }
+
+//       if (merchantNameFilter && merchantNameFilter !== '') {
+//         merchantMatch = ticket.merchantName.toLowerCase().includes(merchantNameFilter.toLowerCase());
+//       }
+
+//       // Date filter logic
+//       if (dateFilter && dateFilter !== '') {
+//         const filterDates = dateFilter.split(',');
+//         const ticketDate = format(parseISO(ticket.createdOn), 'yyyy-MM-dd');
+//         dateMatch = filterDates.includes(ticketDate);
+//       }
+
+//       return statusMatch && merchantMatch && dateMatch;
+//     });
+//   }, [tickets, statusFilter, merchantNameFilter, dateFilter]);
+
+//   // Pagination
+//   const totalPages = Math.ceil(filteredTickets.length / itemsPerPage);
+//   const paginatedTickets = useMemo(() => {
+//     const startIndex = (currentPage - 1) * itemsPerPage;
+//     return filteredTickets.slice(startIndex, startIndex + itemsPerPage);
+//   }, [filteredTickets, currentPage]);
+
+//   const handleMenuClick = (event: React.MouseEvent<HTMLElement>, ticketId: string) => {
+//     setAnchorEl(event.currentTarget);
+//     setSelectedTicket(ticketId);
+//   };
+
+//   const handleMenuClose = () => {
+//     setAnchorEl(null);
+//     setSelectedTicket(null);
+//   };
+
+//   const handleRowClick = (ticket: SupportTicket) => {
+//     setSelectedTicketData(ticket);
+//     setViewMode('feedback');
+//   };
+
+//   const handleBackToList = () => {
+//     setViewMode('list');
+//     setSelectedTicketData(null);
+//   };
+
+//   const handleSendMessage = () => {
+//     if (messageInput.trim()) {
+//       const newMessage: FeedbackMessage = {
+//         id: Date.now().toString(),
+//         content: messageInput,
+//         timestamp: format(new Date(), 'h:mm a'),
+//         isUser: true
+//       };
+//       setFeedbackMessages([...feedbackMessages, newMessage]);
+//       setMessageInput('');
+//     }
+//   };
+
+//   const resetFilters = () => {
+//     setStatusFilter('');
+//     setMerchantNameFilter('');
+//     setMerchantSearchValue('');
+//     setDateFilter('');
+//     setSelectedDates([]);
+//     setCurrentPage(1);
+//   };
+
+//   const handlePrevPage = () => setCurrentPage((p) => Math.max(1, p - 1));
+//   const handleNextPage = () => setCurrentPage((p) => Math.min(totalPages, p + 1));
+
+//   const ArrowIcon = (props: React.ComponentProps<typeof ArrowForwardIosIcon>) => (
+//     <ArrowForwardIosIcon {...props} sx={{ fontSize: 16, transform: "rotate(90deg)" }} />
+//   );
+
+//   const totalRows = filteredTickets.length;
+
+//   // Reset to first page when filters change
+//   React.useEffect(() => {
+//     setCurrentPage(1);
+//   }, [statusFilter, merchantNameFilter, dateFilter]);
+
+//   // Show feedback management view
+//   if (viewMode === 'feedback' && selectedTicketData) {
+//     return (
+//       <Box className="bg-[#F7F8FA] min-h-screen p-6">
+//         {/* Header */}
+//         <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 3 }}>
+//           <Typography fontSize={32} fontWeight={600}>
+//             Feed Back Management
+//           </Typography>
+//           <Button
+//             variant="contained"
+//             sx={{
+//               background: "#667085",
+//               color: "white",
+//               borderRadius: "8px",
+//               textTransform: "none",
+//               fontWeight: 500,
+//               px: 3,
+//               py: 1,
+//               "&:hover": { background: "#5D6B7D" }
+//             }}
+//           >
+//             Resolved
+//           </Button>
+//         </Box>
+
+//         {/* Chat Header */}
+//         <Box sx={{
+//           display: 'flex',
+//           alignItems: 'center',
+//           mb: 3,
+//           gap: 2
+//         }}>
+//           <IconButton
+//             onClick={handleBackToList}
+//             sx={{
+//               p: 1,
+//               '&:hover': { background: '#f3f4f6' }
+//             }}
+//           >
+//             <ArrowBackIosNewIcon sx={{ fontSize: 20 }} />
+//           </IconButton>
+//           <Typography fontSize={20} fontWeight={600} color="#101828">
+//             Minerva Barnett
+//           </Typography>
+//           <Chip
+//             label="Friends"
+//             sx={{
+//               background: "#E9D7FE",
+//               color: "#6941C6",
+//               fontSize: 12,
+//               fontWeight: 500,
+//               height: 24,
+//               borderRadius: "12px"
+//             }}
+//           />
+//           <Box sx={{ ml: 'auto', display: 'flex', gap: 1 }}>
+//             <IconButton sx={{ color: "#667085" }}>
+//               <PrintIcon />
+//             </IconButton>
+//             <IconButton sx={{ color: "#667085" }}>
+//               <StarIcon />
+//             </IconButton>
+//             <IconButton sx={{ color: "#667085" }}>
+//               <DeleteIcon />
+//             </IconButton>
+//           </Box>
+//         </Box>
+
+//         {/* Chat Messages */}
+//         <Box sx={{
+//           background: "white",
+//           borderRadius: "16px",
+//           border: "1px solid #E5E7EB",
+//           mb: 3,
+//           minHeight: 500,
+//           display: 'flex',
+//           flexDirection: 'column'
+//         }}>
+//           <Box sx={{ flex: 1, p: 3, overflowY: 'auto' }}>
+//             {feedbackMessages.map((message) => (
+//               <Box key={message.id} sx={{ mb: 3 }}>
+//                 <Box sx={{
+//                   display: 'flex',
+//                   justifyContent: message.isUser ? 'flex-end' : 'flex-start',
+//                   mb: 1
+//                 }}>
+//                   {!message.isUser && (
+//                     <Avatar sx={{ width: 32, height: 32, mr: 2, fontSize: 14 }}>
+//                       M
+//                     </Avatar>
+//                   )}
+//                   <Box sx={{
+//                     maxWidth: '70%',
+//                     background: message.isUser ? "#F63D68" : "#F9FAFB",
+//                     color: message.isUser ? "white" : "#374151",
+//                     p: 2,
+//                     borderRadius: 2,
+//                     fontSize: 14,
+//                     lineHeight: 1.5
+//                   }}>
+//                     {message.content}
+//                   </Box>
+//                 </Box>
+//                 <Box sx={{
+//                   display: 'flex',
+//                   justifyContent: message.isUser ? 'flex-end' : 'flex-start',
+//                   pl: !message.isUser ? 6 : 0
+//                 }}>
+//                   <Typography variant="caption" color="text.secondary">
+//                     {message.timestamp}
+//                   </Typography>
+//                   {!message.isUser && (
+//                     <IconButton size="small" sx={{ ml: 1, p: 0.5 }}>
+//                       <MoreVertIcon sx={{ fontSize: 16 }} />
+//                     </IconButton>
+//                   )}
+//                 </Box>
+//               </Box>
+//             ))}
+//           </Box>
+
+//           {/* Message Input */}
+//           <Box sx={{
+//             p: 3,
+//             borderTop: '1px solid #E5E7EB',
+//             display: 'flex',
+//             alignItems: 'center',
+//             gap: 2
+//           }}>
+//             <IconButton sx={{ color: "#667085" }}>
+//               <MicIcon />
+//             </IconButton>
+//             <TextField
+//               fullWidth
+//               placeholder="Write message"
+//               value={messageInput}
+//               onChange={(e) => setMessageInput(e.target.value)}
+//               onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
+//               variant="outlined"
+//               sx={{
+//                 '& .MuiOutlinedinput-root': {
+//                   borderRadius: 2,
+//                   fontSize: 14
+//                 },
+//                 '& .MuiInputBase-input': {
+//                   py: 1.5
+//                 }
+//               }}
+//               InputProps={{
+//                 endAdornment: (
+//                   <InputAdornment position="end">
+//                     <IconButton sx={{ color: "#667085" }}>
+//                       <AttachFileIcon />
+//                     </IconButton>
+//                   </InputAdornment>
+//                 )
+//               }}
+//             />
+//             <Button
+//               variant="contained"
+//               onClick={handleSendMessage}
+//               sx={{
+//                 background: "#F63D68",
+//                 minWidth: 48,
+//                 height: 48,
+//                 borderRadius: 2,
+//                 "&:hover": { background: "#e13a5e" }
+//               }}
+//             >
+//               <SendIcon />
+//             </Button>
+//           </Box>
+//         </Box>
+//       </Box>
+//     );
+//   }
+
+//   return (
+//     <Box className="bg-[#F7F8FA] min-h-screen p-6">
+//       {/* Header */}
+//       <Typography fontSize={32} fontWeight={600} mb={3}>
+//         Support & Feedback
+//       </Typography>
+
+//       {/* Filter Bar */}
+//       <Box
+//         sx={{
+//           display: "flex",
+//           alignItems: "center",
+//           background: "#FCFCFD",
+//           borderRadius: "18px",
+//           border: "1px solid #E5E7EB",
+//           overflow: "hidden",
+//           mb: 4,
+//           minHeight: 70,
+//           width: "70%",
+//         }}
+//       >
+//         {/* Filter Icon */}
+//         <Box
+//           sx={{
+//             display: "flex",
+//             alignItems: "center",
+//             justifyContent: "center",
+//             width: 56,
+//             minWidth: 56,
+//             height: "100%",
+//             mx: 1,
+//           }}
+//         >
+//           <svg width="22" height="24" viewBox="0 0 22 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+//             <path fillRule="evenodd" clipRule="evenodd" d="M11 9.75C16.3848 9.75 20.75 7.73528 20.75 5.25C20.75 2.76472 16.3848 0.75 11 0.75C5.61522 0.75 1.25 2.76472 1.25 5.25C1.25 7.73528 5.61522 9.75 11 9.75Z" stroke="black" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+//             <path d="M1.25 5.25C1.25253 9.76548 4.35614 13.688 8.75 14.729V21C8.75 22.2426 9.75736 23.25 11 23.25C12.2426 23.25 13.25 22.2426 13.25 21V14.729C17.6439 13.688 20.7475 9.76548 20.75 5.25" stroke="black" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+//           </svg>
+//         </Box>
+
+//         <Divider orientation="vertical" flexItem sx={{ borderColor: "#E5E7EB" }} />
+
+//         {/* Filter By */}
+//         <Box
+//           sx={{
+//             display: "flex",
+//             alignItems: "center",
+//             justifyContent: "center",
+//             width: 120,
+//             minWidth: 100,
+//             height: "100%",
+//             mx: 1,
+//             fontWeight: 700,
+//             fontSize: 16,
+//             color: "#101828",
+//           }}
+//         >
+//           Filter By
+//         </Box>
+
+//         <Divider orientation="vertical" flexItem sx={{ borderColor: "#E5E7EB" }} />
+
+//         {/* Date */}
+//         <Box
+//           sx={{
+//             display: "flex",
+//             alignItems: "center",
+//             justifyContent: "center",
+//             width: 110,
+//             minWidth: 100,
+//             height: "100%",
+//             mx: 1,
+//             fontWeight: 700,
+//             fontSize: 16,
+//             color: "#101828",
+//             cursor: "pointer",
+//             userSelect: "none",
+//           }}
+//           onClick={handleCalendarOpen}
+//         >
+//           Date
+//           <ArrowForwardIosIcon sx={{ fontSize: 16, ml: 1, transform: "rotate(90deg)" }} />
+//         </Box>
+
+//         <Popover
+//           open={Boolean(calendarAnchor)}
+//           anchorEl={calendarAnchor}
+//           onClose={handleCalendarClose}
+//           anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
+//           slotProps={{
+//             paper: {
+//               sx: {
+//                 borderRadius: 4,
+//                 boxShadow: "0 8px 32px 0 rgba(16, 30, 54, 0.16)",
+//                 p: 0,
+//                 minWidth: 340,
+//                 maxWidth: 360,
+//               },
+//             }
+//           }}
+//         >
+//           <Box sx={{ p: 3, pt: 2 }}>
+//             <DayPicker
+//               mode="multiple"
+//               selected={selectedDates}
+//               onSelect={(dates) => setSelectedDates(dates ?? [])}
+//               required={false}
+//               showOutsideDays
+//               styles={{
+//                 caption: { fontWeight: 600, fontSize: 18, textAlign: "left" },
+//                 day_selected: {
+//                   backgroundColor: "#F63D68",
+//                   color: "#fff",
+//                   borderRadius: 12,
+//                 },
+//                 day: { borderRadius: 12, height: 40, width: 40 },
+//                 head_cell: { fontWeight: 500, color: "#757575" },
+//               }}
+//               modifiersClassNames={{
+//                 selected: "selected-day",
+//               }}
+//             />
+//             <Typography
+//               variant="body2"
+//               color="text.secondary"
+//               sx={{ mt: 2, mb: 1 }}
+//             >
+//               *You can choose multiple date
+//             </Typography>
+//             <Button
+//               variant="contained"
+//               fullWidth
+//               sx={{
+//                 background: "#F63D68",
+//                 borderRadius: 2,
+//                 boxShadow: "0 4px 16px 0 rgba(246, 61, 104, 0.16)",
+//                 fontWeight: 600,
+//                 fontSize: 16,
+//                 textTransform: "none",
+//                 py: 1,
+//                 mt: 1,
+//                 mb: 1,
+//                 "&:hover": { background: "#e13a5e" },
+//               }}
+//               onClick={handleCalendarClose}
+//             >
+//               Apply Now
+//             </Button>
+//           </Box>
+//         </Popover>
+
+//         <Divider orientation="vertical" flexItem sx={{ borderColor: "#E5E7EB" }} />
+
+//         {/* Status */}
+//         <Box
+//           sx={{
+//             display: "flex",
+//             alignItems: "center",
+//             width: 150,
+//             minWidth: 100,
+//             height: "100%",
+//             mx: 3,
+//             fontWeight: 500,
+//             fontSize: 16,
+//             color: "#101828",
+//             cursor: "pointer",
+//             userSelect: "none",
+//           }}
+//         >
+//           <FormControl variant="standard" sx={{ minWidth: 80 }}>
+//             <Select
+//               disableUnderline
+//               value={statusFilter}
+//               onChange={(e) => setStatusFilter(e.target.value)}
+//               displayEmpty
+//               sx={{
+//                 fontWeight: 600,
+//                 fontSize: 16,
+//                 color: "#101828",
+//                 background: "transparent",
+//                 "&.Mui-focused": {
+//                   background: "transparent",
+//                 },
+//                 "& .MuiSelect-select:focus": {
+//                   background: "transparent",
+//                 },
+//                 "& .Mui-selected": {
+//                   background: "transparent",
+//                 },
+//                 "& .MuiMenuItem-root.Mui-selected": {
+//                   background: "transparent",
+//                 },
+//                 "& .MuiMenuItem-root.Mui-selected:hover": {
+//                   background: "rgba(0,0,0,0.04)",
+//                 },
+//                 "& .MuiSelect-iconOpen": {
+//                   transform: "rotate(90deg) !important",
+//                 },
+//               }}
+//               IconComponent={ArrowIcon}
+//               MenuProps={{
+//                 PaperProps: {
+//                   sx: {
+//                     background: "#fff",
+//                     boxShadow: 2,
+//                     borderRadius: 2,
+//                   },
+//                 },
+//                 MenuListProps: {
+//                   sx: {
+//                     py: 0,
+//                   },
+//                 },
+//               }}
+//             >
+//               <SelectMenuItem
+//                 value=""
+//                 sx={{
+//                   "&.Mui-selected, &.Mui-selected:hover": {
+//                     backgroundColor: "transparent !important",
+//                   },
+//                 }}
+//               >
+//                 Status
+//               </SelectMenuItem>
+//               <SelectMenuItem
+//                 value="open"
+//                 sx={{
+//                   "&.Mui-selected, &.Mui-selected:hover": {
+//                     backgroundColor: "transparent !important",
+//                   },
+//                 }}
+//               >
+//                 Open
+//               </SelectMenuItem>
+//               <SelectMenuItem
+//                 value="resolved"
+//                 sx={{
+//                   "&.Mui-selected, &.Mui-selected:hover": {
+//                     backgroundColor: "transparent !important",
+//                   },
+//                 }}
+//               >
+//                 Resolved
+//               </SelectMenuItem>
+//             </Select>
+//           </FormControl>
+//         </Box>
+
+//         <Divider orientation="vertical" flexItem sx={{ borderColor: "#E5E7EB" }} />
+
+//         {/* Merchant Name */}
+//         <Box
+//           sx={{
+//             display: "flex",
+//             alignItems: "center",
+//             justifyContent: "center",
+//             width: 180,
+//             minWidth: 100,
+//             height: "100%",
+//             mx: 1,
+//             fontWeight: 700,
+//             fontSize: 16,
+//             color: "#101828",
+//             cursor: "pointer",
+//             userSelect: "none",
+//           }}
+//           onClick={handleMerchantSearchOpen}
+//         >
+//           Merchant Name
+//           <ArrowForwardIosIcon sx={{ fontSize: 16, ml: 1, transform: "rotate(90deg)" }} />
+//         </Box>
+
+//         <Popover
+//           open={Boolean(merchantSearchAnchor)}
+//           anchorEl={merchantSearchAnchor}
+//           onClose={handleMerchantSearchClose}
+//           anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
+//           slotProps={{
+//             paper: {
+//               sx: {
+//                 borderRadius: 4,
+//                 boxShadow: "0 8px 32px 0 rgba(16, 30, 54, 0.16)",
+//                 p: 0,
+//                 minWidth: 300,
+//               },
+//             }
+//           }}
+//         >
+//           <Box sx={{ p: 3 }}>
+//             <Typography variant="h6" fontWeight={600} mb={2}>
+//               Search by Merchant Name
+//             </Typography>
+//             <InputBase
+//               placeholder="Enter merchant name..."
+//               value={merchantSearchValue}
+//               onChange={(e) => setMerchantSearchValue(e.target.value)}
+//               sx={{
+//                 width: '100%',
+//                 padding: '10px 16px',
+//                 borderRadius: 2,
+//                 border: '1px solid #D0D5DD',
+//                 background: '#fff',
+//                 fontSize: 16,
+//                 mb: 2,
+//               }}
+//               autoFocus
+//             />
+//             <Button
+//               variant="contained"
+//               fullWidth
+//               sx={{
+//                 background: "#F63D68",
+//                 borderRadius: 2,
+//                 boxShadow: "0 4px 16px 0 rgba(246, 61, 104, 0.16)",
+//                 fontWeight: 600,
+//                 fontSize: 16,
+//                 textTransform: "none",
+//                 py: 1,
+//                 "&:hover": { background: "#e13a5e" },
+//               }}
+//               onClick={handleMerchantSearchClose}
+//             >
+//               Apply
+//             </Button>
+//           </Box>
+//         </Popover>
+
+//         <Divider orientation="vertical" flexItem sx={{ borderColor: "#E5E7EB" }} />
+
+//         {/* Reset Filter */}
+//         <Box
+//           onClick={resetFilters}
+//           tabIndex={0}
+//           role="button"
+//           sx={{
+//             display: "flex",
+//             alignItems: "center",
+//             justifyContent: "center",
+//             width: 140,
+//             minWidth: 140,
+//             height: "100%",
+//             mx: 0,
+//             px: 5,
+//             color: "#F63D68",
+//             fontWeight: 600,
+//             fontSize: 16,
+//             cursor: "pointer",
+//             userSelect: "none",
+//             gap: 1,
+//             background: "transparent",
+//             borderRadius: 2,
+//             transition: "background 0.15s",
+//           }}
+//         >
+//           <RefreshIcon sx={{ color: "#F63D68", fontSize: 20 }} />
+//           <span style={{ whiteSpace: 'nowrap', lineHeight: 1 }}>Reset Filter</span>
+//         </Box>
+//       </Box>
+
+//       {/* Table */}
+//       <TableContainer
+//         component={Paper}
+//         sx={{
+//           borderRadius: "16px",
+//           boxShadow: "none",
+//           border: "1px solid #E5E7EB",
+//           minHeight: 500,
+//         }}
+//       >
+//         <Table>
+//           <TableHead>
+//             <TableRow sx={{ background: "#F9FAFB" }}>
+//               <TableCell sx={{ fontWeight: 600}}>Ticket ID</TableCell>
+//               <TableCell sx={{ fontWeight: 600}}>Merchant Name</TableCell>
+//               <TableCell sx={{ fontWeight: 600 }}>Email</TableCell>
+//               <TableCell sx={{ fontWeight: 600 }}>Subject</TableCell>
+//               <TableCell sx={{ fontWeight: 600}}>Created On</TableCell>
+//               <TableCell sx={{ fontWeight: 600}}>STATUS</TableCell>
+//               <TableCell></TableCell>
+//             </TableRow>
+//           </TableHead>
+//           <TableBody>
+//             {paginatedTickets.map((ticket) => (
+//               <TableRow
+//                 key={ticket.id}
+//                 sx={{
+//                   "&:hover": { backgroundColor: "#f9fafb", cursor: "pointer" },
+//                   cursor: "pointer"
+//                 }}
+//                 onClick={() => handleRowClick(ticket)}
+//               >
+//                 <TableCell sx={{ fontWeight: 500, color: "#101828", fontSize: 14 }}>
+//                   {ticket.ticketId}
+//                 </TableCell>
+//                 <TableCell sx={{ fontWeight: 500, color: "#101828", fontSize: 14 }}>
+//                   {ticket.merchantName}
+//                 </TableCell>
+//                 <TableCell sx={{ color: "#667085", fontSize: 14 }}>
+//                   {ticket.email}
+//                 </TableCell>
+//                 <TableCell sx={{ color: "#667085", fontSize: 14 }}>
+//                   {ticket.subject}
+//                 </TableCell>
+//                 <TableCell sx={{ color: "#667085", fontSize: 14 }}>
+//                   {format(parseISO(ticket.createdOn), 'MMM dd, yyyy')}
+//                 </TableCell>
+//                 <TableCell>
+//                   <Chip
+//                     label={ticket.status}
+//                     sx={{
+//                       background: statusColor[ticket.status as keyof typeof statusColor],
+//                       color: statusTextColor[ticket.status as keyof typeof statusTextColor],
+//                       fontWeight: 500,
+//                       fontSize: 13,
+//                       borderRadius: "6px",
+//                       px: 2,
+//                       width: 80,
+//                       minWidth: 70,
+//                       overflow: 'hidden'
+//                     }}
+//                   />
+//                 </TableCell>
+//                 <TableCell>
+//                   <IconButton
+//                     size="small"
+//                     onClick={(e) => {
+//                       e.stopPropagation();
+//                       handleMenuClick(e, ticket.id);
+//                     }}
+//                     sx={{ color: "#9CA3AF" }}
+//                   >
+//                     <MoreVertIcon />
+//                   </IconButton>
+//                 </TableCell>
+//               </TableRow>
+//             ))}
+//           </TableBody>
+//         </Table>
+//       </TableContainer>
+
+//       {/* Menu */}
+//       <Menu
+//         anchorEl={anchorEl}
+//         open={Boolean(anchorEl)}
+//         onClose={handleMenuClose}
+//         PaperProps={{
+//           elevation: 3,
+//           sx: { mt: 1 }
+//         }}
+//       >
+//         <MenuItem onClick={handleMenuClose} sx={{ fontSize: 14 }}>
+//           View Details
+//         </MenuItem>
+//         <MenuItem onClick={handleMenuClose} sx={{ fontSize: 14 }}>
+//           Mark as Resolved
+//         </MenuItem>
+//         <MenuItem onClick={handleMenuClose} sx={{ fontSize: 14, color: '#EF4444' }}>
+//           Delete
+//         </MenuItem>
+//       </Menu>
+
+//       {/* Pagination Footer */}
+//       <Box
+//         sx={{ mt: 2.5, px: 1 }}
+//         className="flex items-center justify-between px-4 py-2 text-xs text-gray-400"
+//       >
+//         <span>
+//           Showing {totalRows === 0 ? 0 : (currentPage - 1) * itemsPerPage + 1}-
+//           {Math.min(currentPage * itemsPerPage, totalRows)} of {totalRows}
+//         </span>
+//         <Box
+//           sx={{
+//             display: 'flex',
+//             alignItems: 'center',
+//             borderRadius: '7px',
+//             boxShadow: '0px 1px 4px 0px #101E361A',
+//             border: '1px solid #E5E7EB',
+//             overflow: 'hidden',
+//             bgcolor: '#FAFAFB',
+//             height: 32,
+//             width: 90,
+//           }}
+//         >
+//           <Box
+//             onClick={currentPage === 1 ? undefined : handlePrevPage}
+//             tabIndex={0}
+//             role="button"
+//             aria-disabled={currentPage === 1}
+//             sx={{
+//               width: 56,
+//               height: 48,
+//               display: 'flex',
+//               alignItems: 'center',
+//               justifyContent: 'center',
+//               cursor: currentPage === 1 ? 'not-allowed' : 'pointer',
+//               color: currentPage === 1 ? '#A0AEC0' : '#232323',
+//               transition: 'background 0.15s',
+//               background: 'transparent',
+//               borderRight: '1px solid #E5E7EB',
+//               outline: 'none',
+//               '&:hover': {
+//                 background: currentPage === 1 ? 'transparent' : '#F6F8FB',
+//               },
+//             }}
+//           >
+//             <ArrowBackIosNewIcon sx={{ fontSize: 20, color: 'inherit' }} />
+//           </Box>
+//           <Box
+//             onClick={currentPage === totalPages || totalRows === 0 ? undefined : handleNextPage}
+//             tabIndex={0}
+//             role="button"
+//             aria-disabled={currentPage === totalPages || totalRows === 0}
+//             sx={{
+//               width: 56,
+//               height: 48,
+//               display: 'flex',
+//               alignItems: 'center',
+//               justifyContent: 'center',
+//               cursor: (currentPage === totalPages || totalRows === 0) ? 'not-allowed' : 'pointer',
+//               color: (currentPage === totalPages || totalRows === 0) ? '#A0AEC0' : '#232323',
+//               transition: 'background 0.15s',
+//               background: 'transparent',
+//               outline: 'none',
+//               '&:hover': {
+//                 background: (currentPage === totalPages || totalRows === 0) ? 'transparent' : '#F6F8FB',
+//               },
+//             }}
+//           >
+//             <ArrowForwardIosIcon sx={{ fontSize: 20, color: 'inherit' }} />
+//           </Box>
+//         </Box>
+//       </Box>
+//     </Box>
+//   );
+// };
+
+// export default SupportFeedback;
+
+
+
+
+import { JSX, useState } from "react";
 import {
   Box,
   Typography,
@@ -8,452 +1009,1027 @@ import {
   Avatar,
   Chip,
   Divider,
+  Checkbox,
+  Collapse,
+  Paper,
 } from "@mui/material";
-import DeleteIcon from '@mui/icons-material/Delete';
-import MoreVertIcon from '@mui/icons-material/MoreVert';
-import MailOutlineIcon from '@mui/icons-material/MailOutline';
-import StarOutlineIcon from '@mui/icons-material/StarOutline';
-import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
-import AddRoundedIcon from '@mui/icons-material/AddRounded';
-import Checkbox from '@mui/material/Checkbox';
-import MicOutlinedIcon from '@mui/icons-material/MicOutlined';
-import PrintIcon from '@mui/icons-material/Print';
+import DeleteIcon from "@mui/icons-material/Delete";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
+import MailOutlineIcon from "@mui/icons-material/MailOutline";
+import StarOutlineIcon from "@mui/icons-material/StarOutline";
+import StarIcon from "@mui/icons-material/Star";
+import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
+import AddRoundedIcon from "@mui/icons-material/AddRounded";
+import MicOutlinedIcon from "@mui/icons-material/MicOutlined";
+import PrintIcon from "@mui/icons-material/Print";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import AttachFileIcon from "@mui/icons-material/AttachFile";
+import ImageIcon from "@mui/icons-material/Image";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import ExpandLessIcon from "@mui/icons-material/ExpandLess";
+import ReplyIcon from "@mui/icons-material/Reply";
+import ForwardIcon from "@mui/icons-material/Forward";
 
-const folders = [
+interface Message {
+  id: number;
+  text: string;
+  time: string;
+  date: string;
+  fromMe: boolean;
+  senderName: string;
+  senderEmail: string;
+  avatar: string;
+}
+
+interface EmailMessage {
+  id: number;
+  folder: string;
+  sender: string;
+  senderEmail: string;
+  subject: string;
+  preview: string;
+  avatar: string;
+  label: string;
+  labelColor: string;
+  time: string;
+  date: string;
+  isRead: boolean;
+  isStarred: boolean;
+  messages: Message[];
+}
+
+interface Folder {
+  name: string;
+  count: number;
+  icon: JSX.Element;
+}
+
+const folders: Folder[] = [
   { name: "Inbox", count: 1253, icon: <MailOutlineIcon /> },
   { name: "Starred", count: 245, icon: <StarOutlineIcon /> },
-  { name: "Sent", count: 24532, icon: <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <path fill-rule="evenodd" clip-rule="evenodd" d="M1.36671 6.92476C0.948123 6.80667 0.655386 6.42953 0.644826 5.99473C0.634266 5.55993 0.908349 5.16902 1.32071 5.03076L14.7014 0.666757C14.8801 0.608499 15.0764 0.655249 15.2096 0.78781C15.3429 0.920371 15.3907 1.11641 15.3334 1.29542L10.9727 14.6828C10.8351 15.0959 10.4438 15.3707 10.0085 15.3599C9.57314 15.3492 9.19586 15.0555 9.07871 14.6361L7.58138 8.41542L1.36671 6.92476Z" stroke="#202224" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
-    <path d="M15.2097 0.786865L7.58105 8.41553" stroke="#202224" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
-    </svg>
-    },
-  { name: "Draft", count: 9, icon: <EditOutlinedIcon /> },
-  { name: "Spam", count: 14, icon: <svg width="17" height="17" viewBox="0 0 17 17" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <path d="M8.50033 12.9998C8.36225 12.9998 8.25033 13.1118 8.25033 13.2498C8.25033 13.3879 8.36225 13.4998 8.50033 13.4998C8.6384 13.4998 8.75033 13.3879 8.75033 13.2498C8.75033 13.1118 8.6384 12.9998 8.50033 12.9998V12.9998" stroke="black" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
-    <path d="M8.50033 10.9998V5.99976" stroke="black" stroke-width="1.7" stroke-linecap="round"/>
-    <path fill-rule="evenodd" clip-rule="evenodd" d="M9.58067 1.67317C9.37826 1.2611 8.95911 1 8.50001 1C8.0409 1 7.62175 1.2611 7.41934 1.67317L1.10401 14.5385C0.949457 14.8529 0.968142 15.2248 1.15343 15.5221C1.33871 15.8195 1.66434 16.0001 2.01467 15.9998H14.9853C15.3357 16.0001 15.6613 15.8195 15.8466 15.5221C16.0319 15.2248 16.0506 14.8529 15.896 14.5385L9.58067 1.67317Z" stroke="black" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
-    </svg>
-     },
-  { name: "Important", count: 18, icon: <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <path fill-rule="evenodd" clip-rule="evenodd" d="M12.5 13C13.0523 13 13.5 12.5523 13.5 12C13.5 11.4477 13.0523 11 12.5 11C11.9477 11 11.5 11.4477 11.5 12C11.5 12.5523 11.9477 13 12.5 13Z" stroke="#202224" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
-    <path fill-rule="evenodd" clip-rule="evenodd" d="M13.3493 8.13336L13.644 9.10203C13.7449 9.43564 14.087 9.63407 14.4267 9.55603L15.408 9.3287C15.79 9.24203 16.1838 9.41467 16.3789 9.7543C16.5739 10.0939 16.5246 10.5211 16.2573 10.8074L15.5707 11.548C15.3327 11.8039 15.3327 12.2001 15.5707 12.456L16.2573 13.1967C16.5246 13.483 16.5739 13.9101 16.3789 14.2498C16.1838 14.5894 15.79 14.762 15.408 14.6754L14.4267 14.448C14.087 14.37 13.7449 14.5684 13.644 14.902L13.3493 15.8667C13.2369 16.2418 12.8916 16.4988 12.5 16.4988C12.1084 16.4988 11.7631 16.2418 11.6507 15.8667L11.3553 14.898C11.2547 14.5645 10.9129 14.366 10.5733 14.444L9.59134 14.6714C9.20938 14.758 8.81556 14.5854 8.62048 14.2458C8.4254 13.9061 8.4747 13.479 8.74201 13.1927L9.42867 12.452C9.66664 12.1961 9.66664 11.7999 9.42867 11.544L8.74201 10.8034C8.4747 10.5171 8.4254 10.0899 8.62048 9.7503C8.81556 9.41067 9.20938 9.23803 9.59134 9.3247L10.5733 9.55203C10.9129 9.63002 11.2547 9.43154 11.3553 9.09803L11.6507 8.12936C11.764 7.75448 12.1099 7.49835 12.5015 7.49927C12.8931 7.50019 13.2378 7.75795 13.3493 8.13336Z" stroke="#202224" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
-    <path d="M16.424 7.46674C16.0122 4.64872 13.9342 2.36111 11.1686 1.68125C8.403 1.00138 5.5012 2.06483 3.82982 4.37074C2.15843 6.67665 2.05069 9.7653 3.55733 12.1821L1.5 16.5001L5.816 14.4441C6.04325 14.5854 6.27829 14.7139 6.52 14.8287" stroke="#202224" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
-    </svg>
-     },
-  { name: "Bin", count: 9, icon: <svg width="18" height="16" viewBox="0 0 18 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <path fill-rule="evenodd" clip-rule="evenodd" d="M13.2006 15.3999H4.80059C4.13784 15.3999 3.60059 14.8626 3.60059 14.1999V3.3999H14.4006V14.1999C14.4006 14.8626 13.8633 15.3999 13.2006 15.3999Z" stroke="black" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
-    <path d="M7.1998 11.8V7" stroke="black" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
-    <path d="M10.8004 11.8V7" stroke="black" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
-    <path d="M1.2002 3.4H16.8002" stroke="black" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
-    <path fill-rule="evenodd" clip-rule="evenodd" d="M10.8 1H7.2C6.53726 1 6 1.53726 6 2.2V3.4H12V2.2C12 1.53726 11.4627 1 10.8 1Z" stroke="black" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
-    </svg>
-    },
+  {
+    name: "Sent",
+    count: 24532,
+    icon: (
+      <svg
+        width="16"
+        height="16"
+        viewBox="0 0 16 16"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          fillRule="evenodd"
+          clipRule="evenodd"
+          d="M1.36671 6.92476C0.948123 6.80667 0.655386 6.42953 0.644826 5.99473C0.634266 5.55993 0.908349 5.16902 1.32071 5.03076L14.7014 0.666757C14.8801 0.608499 15.0764 0.655249 15.2096 0.78781C15.3429 0.920371 15.3907 1.11641 15.3334 1.29542L10.9727 14.6828C10.8351 15.0959 10.4438 15.3707 10.0085 15.3599C9.57314 15.3492 9.19586 15.0555 9.07871 14.6361L7.58138 8.41542L1.36671 6.92476Z"
+          stroke="currentColor"
+          strokeWidth="1.4"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+        <path
+          d="M15.2097 0.786865L7.58105 8.41553"
+          stroke="currentColor"
+          strokeWidth="1.4"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+      </svg>
+    ),
+  },
+  {
+    name: "Bin",
+    count: 9,
+    icon: (
+      <svg
+        width="18"
+        height="16"
+        viewBox="0 0 18 16"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          fillRule="evenodd"
+          clipRule="evenodd"
+          d="M13.2006 15.3999H4.80059C4.13784 15.3999 3.60059 14.8626 3.60059 14.1999V3.3999H14.4006V14.1999C14.4006 14.8626 13.8633 15.3999 13.2006 15.3999Z"
+          stroke="currentColor"
+          strokeWidth="1.2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+        <path
+          d="M7.1998 11.8V7"
+          stroke="currentColor"
+          strokeWidth="1.2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+        <path
+          d="M10.8004 11.8V7"
+          stroke="currentColor"
+          strokeWidth="1.2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+        <path
+          d="M1.2002 3.4H16.8002"
+          stroke="currentColor"
+          strokeWidth="1.2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+        <path
+          fillRule="evenodd"
+          clipRule="evenodd"
+          d="M10.8 1H7.2C6.53726 1 6 1.53726 6 2.2V3.4H12V2.2C12 1.53726 11.4627 1 10.8 1Z"
+          stroke="currentColor"
+          strokeWidth="1.2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+      </svg>
+    ),
+  },
 ];
-const labels = [
-  { name: "Primary", color: "#00C9A7" },
-  { name: "Social", color: "#3B82F6" },
-  { name: "Work", color: "#F59E42" },
-  { name: "Friends", color: "#FF4D7D" },
-];
-const initialMessages = [
+
+const initialMessages: EmailMessage[] = [
   {
     id: 1,
-    folder: 'Inbox',
+    folder: "Inbox",
     sender: "Minerva Barnett",
-    senderType: "friend",
+    senderEmail: "minerva.barnett@example.com",
+    subject: "Feedback on the new product features",
+    preview:
+      "It is a long established fact that a reader will be distracted by the readable content...",
     avatar: "https://randomuser.me/api/portraits/women/65.jpg",
     label: "Friends",
+    labelColor: "#FF4D7D",
+    time: "6:30 PM",
+    date: "Today",
+    isRead: false,
+    isStarred: false,
     messages: [
       {
         id: 1,
         text: "It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters.",
-        time: "6.30 pm",
+        time: "6:30 PM",
+        date: "Sat, Sep 6, 2025",
         fromMe: false,
+        senderName: "Minerva Barnett",
+        senderEmail: "minerva.barnett@example.com",
+        avatar: "https://randomuser.me/api/portraits/women/65.jpg",
       },
       {
         id: 2,
         text: "There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour.",
-        time: "6.34 pm",
+        time: "6:34 PM",
+        date: "Sat, Sep 6, 2025",
         fromMe: true,
+        senderName: "You",
+        senderEmail: "admin@company.com",
+        avatar: "https://randomuser.me/api/portraits/men/75.jpg",
       },
       {
         id: 3,
-        text: "The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English. Many desktop publishing packages and web page editors now use Lorem Ipsum as their default.Contrary to popular belief, Lorem Ipsum is not simply random text is the model text for your company.",
-        time: "6.38 pm",
+        text: "The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English.",
+        time: "6:38 PM",
+        date: "Sat, Sep 6, 2025",
         fromMe: false,
+        senderName: "Minerva Barnett",
+        senderEmail: "minerva.barnett@example.com",
+        avatar: "https://randomuser.me/api/portraits/women/65.jpg",
       },
     ],
   },
   {
     id: 2,
-    folder: 'Starred',
+    folder: "Inbox",
     sender: "Alex Johnson",
-    senderType: "work",
+    senderEmail: "alex.johnson@company.com",
+    subject: "Project Review Meeting Tomorrow",
+    preview:
+      "Hi there! Just wanted to remind you about our project review meeting tomorrow...",
     avatar: "https://randomuser.me/api/portraits/men/32.jpg",
     label: "Work",
+    labelColor: "#4CAF50",
+    time: "2:15 PM",
+    date: "Today",
+    isRead: true,
+    isStarred: true,
     messages: [
       {
         id: 1,
-        text: "This is a starred message. Please review the attached document.",
-        time: "9.10 am",
+        text: "Hi there! Just wanted to remind you about our project review meeting tomorrow at 10 AM. Please prepare the quarterly reports.",
+        time: "2:15 PM",
+        date: "Sat, Sep 6, 2025",
         fromMe: false,
-      },
-      {
-        id: 2,
-        text: "Thanks, I'll check it out.",
-        time: "9.12 am",
-        fromMe: true,
+        senderName: "Alex Johnson",
+        senderEmail: "alex.johnson@company.com",
+        avatar: "https://randomuser.me/api/portraits/men/32.jpg",
       },
     ],
   },
   {
     id: 3,
-    folder: 'Sent',
-    sender: "You",
-    senderType: "me",
-    avatar: "https://randomuser.me/api/portraits/men/75.jpg",
-    label: "Primary",
+    folder: "Starred",
+    sender: "Sarah Wilson",
+    senderEmail: "sarah.wilson@design.com",
+    subject: "Design System Updates",
+    preview:
+      "The new design system components are ready for review. I've attached the latest...",
+    avatar: "https://randomuser.me/api/portraits/women/28.jpg",
+    label: "Design",
+    labelColor: "#9C27B0",
+    time: "11:30 AM",
+    date: "Yesterday",
+    isRead: true,
+    isStarred: true,
     messages: [
       {
         id: 1,
-        text: "Sent message example. Here is the information you requested.",
-        time: "11.00 am",
-        fromMe: true,
+        text: "The new design system components are ready for review. I've attached the latest mockups and documentation.",
+        time: "11:30 AM",
+        date: "Fri, Sep 5, 2025",
+        fromMe: false,
+        senderName: "Sarah Wilson",
+        senderEmail: "sarah.wilson@design.com",
+        avatar: "https://randomuser.me/api/portraits/women/28.jpg",
       },
       {
         id: 2,
-        text: "Thank you for the quick response!",
-        time: "11.05 am",
-        fromMe: false,
-      },
-    ],
-  },
-  {
-    id: 4,
-    folder: 'Draft',
-    sender: "Draft to Sarah",
-    senderType: "draft",
-    avatar: "https://randomuser.me/api/portraits/women/44.jpg",
-    label: "Social",
-    messages: [
-      {
-        id: 1,
-        text: "[Draft] Hi Sarah, just wanted to check in about the meeting next week.",
-        time: "10.00 am",
+        text: "Thanks Sarah! I'll review them this afternoon.",
+        time: "12:45 PM",
+        date: "Fri, Sep 5, 2025",
         fromMe: true,
-      },
-    ],
-  },
-  {
-    id: 5,
-    folder: 'Spam',
-    sender: "Spam Sender",
-    senderType: "spam",
-    avatar: "https://randomuser.me/api/portraits/men/99.jpg",
-    label: "Work",
-    messages: [
-      {
-        id: 1,
-        text: "Congratulations! You've won a free cruise. Click here to claim.",
-        time: "8.00 am",
-        fromMe: false,
-      },
-    ],
-  },
-  {
-    id: 6,
-    folder: 'Important',
-    sender: "Manager",
-    senderType: "important",
-    avatar: "https://randomuser.me/api/portraits/men/12.jpg",
-    label: "Primary",
-    messages: [
-      {
-        id: 1,
-        text: "Please review the quarterly report by EOD.",
-        time: "7.30 am",
-        fromMe: false,
-      },
-      {
-        id: 2,
-        text: "Will do, thanks for the reminder!",
-        time: "7.32 am",
-        fromMe: true,
-      },
-    ],
-  },
-  {
-    id: 7,
-    folder: 'Bin',
-    sender: "Deleted Message",
-    senderType: "bin",
-    avatar: "https://randomuser.me/api/portraits/women/12.jpg",
-    label: "Friends",
-    messages: [
-      {
-        id: 1,
-        text: "This message was deleted.",
-        time: "Yesterday",
-        fromMe: false,
+        senderName: "You",
+        senderEmail: "admin@company.com",
+        avatar: "https://randomuser.me/api/portraits/men/75.jpg",
       },
     ],
   },
 ];
 
 export default function Feedback() {
-  const [selectedFolder, setSelectedFolder] = useState("Inbox");
-  const [messages, setMessages] = useState(initialMessages);
-  const currentChat = messages.find(m => m.folder === selectedFolder);
-  const [input, setInput] = useState("");
-  const [checkedLabels, setCheckedLabels] = useState<string[]>([]);
+  const [selectedFolder, setSelectedFolder] = useState<string>("Inbox");
+  const [selectedMessage, setSelectedMessage] = useState<EmailMessage | null>(
+    null
+  );
+  const [messages, setMessages] = useState<EmailMessage[]>(initialMessages);
+  const [input, setInput] = useState<string>("");
+  const [selectedEmails, setSelectedEmails] = useState<number[]>([]);
+  const [expandedMessages, setExpandedMessages] = useState<number[]>([]);
+  const [showReply, setShowReply] = useState<boolean>(false);
 
-  // Compose, label, and folder handlers (no-op for now)
-  const handleSend = () => {
-    if (!input.trim() || !currentChat) return;
-    setMessages((prevMsgs) =>
-      prevMsgs.map((chat) =>
-        chat.id === currentChat.id
-          ? {
-              ...chat,
-              messages: [
-                ...chat.messages,
-                {
-                  id: chat.messages.length + 1,
-                  text: input,
-                  time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-                  fromMe: true,
-                },
-              ],
-            }
-          : chat
+  const currentFolderMessages = messages.filter(
+    (m) => m.folder === selectedFolder
+  );
+
+  const handleSend = (): void => {
+    if (!input.trim() || !selectedMessage) return;
+
+    const newMessage: Message = {
+      id: selectedMessage.messages.length + 1,
+      text: input,
+      time: new Date().toLocaleTimeString([], {
+        hour: "2-digit",
+        minute: "2-digit",
+      }),
+      date: "Today",
+      fromMe: true,
+      senderName: "You",
+      senderEmail: "admin@company.com",
+      avatar: "https://randomuser.me/api/portraits/men/75.jpg",
+    };
+
+    setMessages((prev) =>
+      prev.map((msg) =>
+        msg.id === selectedMessage.id
+          ? { ...msg, messages: [...msg.messages, newMessage] }
+          : msg
       )
     );
+
+    setSelectedMessage((prev) =>
+      prev
+        ? {
+            ...prev,
+            messages: [...prev.messages, newMessage],
+          }
+        : null
+    );
+
     setInput("");
+    setShowReply(false);
+  };
+
+  const handleStarToggle = (messageId: number): void => {
+    setMessages((prev) =>
+      prev.map((msg) =>
+        msg.id === messageId ? { ...msg, isStarred: !msg.isStarred } : msg
+      )
+    );
+
+    if (selectedMessage && selectedMessage.id === messageId) {
+      setSelectedMessage((prev) =>
+        prev ? { ...prev, isStarred: !prev.isStarred } : null
+      );
+    }
+  };
+
+  const handleEmailSelect = (emailId: number): void => {
+    setSelectedEmails((prev) =>
+      prev.includes(emailId)
+        ? prev.filter((id) => id !== emailId)
+        : [...prev, emailId]
+    );
+  };
+
+  const handleSelectAll = (): void => {
+    if (selectedEmails.length === currentFolderMessages.length) {
+      setSelectedEmails([]);
+    } else {
+      setSelectedEmails(currentFolderMessages.map((msg) => msg.id));
+    }
+  };
+
+  const handleMessageClick = (msg: EmailMessage): void => {
+    setSelectedMessage(msg);
+    setShowReply(false);
+    // Expand the first message by default, keep others collapsed
+    setExpandedMessages([msg.messages[0]?.id].filter(Boolean));
+
+    // Mark as read when clicked
+    if (!msg.isRead) {
+      setMessages((prev) =>
+        prev.map((m) => (m.id === msg.id ? { ...m, isRead: true } : m))
+      );
+    }
+  };
+
+  const handleFolderChange = (folderName: string): void => {
+    setSelectedFolder(folderName);
+    setSelectedMessage(null);
+    setSelectedEmails([]);
+    setExpandedMessages([]);
+    setShowReply(false);
+  };
+
+  const toggleMessageExpansion = (messageId: number): void => {
+    setExpandedMessages((prev) =>
+      prev.includes(messageId)
+        ? prev.filter((id) => id !== messageId)
+        : [...prev, messageId]
+    );
   };
 
   return (
     <>
-      
       <Typography fontSize={32} fontWeight={600} mt={2} mb={4}>
-          Feedback Management
-        </Typography>
-      <Box sx={{ display: 'flex', gap: 3, height: 'calc(100vh - 90px)' }}>
-        
+        Feedback Management
+      </Typography>
+
+      <Box sx={{ display: "flex", gap: 3, height: "calc(100vh - 90px)" }}>
         {/* Sidebar */}
-        <Box sx={{ width: 270, bgcolor: '#fff', overflowY: 'auto', borderRadius: 3, p: 3, display: 'flex', flexDirection: 'column', boxShadow: 1, height: '100%' }}>
-          <Button
-            variant="contained"
-            sx={{ bgcolor: '#FF4D7D', color: '#fff', borderRadius: 3, fontWeight: 600, fontSize: 16, mb: 4, py: 1.5, boxShadow: 'none', textTransform: 'none', '&:hover': { bgcolor: '#FF3366' } }}
-            fullWidth
+        <Box
+          sx={{
+            width: 270,
+            bgcolor: "#fff",
+            overflowY: "auto",
+            borderRadius: 3,
+            p: 3,
+            display: "flex",
+            flexDirection: "column",
+            boxShadow: 1,
+            height: "100%",
+          }}
+        >
+          <Typography
+            fontWeight={500}
+            fontSize={20}
+            color="#23235B"
+            mb={2}
+            mt={1}
           >
-            + Compose
-          </Button>
-          <Typography fontWeight={500} fontSize={20} color="#23235B" mb={2} mt={1}>My Email</Typography>
+            Feedbacks
+          </Typography>
+
           <Box>
             {folders.map((folder) => {
-              const isInbox = folder.name === 'Inbox';
+              const isInbox = folder.name === "Inbox";
               const isSelected = selectedFolder === folder.name;
               return (
                 <Box
                   key={folder.name}
                   sx={{
-                    display: 'flex',
-                    alignItems: 'center',
+                    display: "flex",
+                    alignItems: "center",
                     borderRadius: 2.5,
                     px: 2,
                     py: 1.5,
                     mb: 1.2,
-                    cursor: 'pointer',
-                    bgcolor: isSelected ? '#FF4D7D' : 'transparent',
-                    transition: 'background 0.2s',
-                    boxShadow: isSelected ? 'none' : undefined,
-                    '&:hover': { bgcolor: isSelected ? '#FF4D7D' : (isInbox ? '#FFE6EC' : '#F6F8FB') },
+                    cursor: "pointer",
+                    bgcolor: isSelected ? "#FF4D7D" : "transparent",
+                    transition: "background 0.2s",
+                    "&:hover": {
+                      bgcolor: isSelected
+                        ? "#FF4D7D"
+                        : isInbox
+                        ? "#FFE6EC"
+                        : "#F6F8FB",
+                    },
                   }}
-                  onClick={() => setSelectedFolder(folder.name)}
+                  onClick={() => handleFolderChange(folder.name)}
                 >
-                  {folder.icon && (
-                    <Box sx={{
-                      color: isSelected ? '#fff' : (isInbox ? '#FF4D7D' : '#232323'),
-                      fontSize: 8,
+                  <Box
+                    sx={{
+                      color: isSelected
+                        ? "#fff"
+                        : isInbox
+                        ? "#FF4D7D"
+                        : "#232323",
                       mr: 2,
-                      display: 'flex',
-                      alignItems: 'center',
-                    }}>{folder.icon}</Box>
-                  )}
-                  <Typography sx={{
-                    fontWeight: isSelected ? 600 : 400,
-                    fontSize: 16,
-                    color: isSelected ? '#fff' : (isInbox ? '#FF4D7D' : '#232323'),
-                    flex: 1,
-                  }}>{folder.name}</Typography>
-                  <Typography sx={{
-                    fontWeight: isSelected ? 600 : 400,
-                    fontSize: 13,
-                    color: isSelected ? '#fff' : (isInbox ? '#FF4D7D' : '#A0AEC0'),
-                    minWidth: 40,
-                    textAlign: 'right',
-                  }}>{folder.count.toLocaleString(undefined, { minimumIntegerDigits: 2 })}</Typography>
+                      display: "flex",
+                      alignItems: "center",
+                    }}
+                  >
+                    {folder.icon}
+                  </Box>
+                  <Typography
+                    sx={{
+                      fontWeight: isSelected ? 600 : 400,
+                      fontSize: 16,
+                      color: isSelected
+                        ? "#fff"
+                        : isInbox
+                        ? "#FF4D7D"
+                        : "#232323",
+                      flex: 1,
+                    }}
+                  >
+                    {folder.name}
+                  </Typography>
+                  <Typography
+                    sx={{
+                      fontWeight: isSelected ? 600 : 400,
+                      fontSize: 13,
+                      color: isSelected
+                        ? "#fff"
+                        : isInbox
+                        ? "#FF4D7D"
+                        : "#A0AEC0",
+                      minWidth: 40,
+                      textAlign: "right",
+                    }}
+                  >
+                    {folder.count.toLocaleString()}
+                  </Typography>
                 </Box>
               );
             })}
           </Box>
-          <Typography fontWeight={700} fontSize={18} color="#232323" mt={4} mb={2}>Label</Typography>
-          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mb: 2 }}>
-            {labels.map((label) => (
-              <Box key={label.name} sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
-                <Checkbox
-                  checked={checkedLabels.includes(label.name)}
-                  onChange={() => setCheckedLabels((prev) =>
-                    prev.includes(label.name)
-                      ? prev.filter((l) => l !== label.name)
-                      : [...prev, label.name]
-                  )}
-                  icon={<span style={{
-                    display: 'block',
-                    width: 18,
-                    height: 18,
-                    border: `2px solid ${label.color}`,
-                    borderRadius: 4,
-                    background: '#fff',
-                  }} />}
-                  checkedIcon={<span style={{
-                    display: 'block',
-                    width: 18,
-                    height: 18,
-                    border: `2px solid ${label.color}`,
-                    borderRadius: 4,
-                    background: '#fff',
-                    position: 'relative',
-                  }}>
-                    <svg width="14" height="14" viewBox="0 0 14 14" style={{ position: 'absolute', top: 1, left: 1 }}>
-                      <polyline points="2,8 6,12 12,3" style={{ fill: 'none', stroke: label.color, strokeWidth: 2, strokeLinecap: 'round', strokeLinejoin: 'round' }} />
-                    </svg>
-                  </span>}
-                  sx={{ p: 0, mr: 1.5, '& .MuiSvgIcon-root': { display: 'none' } }}
-                />
-                <Typography fontSize={16} fontWeight={400} color="#232323">{label.name}</Typography>
-              </Box>
-            ))}
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mt: 1, ml: 0.5 }}>
-              <Button sx={{ display: 'flex', alignItems: 'center', gap: 1, textTransform: 'none', color: '#B0B7C3' ,cursor:'pointer'}}>
-                <AddRoundedIcon sx={{ fontSize: 20 }} />
-                <Typography fontSize={15} fontWeight={400}>Create New Label</Typography>
-              </Button>
-            </Box>
-          </Box>
         </Box>
-        {/* Main Chat Area */}
-        <Box sx={{ flex: 1, bgcolor: '#fff', borderRadius: 3, p: 0, display: 'flex', flexDirection: 'column', minWidth: 0, boxShadow: 1, height: '100%' }}>
-          {/* Chat Header */}
-          {currentChat && (
+
+        {/* Main Content Area */}
+        <Box
+          sx={{
+            flex: 1,
+            bgcolor: "#fff",
+            borderRadius: 3,
+            display: "flex",
+            flexDirection: "column",
+            boxShadow: 1,
+            height: "100%",
+            overflow: "hidden",
+          }}
+        >
+          {!selectedMessage ? (
+            // Message List View (Gmail-like)
             <>
-              <Box sx={{ display: 'flex', alignItems: 'center', borderBottom: '1px solid #F1F1F1', px: 4, py: 2, minHeight: 64 }}>
-                <Avatar src={currentChat?.avatar} sx={{ width: 44, height: 44, mr: 2 }} />
-                <Typography fontWeight={600} fontSize={20} color="#23235B">{currentChat?.sender}</Typography>
-                <Chip label={currentChat?.label} size="small" sx={{ ml: 2, bgcolor: '#FF4D7D', color: '#fff', fontWeight: 500, fontSize: 13, borderRadius: 1 }} />
-                <Box sx={{ ml: 'auto', display: 'flex', alignItems: 'center' }}>
-                  <Box
-                    sx={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      bgcolor: '#F7F8FA',
-                      borderRadius: '16px',
-                      border: '1px solid #E5E7EB',
-                      boxShadow: '0 2px 8px rgba(16,30,54,0.06)',
-                      overflow: 'hidden',
-                      width: 130,
-                      height: 40,
-                    }}
-                  >
-                    <Box sx={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                      <IconButton sx={{ color: '#232323', p: 0 }}><PrintIcon sx={{ fontSize: 20 }} /></IconButton>
-                    </Box>
-                    <Divider orientation="vertical" flexItem sx={{ borderColor: '#E5E7EB' }} />
-                    <Box sx={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                      <IconButton sx={{ color: '#232323', p: 0 }}><StarOutlineIcon sx={{ fontSize: 20 }} /></IconButton>
-                    </Box>
-                    <Divider orientation="vertical" flexItem sx={{ borderColor: '#E5E7EB' }} />
-                    <Box sx={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                      <IconButton sx={{ color: '#232323', p: 0 }}><DeleteIcon sx={{ fontSize: 20 }} /></IconButton>
-                    </Box>
-                  </Box>
+              {/* Toolbar */}
+              <Box
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  borderBottom: "1px solid #F1F1F1",
+                  px: 3,
+                  py: 2,
+                  gap: 2,
+                }}
+              >
+                <Checkbox
+                  size="small"
+                  checked={
+                    selectedEmails.length === currentFolderMessages.length &&
+                    currentFolderMessages.length > 0
+                  }
+                  indeterminate={
+                    selectedEmails.length > 0 &&
+                    selectedEmails.length < currentFolderMessages.length
+                  }
+                  onChange={handleSelectAll}
+                />
+
+                {selectedEmails.length > 0 && (
+                  <>
+                    <IconButton size="small" sx={{ color: "#666" }}>
+                      <DeleteIcon fontSize="small" />
+                    </IconButton>
+                    <IconButton size="small" sx={{ color: "#666" }}>
+                      <MailOutlineIcon fontSize="small" />
+                    </IconButton>
+                    <IconButton size="small" sx={{ color: "#666" }}>
+                      <StarOutlineIcon fontSize="small" />
+                    </IconButton>
+                  </>
+                )}
+
+                <Box
+                  sx={{
+                    ml: "auto",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 1,
+                  }}
+                >
+                  <Typography variant="body2" color="#666">
+                    {currentFolderMessages.length} messages
+                  </Typography>
                 </Box>
               </Box>
-              {/* Chat Messages */}
-              <Box sx={{ flex: 1, overflowY: 'auto', px: 4, py: 3, display: 'flex', flexDirection: 'column', gap: 2, bgcolor: '#fff' }}>
-                {currentChat?.messages.map((msg) => (
-                  <Box key={msg.id} sx={{ display: 'flex', alignItems: 'flex-end', justifyContent: msg.fromMe ? 'flex-end' : 'flex-start' }}>
-                    {!msg.fromMe && <Avatar src={currentChat?.avatar} sx={{ width: 32, height: 32, mr: 2 }} />}
-                    <Box
-                      sx={{
-                        bgcolor: msg.fromMe ? '#FF4D7D' : '#F6F8FB',
-                        color: msg.fromMe ? '#fff' : '#23235B',
-                        borderRadius: 3,
-                        px: 2.5,
-                        py: 1.5,
-                        maxWidth: 480,
-                        fontSize: 15,
-                        fontWeight: 400,
-                        boxShadow: msg.fromMe ? '0 2px 8px #FF4D7D22' : '0 2px 8px #E9E9E922',
-                        mb: 0.5,
-                        position: 'relative',
-                        display: 'flex',
-                        flexDirection: 'column',
-                        alignItems: 'flex-start',
+
+              {/* Message List */}
+              <Box sx={{ flex: 1, overflowY: "auto" }}>
+                {currentFolderMessages.map((msg) => (
+                  <Box
+                    key={msg.id}
+                    sx={{
+                      display: "flex",
+                      alignItems: "center",
+                      px: 3,
+                      py: 2,
+                      borderBottom: "1px solid #F1F1F1",
+                      cursor: "pointer",
+                      bgcolor: selectedEmails.includes(msg.id)
+                        ? "#E3F2FD"
+                        : msg.isRead
+                        ? "#fff"
+                        : "#F8F9FA",
+                      "&:hover": {
+                        bgcolor: selectedEmails.includes(msg.id)
+                          ? "#E3F2FD"
+                          : "#F6F8FB",
+                      },
+                    }}
+                    onClick={() => handleMessageClick(msg)}
+                  >
+                    <Checkbox
+                      size="small"
+                      checked={selectedEmails.includes(msg.id)}
+                      onChange={(e) => {
+                        e.stopPropagation();
+                        handleEmailSelect(msg.id);
+                      }}
+                      sx={{ mr: 2 }}
+                    />
+
+                    <IconButton
+                      size="small"
+                      sx={{ mr: 1, color: msg.isStarred ? "#FFD700" : "#ccc" }}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleStarToggle(msg.id);
                       }}
                     >
-                      <span>{msg.text}</span>
-                      <Box sx={{ display: 'flex', alignItems: 'center', alignSelf: 'flex-end', gap: 0.2 }}>
-                        <Typography sx={{ fontSize: 13, color: msg.fromMe ? '#fff' : '#A0AEC0' }}>{msg.time}</Typography>
-                        <MoreVertIcon sx={{ fontSize: 16, color: msg.fromMe ? '#fff' : '#A0AEC0', verticalAlign: 'middle' }} />
+                      {msg.isStarred ? (
+                        <StarIcon fontSize="small" />
+                      ) : (
+                        <StarOutlineIcon fontSize="small" />
+                      )}
+                    </IconButton>
+
+                    <Avatar
+                      src={msg.avatar}
+                      sx={{ width: 36, height: 36, mr: 3 }}
+                    />
+
+                    <Box sx={{ flex: 1, minWidth: 0 }}>
+                      <Box
+                        sx={{ display: "flex", alignItems: "center", mb: 0.5 }}
+                      >
+                        <Typography
+                          sx={{
+                            fontWeight: msg.isRead ? 400 : 600,
+                            fontSize: 15,
+                            color: "#23235B",
+                            mr: 2,
+                          }}
+                        >
+                          {msg.sender}
+                        </Typography>
+                        <Chip
+                          label={msg.label}
+                          size="small"
+                          sx={{
+                            bgcolor: msg.labelColor,
+                            color: "#fff",
+                            fontWeight: 500,
+                            fontSize: 11,
+                            height: 20,
+                            borderRadius: 1,
+                          }}
+                        />
                       </Box>
+
+                      <Typography
+                        sx={{
+                          fontWeight: msg.isRead ? 400 : 600,
+                          fontSize: 14,
+                          color: "#23235B",
+                          mb: 0.5,
+                        }}
+                        noWrap
+                      >
+                        {msg.subject}
+                      </Typography>
+
+                      <Typography
+                        variant="body2"
+                        sx={{
+                          color: "#A0AEC0",
+                          overflow: "hidden",
+                          textOverflow: "ellipsis",
+                          whiteSpace: "nowrap",
+                        }}
+                      >
+                        {msg.preview}
+                      </Typography>
                     </Box>
-                    {msg.fromMe && <Avatar src={currentChat?.avatar} sx={{ width: 32, height: 32, ml: 2 }} />}
+
+                    <Typography
+                      variant="body2"
+                      sx={{
+                        color: msg.isRead ? "#A0AEC0" : "#FF4D7D",
+                        fontWeight: msg.isRead ? 400 : 500,
+                        ml: 2,
+                        minWidth: 60,
+                        textAlign: "right",
+                      }}
+                    >
+                      {msg.time}
+                    </Typography>
                   </Box>
                 ))}
               </Box>
             </>
-          )}
-          {/* Message Input */}
-          <Divider sx={{ my: 0 }} />
-          <Box sx={{ display: 'flex', alignItems: 'center', px: 4, py: 2, bgcolor: '#fff', borderBottomLeftRadius: 12, borderBottomRightRadius: 12 }}>
-            <IconButton sx={{ color: '#A0AEC0', mr: 1 }}>
-              <MicOutlinedIcon sx={{ fontSize: 22 }} />
-            </IconButton>
-            <InputBase
-              placeholder="Write massage"
-              value={input}
-              onChange={e => setInput(e.target.value)}
-              onKeyDown={e => { if (e.key === 'Enter') handleSend(); }}
-              sx={{ flex: 1, fontSize: 16, px: 2, py: 1, borderRadius: 2, bgcolor: '#F6F8FB', border: '1px solid #EAF0F7', mr: 2 }}
-            />
-            <Box sx={{ display: 'flex', gap: 2, mr: 2 }}>
-              <IconButton sx={{ color: '#9D9D9D', p: 1 }}>
-                <svg width="17" height="19" viewBox="0 0 17 19" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M1.76172 16.6328C1.10547 15.9531 0.660156 15.1445 0.425781 14.207C0.191406 13.2695 0.191406 12.3438 0.425781 11.4297C0.683594 10.4922 1.15234 9.68359 1.83203 9.00391L9.17969 1.44531C9.69531 0.929687 10.293 0.578125 10.9727 0.390625C11.6758 0.203125 12.3672 0.203125 13.0469 0.390625C13.7266 0.578125 14.3242 0.929687 14.8398 1.44531C15.3555 1.96094 15.6953 2.57031 15.8594 3.27344C16.0469 3.95312 16.0469 4.64453 15.8594 5.34766C15.6953 6.02734 15.3555 6.625 14.8398 7.14062L8.40625 13.7148C7.89062 14.2539 7.25781 14.5234 6.50781 14.5234C5.75781 14.5 5.125 14.2305 4.60938 13.7148C4.11719 13.1758 3.87109 12.543 3.87109 11.8164C3.89453 11.0664 4.16406 10.4336 4.67969 9.91797L9.70703 4.75C9.82422 4.65625 9.95312 4.60938 10.0938 4.60938C10.2578 4.58594 10.3984 4.63281 10.5156 4.75L11.3242 5.52344C11.4414 5.64062 11.5 5.78125 11.5 5.94531C11.5 6.08594 11.4414 6.21484 11.3242 6.33203L6.26172 11.5C6.19141 11.5938 6.14453 11.7109 6.12109 11.8516C6.12109 11.9688 6.15625 12.0742 6.22656 12.168C6.32031 12.2383 6.41406 12.2734 6.50781 12.2734C6.625 12.2734 6.71875 12.2266 6.78906 12.1328L13.2227 5.59375C13.5742 5.21875 13.75 4.78516 13.75 4.29297C13.75 3.80078 13.5742 3.37891 13.2227 3.02734C12.8945 2.67578 12.4961 2.5 12.0273 2.5C11.5586 2.5 11.1484 2.67578 10.7969 3.02734L3.41406 10.5508C2.80469 11.1836 2.5 11.9453 2.5 12.8359C2.5 13.7031 2.79297 14.4531 3.37891 15.0859C3.98828 15.6953 4.71484 16 5.55859 16C6.40234 16 7.11719 15.6953 7.70312 15.0859L13.75 8.89844C13.8672 8.78125 13.9961 8.72266 14.1367 8.72266C14.3008 8.72266 14.4414 8.78125 14.5586 8.89844L15.3672 9.67188C15.4844 9.78906 15.543 9.92969 15.543 10.0938C15.543 10.2344 15.4844 10.3633 15.3672 10.4805L9.32031 16.668C8.64062 17.3711 7.83203 17.8398 6.89453 18.0742C5.98047 18.3086 5.06641 18.2969 4.15234 18.0391C3.23828 17.8047 2.44141 17.3359 1.76172 16.6328Z" fill="#9D9D9D"/>
-                </svg>
-              </IconButton>
-              <IconButton sx={{ color: '#9D9D9D', p: 1 }}>
-                <svg width="14" height="19" viewBox="0 0 14 19" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M14 4.53906V4.75H9.5V0.25H9.71094C9.94531 0.25 10.1445 0.332031 10.3086 0.496094L13.7539 3.94141C13.918 4.10547 14 4.30469 14 4.53906ZM9.21875 5.875C8.98438 5.875 8.78516 5.79297 8.62109 5.62891C8.45703 5.46484 8.375 5.26563 8.375 5.03125V0.25H1.34375C1.10938 0.25 0.910156 0.332031 0.746094 0.496094C0.582031 0.660156 0.5 0.859375 0.5 1.09375V17.4062C0.5 17.6406 0.582031 17.8398 0.746094 18.0039C0.910156 18.168 1.10938 18.25 1.34375 18.25H13.1562C13.3906 18.25 13.5898 18.168 13.7539 18.0039C13.918 17.8398 14 17.6406 14 17.4062V5.875H9.21875ZM4.47266 6.4375C4.91797 6.4375 5.30469 6.60156 5.63281 6.92969C5.98438 7.25781 6.16016 7.65625 6.16016 8.125C6.16016 8.59375 5.98438 8.99219 5.63281 9.32031C5.30469 9.64844 4.90625 9.8125 4.4375 9.8125C3.99219 9.8125 3.60547 9.64844 3.27734 9.32031C2.94922 8.99219 2.78516 8.59375 2.78516 8.125C2.78516 7.65625 2.94922 7.25781 3.27734 6.92969C3.60547 6.60156 4.00391 6.4375 4.47266 6.4375ZM11.7852 14.875H2.78516V13.1875L4.19141 11.7812C4.26172 11.7109 4.34375 11.6758 4.4375 11.6758C4.55469 11.6758 4.66016 11.7109 4.75391 11.7812L6.16016 13.1875L9.78125 9.53125C9.875 9.46094 9.98047 9.42578 10.0977 9.42578C10.2148 9.42578 10.3086 9.46094 10.3789 9.53125L11.7852 10.9375V14.875Z" fill="#9D9D9D"/>
-                </svg>
-              </IconButton>
-            </Box>
+          ) : (
+            // Gmail-Style Thread View
+            <>
+              {/* Thread Header */}
+              <Box
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  borderBottom: "1px solid #F1F1F1",
+                  px: 3,
+                  py: 2,
+                }}
+              >
+                <IconButton
+                  sx={{ mr: 2, color: "#666" }}
+                  onClick={() => setSelectedMessage(null)}
+                >
+                  <ArrowBackIcon />
+                </IconButton>
 
-            <Button
-              variant="contained"
-              endIcon={<svg width="14" height="13" viewBox="0 0 14 13" fill="none" xmlns="http://www.w3.org/2000/svg">
-<path d="M12.1562 0.570312L1.30469 6.85156C1.08594 6.96094 0.984375 7.13281 1 7.36719C1.01562 7.60156 1.13281 7.76562 1.35156 7.85938L3.83594 8.89062L10.5625 2.96094C10.625 2.91406 10.6875 2.92187 10.75 2.98438C10.8125 3.03125 10.8203 3.08594 10.7734 3.14844L5.125 10.0391V11.9141C5.125 12.1016 5.17969 12.2422 5.28906 12.3359C5.41406 12.4453 5.55469 12.5 5.71094 12.5C5.88281 12.5 6.02344 12.4297 6.13281 12.2891L7.60938 10.4844L10.5391 11.7031C10.6953 11.7812 10.8516 11.7734 11.0078 11.6797C11.1797 11.5859 11.2812 11.4531 11.3125 11.2812L13 1.15625C13.0312 0.921875 12.9453 0.742187 12.7422 0.617188C12.5547 0.476562 12.3594 0.460937 12.1562 0.570312Z" fill="white"/>
-</svg>
-}
-              onClick={handleSend}
-              sx={{ bgcolor: '#FF4D7D', color: '#fff', borderRadius: 2, fontWeight: 600, fontSize: 16, px: 4, py: 1.2, boxShadow: 'none', textTransform: 'none', '&:hover': { bgcolor: '#FF3366' } }}
-            >
-              Send
-            </Button>
-          </Box>
+                <Box sx={{ flex: 1 }}>
+                  <Typography
+                    fontWeight={600}
+                    fontSize={18}
+                    color="#23235B"
+                    mb={0.5}
+                  >
+                    {selectedMessage.subject}
+                  </Typography>
+                  <Box sx={{ display: "flex", alignItems: "center" }}>
+                    <Chip
+                      label={selectedMessage.label}
+                      size="small"
+                      sx={{
+                        bgcolor: selectedMessage.labelColor,
+                        color: "#fff",
+                        fontWeight: 500,
+                        fontSize: 11,
+                        mr: 2,
+                        height: 20,
+                      }}
+                    />
+                    <Typography variant="body2" color="#A0AEC0">
+                      {selectedMessage.messages.length} messages
+                    </Typography>
+                  </Box>
+                </Box>
+
+                <Box
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 1,
+                  }}
+                >
+                  <IconButton size="small" sx={{ color: "#666" }}>
+                    <PrintIcon fontSize="small" />
+                  </IconButton>
+                  <IconButton
+                    size="small"
+                    sx={{
+                      color: selectedMessage.isStarred ? "#FFD700" : "#666",
+                    }}
+                    onClick={() => handleStarToggle(selectedMessage.id)}
+                  >
+                    {selectedMessage.isStarred ? (
+                      <StarIcon fontSize="small" />
+                    ) : (
+                      <StarOutlineIcon fontSize="small" />
+                    )}
+                  </IconButton>
+                  <IconButton size="small" sx={{ color: "#666" }}>
+                    <DeleteIcon fontSize="small" />
+                  </IconButton>
+                </Box>
+              </Box>
+
+              {/* Thread Messages */}
+              <Box
+                sx={{
+                  flex: 1,
+                  overflowY: "auto",
+                  px: 3,
+                  py: 2,
+                }}
+              >
+                {selectedMessage.messages.map((msg) => (
+                  <Paper
+                    key={msg.id}
+                    elevation={0}
+                    sx={{
+                      mb: 1,
+                      border: "1px solid #E5E7EB",
+                      borderRadius: 2,
+                      overflow: "hidden",
+                    }}
+                  >
+                    {/* Message Header */}
+                    <Box
+                      sx={{
+                        display: "flex",
+                        alignItems: "center",
+                        p: 2,
+                        cursor: "pointer",
+                        bgcolor: expandedMessages.includes(msg.id)
+                          ? "#F9FAFB"
+                          : "#fff",
+                        "&:hover": { bgcolor: "#F9FAFB" },
+                      }}
+                      onClick={() => toggleMessageExpansion(msg.id)}
+                    >
+                      <Avatar
+                        src={msg.avatar}
+                        sx={{ width: 32, height: 32, mr: 2 }}
+                      />
+
+                      <Box sx={{ flex: 1 }}>
+                        <Box
+                          sx={{
+                            display: "flex",
+                            alignItems: "center",
+                            mb: 0.5,
+                          }}
+                        >
+                          <Typography
+                            fontWeight={500}
+                            fontSize={14}
+                            color="#23235B"
+                            mr={1}
+                          >
+                            {msg.senderName}
+                          </Typography>
+                          <Typography
+                            variant="body2"
+                            color="#A0AEC0"
+                            fontSize={12}
+                          >
+                            &lt;{msg.senderEmail}&gt;
+                          </Typography>
+                        </Box>
+                        <Typography
+                          variant="body2"
+                          color="#A0AEC0"
+                          fontSize={12}
+                        >
+                          {msg.date} at {msg.time}
+                        </Typography>
+                      </Box>
+
+                      <Box
+                        sx={{ display: "flex", alignItems: "center", gap: 1 }}
+                      >
+                        {/* <IconButton size="small" sx={{ color: '#666' }}>
+                          <StarOutlineIcon fontSize="small" />
+                        </IconButton>
+                        <IconButton size="small" sx={{ color: '#666' }}>
+                          <ReplyIcon fontSize="small" />
+                        </IconButton>
+                        <IconButton size="small" sx={{ color: '#666' }}>
+                          <MoreVertIcon fontSize="small" />
+                        </IconButton> */}
+                        <IconButton size="small" sx={{ color: "#666" }}>
+                          {expandedMessages.includes(msg.id) ? (
+                            <ExpandLessIcon fontSize="small" />
+                          ) : (
+                            <ExpandMoreIcon fontSize="small" />
+                          )}
+                        </IconButton>
+                      </Box>
+                    </Box>
+
+                    {/* Message Content */}
+                    <Collapse in={expandedMessages.includes(msg.id)}>
+                      <Box sx={{ px: 2, pb: 2 }}>
+                        <Typography
+                          sx={{
+                            fontSize: 14,
+                            lineHeight: 1.6,
+                            color: "#374151",
+                            whiteSpace: "pre-wrap",
+                          }}
+                        >
+                          {msg.text}
+                        </Typography>
+
+                        {/* Message Actions */}
+                        <Box sx={{ mt: 3, display: "flex", gap: 2 }}>
+                          <Button
+                            variant="outlined"
+                            size="small"
+                            startIcon={<ReplyIcon fontSize="small" />}
+                            onClick={() => setShowReply(true)}
+                            sx={{
+                              borderColor: "#D1D5DB",
+                              color: "#6B7280",
+                              textTransform: "none",
+                              borderRadius: 1,
+                              "&:hover": {
+                                bgcolor: "#F9FAFB",
+                                borderColor: "#9CA3AF",
+                              },
+                            }}
+                          >
+                            Reply
+                          </Button>
+                          {/* <Button
+                            variant="outlined"
+                            size="small"
+                            startIcon={<ForwardIcon fontSize="small" />}
+                            sx={{
+                              borderColor: '#D1D5DB',
+                              color: '#6B7280',
+                              textTransform: 'none',
+                              borderRadius: 1,
+                              '&:hover': {
+                                bgcolor: '#F9FAFB',
+                                borderColor: '#9CA3AF'
+                              }
+                            }}
+                          >
+                            Forward
+                          </Button> */}
+                        </Box>
+                      </Box>
+                    </Collapse>
+                  </Paper>
+                ))}
+              </Box>
+
+              {/* Reply Section */}
+              <Collapse in={showReply}>
+                <Divider />
+                <Box sx={{ p: 3, bgcolor: "#F9FAFB" }}>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      alignItems: "flex-start",
+                      gap: 2,
+                      mb: 2,
+                    }}
+                  >
+                    <Avatar
+                      src="https://randomuser.me/api/portraits/men/75.jpg"
+                      sx={{ width: 32, height: 32 }}
+                    />
+                    <Box sx={{ flex: 1 }}>
+                      <Typography variant="body2" color="#6B7280" mb={1}>
+                        Reply to {selectedMessage.senderEmail}
+                      </Typography>
+
+                      <Box
+                        sx={{
+                          border: "1px solid #D1D5DB",
+                          borderRadius: 2,
+                          bgcolor: "#fff",
+                          minHeight: 120,
+                        }}
+                      >
+                        <InputBase
+                          multiline
+                          rows={5}
+                          placeholder="Type your message..."
+                          value={input}
+                          onChange={(e) => setInput(e.target.value)}
+                          sx={{
+                            width: "100%",
+                            p: 2,
+                            fontSize: 14,
+                            "& .MuiInputBase-input": {
+                              resize: "none",
+                            },
+                          }}
+                        />
+                      </Box>
+
+                      {/* Reply Actions */}
+                      <Box
+                        sx={{
+                          display: "flex",
+                          justifyContent: "space-between",
+                          alignItems: "center",
+                          mt: 2,
+                        }}
+                      >
+                        <Box sx={{ display: "flex", gap: 1 }}>
+                          <IconButton size="small" sx={{ color: "#6B7280" }}>
+                            <AttachFileIcon fontSize="small" />
+                          </IconButton>
+                          <IconButton size="small" sx={{ color: "#6B7280" }}>
+                            <ImageIcon fontSize="small" />
+                          </IconButton>
+                          <IconButton size="small" sx={{ color: "#6B7280" }}>
+                            <MicOutlinedIcon fontSize="small" />
+                          </IconButton>
+                        </Box>
+
+                        <Box sx={{ display: "flex", gap: 2 }}>
+                          <Button
+                            variant="outlined"
+                            onClick={() => {
+                              setShowReply(false);
+                              setInput("");
+                            }}
+                            sx={{
+                              borderColor: "#D1D5DB",
+                              color: "#6B7280",
+                              textTransform: "none",
+                              borderRadius: 1,
+                              px: 3,
+                              "&:hover": {
+                                borderColor: "#F63D68",
+                              },
+                            }}
+                          >
+                            Discard
+                          </Button>
+                          <Button
+                            variant="contained"
+                            onClick={handleSend}
+                            disabled={!input.trim()}
+                            sx={{
+                              bgcolor: "#F63D68",
+                              color: "#fff",
+                              borderRadius: 1,
+                              fontWeight: 500,
+                              px: 3,
+                              boxShadow: "none",
+                              textTransform: "none",
+                              "&:hover": {
+                                bgcolor: "#E13A5E",
+                              },
+                              "&:disabled": {
+                                bgcolor: "#D1D5DB",
+                                color: "#9CA3AF",
+                              },
+                            }}
+                          >
+                            Send
+                          </Button>
+                        </Box>
+                      </Box>
+                    </Box>
+                  </Box>
+                </Box>
+              </Collapse>
+            </>
+          )}
         </Box>
       </Box>
     </>
   );
-} 
+}

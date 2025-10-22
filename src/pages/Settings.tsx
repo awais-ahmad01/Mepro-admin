@@ -76,7 +76,7 @@ const tabLabels = [
   "Edit Profile",
   "Preferences",
   "Security",
-  "Add new member"
+  // "Add new member"
 ];
 
 const currencyOptions = [
@@ -612,12 +612,12 @@ export default function Settings() {
           </Box>
         )}
         {/* Add new member Tab */}
-        {tab === 3 && (
+        {/* {tab === 3 && (
           <Box sx={{ mt: 4 }}>
             <Typography fontWeight={500} fontSize={20} mb={4} color="#23235B">
               Please add email and role as new member access
             </Typography>
-            {/* Add new member input row */}
+            
             <Box sx={{ display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, gap: 3, mb: 2, width: "100%" }}>
               <Box sx={{ flex: 1 }}>
                 <Typography fontWeight={500} fontSize={18} mb={1} color="#23235B">Email</Typography>
@@ -786,7 +786,7 @@ export default function Settings() {
             </TableContainer>
 
           </Box>
-        )}
+        )} */}
       </Box>
     </>
   );

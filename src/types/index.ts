@@ -158,6 +158,8 @@ export interface Reward {
   expired: string;
   status: string;
   image?: string;
+  merchantName: string;
+  merchantEmail: string;
 };
 
 

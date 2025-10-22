@@ -12,7 +12,7 @@ import Promotions from "./pages/Promotions";
 import Rewards from "./pages/Rewards";
 import Invoice from "./pages/Invoice";
 import Pricing from "./pages/Pricing";
-import VIPPricing from "./pages/VIPPricing";
+
 // import SupportFeedback from "./pages/Feedback";
 import Feedback from "./pages/Feedback";
 import Settings from "./pages/Settings";
@@ -24,11 +24,12 @@ import { ThemeProvider, CssBaseline } from '@mui/material';
 import lightTheme from './theme';
 import { AuthProvider } from "./auth";
 import MerchantManagement from "./pages/merchants";
-import MerchantEditDemo from "./components/edit-merchant";
+import MerchantEditDemo from "./components/MerchantManagement/edit-merchant";
 import TiersManagement from "./pages/Tiers";
 import PointsPricingManagement from "./pages/PointsManagement";
 import TransactionsManagement from "./pages/Transactions";
 import ReportsAnalytics from "./pages/Reports";
+import DiamondPromotions from "./pages/DiamondPromotions";
 
 export default function App() {
   return (
@@ -55,7 +56,9 @@ export default function App() {
           <Route path="/invoice" element={<ProtectedRoute><DashboardLayout><Invoice /></DashboardLayout></ProtectedRoute>} />
           <Route path="/pricing" element={<ProtectedRoute><DashboardLayout><Pricing /></DashboardLayout></ProtectedRoute>} />
           <Route path="/transactions" element={<ProtectedRoute><DashboardLayout><TransactionsManagement /></DashboardLayout></ProtectedRoute>} />
-          <Route path="/vip-pricing" element={<ProtectedRoute><DashboardLayout><VIPPricing /></DashboardLayout></ProtectedRoute>} />
+         
+            <Route path="/diamondPromotions" element={<ProtectedRoute><DashboardLayout><DiamondPromotions /></DashboardLayout></ProtectedRoute>} />
+
           <Route path="/payment" element={<ProtectedRoute><DashboardLayout><Payment /></DashboardLayout></ProtectedRoute>} />
           <Route path="/feedback" element={<ProtectedRoute><DashboardLayout><Feedback /></DashboardLayout></ProtectedRoute>} />
           <Route path="/tiers" element={<ProtectedRoute><DashboardLayout><TiersManagement /></DashboardLayout></ProtectedRoute>} />

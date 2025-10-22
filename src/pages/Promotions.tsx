@@ -17,8 +17,20 @@ import {
   Select,
   MenuItem,
 } from "@mui/material";
-import { PieChart, Pie, Cell, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, LineChart, Line } from "recharts";
-import PhotoCameraIcon from '@mui/icons-material/PhotoCamera';
+import {
+  PieChart,
+  Pie,
+  Cell,
+  ResponsiveContainer,
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  Tooltip,
+  LineChart,
+  Line,
+} from "recharts";
+import PhotoCameraIcon from "@mui/icons-material/PhotoCamera";
 const statusColor = {
   Active: { bg: "#D1FADF", color: "#039855" },
   Hold: { bg: "#E9D7FE", color: "#6941C6" },
@@ -54,6 +66,8 @@ type Promotion = {
   status: string;
   description: string;
   image?: string;
+  merchantName: string;
+  merchantEmail: string;
 };
 
 export default function Promotions() {
@@ -68,7 +82,9 @@ export default function Promotions() {
       endDate: "2024-10-26",
       status: "Active",
       description: "Get 30% off on all Thai burgers",
-      image: "/burger.png"
+      image: "/burger.png",
+      merchantName: "Burger King",
+      merchantEmail: "partner@burgerking.com",
     },
     {
       id: "00002",
@@ -80,7 +96,9 @@ export default function Promotions() {
       endDate: "2024-10-26",
       status: "Hold",
       description: "50% off on full body massage for new customers",
-      image: "/massage.png"
+      image: "/massage.png",
+      merchantName: "Spa Relax",
+      merchantEmail: "bookings@sparelax.com",
     },
     {
       id: "00003",
@@ -92,7 +110,9 @@ export default function Promotions() {
       endDate: "2024-10-26",
       status: "Inactive",
       description: "$5 off on all coffee orders",
-      image: "/coffee.png"
+      image: "/coffee.png",
+      merchantName: "Starbucks",
+      merchantEmail: "rewards@starbucks.com",
     },
     {
       id: "00004",
@@ -104,7 +124,9 @@ export default function Promotions() {
       endDate: "2024-10-26",
       status: "Active",
       description: "45% off on all Chinese dishes for VIP members",
-      image: "/chineese.png"
+      image: "/chineese.png",
+      merchantName: "Dragon Palace",
+      merchantEmail: "info@dragonpalace.com",
     },
   ]);
 
@@ -138,12 +160,14 @@ export default function Promotions() {
   const dateInputRef = useRef<HTMLInputElement>(null);
 
   const handleInputChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement> | SelectChangeEvent<string>
+    e:
+      | React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+      | SelectChangeEvent<string>
   ) => {
     const { name, value } = e.target;
-    setForm(prev => ({ ...prev, [name]: value }));
+    setForm((prev) => ({ ...prev, [name]: value }));
     if (formError[name as keyof typeof formError]) {
-      setFormError(prev => ({ ...prev, [name]: undefined }));
+      setFormError((prev) => ({ ...prev, [name]: undefined }));
     }
   };
 
@@ -151,13 +175,17 @@ export default function Promotions() {
     const error: typeof formError = {};
 
     if (!form.name.trim()) error.name = "Promotion name is required.";
-    if (!form.discountType.trim()) error.discountType = "Discount type is required.";
-    if (!form.discountValue.trim()) error.discountValue = "Discount value is required.";
-    if (!form.eligibilityCriteria.trim()) error.eligibilityCriteria = "Eligibility criteria is required.";
+    if (!form.discountType.trim())
+      error.discountType = "Discount type is required.";
+    if (!form.discountValue.trim())
+      error.discountValue = "Discount value is required.";
+    if (!form.eligibilityCriteria.trim())
+      error.eligibilityCriteria = "Eligibility criteria is required.";
     if (!form.startDate) error.startDate = "Start date is required.";
     if (!form.endDate) error.endDate = "End date is required.";
     if (!form.expired) error.expired = "Expiration date is required.";
-    if (!form.description.trim()) error.description = "Description is required.";
+    if (!form.description.trim())
+      error.description = "Description is required.";
 
     setFormError(error);
 
@@ -195,10 +223,9 @@ export default function Promotions() {
       }}
     >
       {/* Header */}
-        <Typography fontWeight={600} style={{fontSize: 32}} mb={1}>
-          Promotion Management
-        </Typography>
-      
+      <Typography fontWeight={600} style={{ fontSize: 32 }} mb={1}>
+        Promotion Management
+      </Typography>
 
       {showForm ? (
         <Box
@@ -215,7 +242,13 @@ export default function Promotions() {
         >
           <Box display="grid" gridTemplateColumns="1fr 1fr" gap={4}>
             <Box>
-              <Typography variant="h6" fontWeight={500} mb={1} color="#344054" sx={{ fontSize: 19 }}>
+              <Typography
+                variant="h6"
+                fontWeight={500}
+                mb={1}
+                color="#344054"
+                sx={{ fontSize: 19 }}
+              >
                 Promotion Name
               </Typography>
               <TextField
@@ -228,23 +261,23 @@ export default function Promotions() {
                 helperText={formError.name}
                 required
                 sx={{
-                  '& .MuiOutlinedInput-root': {
+                  "& .MuiOutlinedInput-root": {
                     borderRadius: 3,
-                    bgcolor: '#fff',
+                    bgcolor: "#fff",
                     fontSize: 19,
-                    padding: '16px 20px',
-                    '& fieldset': {
-                      borderColor: '#E4E7EC',
+                    padding: "16px 20px",
+                    "& fieldset": {
+                      borderColor: "#E4E7EC",
                     },
-                    '&:hover fieldset': {
-                      borderColor: '#E4E7EC',
+                    "&:hover fieldset": {
+                      borderColor: "#E4E7EC",
                     },
-                    '& input': {
+                    "& input": {
                       fontSize: 19,
-                      color: '#667085',
+                      color: "#667085",
                       padding: 0,
-                      '&::placeholder': {
-                        color: '#FF4D7D',
+                      "&::placeholder": {
+                        color: "#FF4D7D",
                         opacity: 1,
                       },
                     },
@@ -253,7 +286,13 @@ export default function Promotions() {
               />
             </Box>
             <Box>
-              <Typography variant="h6" fontWeight={500} mb={1} color="#344054" sx={{ fontSize: 19 }}>
+              <Typography
+                variant="h6"
+                fontWeight={500}
+                mb={1}
+                color="#344054"
+                sx={{ fontSize: 19 }}
+              >
                 Discount Type
               </Typography>
               <Select
@@ -265,24 +304,30 @@ export default function Promotions() {
                 required
                 renderValue={(selected) => {
                   if (!selected) {
-                    return <Typography sx={{ color: '#FF4D7D', opacity: 1, fontSize: 19 }}>-------</Typography>;
+                    return (
+                      <Typography
+                        sx={{ color: "#FF4D7D", opacity: 1, fontSize: 19 }}
+                      >
+                        -------
+                      </Typography>
+                    );
                   }
                   return <span style={{ fontSize: 19 }}>{selected}</span>;
                 }}
                 sx={{
                   borderRadius: 3,
                   fontSize: 19,
-                  bgcolor: '#fff',
-                  '& .MuiOutlinedInput-notchedOutline': {
-                    borderColor: '#E4E7EC',
+                  bgcolor: "#fff",
+                  "& .MuiOutlinedInput-notchedOutline": {
+                    borderColor: "#E4E7EC",
                   },
-                  '&:hover .MuiOutlinedInput-notchedOutline': {
-                    borderColor: '#E4E7EC',
+                  "&:hover .MuiOutlinedInput-notchedOutline": {
+                    borderColor: "#E4E7EC",
                   },
-                  '& .MuiSelect-select': {
+                  "& .MuiSelect-select": {
                     fontSize: 19,
-                    color: '#667085',
-                    padding: '16px 20px',
+                    color: "#667085",
+                    padding: "16px 20px",
                   },
                 }}
               >
@@ -294,7 +339,13 @@ export default function Promotions() {
               </Select>
             </Box>
             <Box>
-              <Typography variant="h6" fontWeight={500} mb={1} color="#344054" sx={{ fontSize: 19 }}>
+              <Typography
+                variant="h6"
+                fontWeight={500}
+                mb={1}
+                color="#344054"
+                sx={{ fontSize: 19 }}
+              >
                 Discount Value
               </Typography>
               <TextField
@@ -307,23 +358,23 @@ export default function Promotions() {
                 helperText={formError.discountValue}
                 required
                 sx={{
-                  '& .MuiOutlinedInput-root': {
+                  "& .MuiOutlinedInput-root": {
                     borderRadius: 3,
-                    bgcolor: '#fff',
+                    bgcolor: "#fff",
                     fontSize: 19,
-                    padding: '16px 20px',
-                    '& fieldset': {
-                      borderColor: '#E4E7EC',
+                    padding: "16px 20px",
+                    "& fieldset": {
+                      borderColor: "#E4E7EC",
                     },
-                    '&:hover fieldset': {
-                      borderColor: '#E4E7EC',
+                    "&:hover fieldset": {
+                      borderColor: "#E4E7EC",
                     },
-                    '& input': {
+                    "& input": {
                       fontSize: 19,
-                      color: '#667085',
+                      color: "#667085",
                       padding: 0,
-                      '&::placeholder': {
-                        color: '#FF4D7D',
+                      "&::placeholder": {
+                        color: "#FF4D7D",
                         opacity: 1,
                       },
                     },
@@ -332,7 +383,13 @@ export default function Promotions() {
               />
             </Box>
             <Box>
-              <Typography variant="h6" fontWeight={500} mb={1} color="#344054" sx={{ fontSize: 19 }}>
+              <Typography
+                variant="h6"
+                fontWeight={500}
+                mb={1}
+                color="#344054"
+                sx={{ fontSize: 19 }}
+              >
                 Eligibility Criteria
               </Typography>
               <Select
@@ -344,24 +401,30 @@ export default function Promotions() {
                 required
                 renderValue={(selected) => {
                   if (!selected) {
-                    return <Typography sx={{ color: '#FF4D7D', opacity: 1, fontSize: 19 }}>-------</Typography>;
+                    return (
+                      <Typography
+                        sx={{ color: "#FF4D7D", opacity: 1, fontSize: 19 }}
+                      >
+                        -------
+                      </Typography>
+                    );
                   }
                   return <span style={{ fontSize: 19 }}>{selected}</span>;
                 }}
                 sx={{
                   borderRadius: 3,
                   fontSize: 19,
-                  bgcolor: '#fff',
-                  '& .MuiOutlinedInput-notchedOutline': {
-                    borderColor: '#E4E7EC',
+                  bgcolor: "#fff",
+                  "& .MuiOutlinedInput-notchedOutline": {
+                    borderColor: "#E4E7EC",
                   },
-                  '&:hover .MuiOutlinedInput-notchedOutline': {
-                    borderColor: '#E4E7EC',
+                  "&:hover .MuiOutlinedInput-notchedOutline": {
+                    borderColor: "#E4E7EC",
                   },
-                  '& .MuiSelect-select': {
+                  "& .MuiSelect-select": {
                     fontSize: 19,
-                    color: '#667085',
-                    padding: '16px 20px',
+                    color: "#667085",
+                    padding: "16px 20px",
                   },
                 }}
               >
@@ -374,52 +437,60 @@ export default function Promotions() {
               </Select>
             </Box>
             <Box>
-              <Typography variant="h6" fontWeight={500} mb={1} color="#344054" sx={{ fontSize: 19 }}>
+              <Typography
+                variant="h6"
+                fontWeight={500}
+                mb={1}
+                color="#344054"
+                sx={{ fontSize: 19 }}
+              >
                 Upload Image (Optional)
               </Typography>
               <Box
                 sx={{
-                  border: '1px solid #E4E7EC',
+                  border: "1px solid #E4E7EC",
                   borderRadius: 3,
                   p: 3,
-                  display: 'flex',
-                  flexDirection: 'column',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  bgcolor: '#fff',
-                  cursor: 'pointer',
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  bgcolor: "#fff",
+                  cursor: "pointer",
                   minHeight: 140,
-                  position: 'relative',
-                  overflow: 'hidden',
+                  position: "relative",
+                  overflow: "hidden",
                 }}
-                onClick={() => document.getElementById('upload-photo')?.click()}
+                onClick={() => document.getElementById("upload-photo")?.click()}
               >
                 {form.image ? (
-                  <Box sx={{ width: '100%', height: '100%', position: 'relative' }}>
+                  <Box
+                    sx={{ width: "100%", height: "100%", position: "relative" }}
+                  >
                     <Box
                       component="img"
                       src={form.image}
                       alt="Uploaded preview"
                       sx={{
-                        width: '100%',
+                        width: "100%",
                         height: 140,
-                        objectFit: 'contain',
-                        p: 1
+                        objectFit: "contain",
+                        p: 1,
                       }}
                     />
                     <Box
                       sx={{
-                        position: 'absolute',
+                        position: "absolute",
                         top: 0,
                         right: 0,
                         p: 0.5,
-                        bgcolor: 'rgba(0,0,0,0.5)',
-                        borderRadius: '0 0 0 8px',
-                        cursor: 'pointer'
+                        bgcolor: "rgba(0,0,0,0.5)",
+                        borderRadius: "0 0 0 8px",
+                        cursor: "pointer",
                       }}
                       onClick={(e) => {
                         e.stopPropagation();
-                        setForm(prev => ({ ...prev, image: '' }));
+                        setForm((prev) => ({ ...prev, image: "" }));
                       }}
                     >
                       <Typography color="white" fontSize={12} sx={{ px: 1 }}>
@@ -433,15 +504,17 @@ export default function Promotions() {
                       sx={{
                         width: 40,
                         height: 40,
-                        borderRadius: '50%',
-                        bgcolor: '#F2F4F7',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        mb: 1
+                        borderRadius: "50%",
+                        bgcolor: "#F2F4F7",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        mb: 1,
                       }}
                     >
-                      <PhotoCameraIcon sx={{ color: '#FF4D7D', fontSize: 20 }} />
+                      <PhotoCameraIcon
+                        sx={{ color: "#FF4D7D", fontSize: 20 }}
+                      />
                     </Box>
                     <Typography color="#FF4D7D" fontSize={14}>
                       Upload Photo
@@ -451,7 +524,7 @@ export default function Promotions() {
                 <input
                   type="file"
                   accept="image/*"
-                  style={{ display: 'none' }}
+                  style={{ display: "none" }}
                   id="upload-photo"
                   onChange={(e) => {
                     const file = e.target.files?.[0];
@@ -459,7 +532,7 @@ export default function Promotions() {
                       const reader = new FileReader();
                       reader.onloadend = () => {
                         const base64String = reader.result as string;
-                        setForm(prev => ({ ...prev, image: base64String }));
+                        setForm((prev) => ({ ...prev, image: base64String }));
                       };
                       reader.readAsDataURL(file);
                     }
@@ -468,97 +541,105 @@ export default function Promotions() {
               </Box>
             </Box>
             <div>
-
-            <Box>
-            <Typography fontSize={18}  mb={1.5}>Start Date & End Date</Typography>
-              <Box sx={{ position: 'relative', mb: 3 }}>
-                <input
-                  ref={dateInputRef}
-                  type="datetime-local"
-                  name="expired"
-                  value={form.expired}
-                  onChange={handleInputChange}
-                  onFocus={() => setIsDateFocused(true)}
-                  onBlur={() => setIsDateFocused(false)}
-                  style={{
-                    width: '100%',
-                    padding: '16.5px 14px',
-                    borderRadius: 8,
-                    border: '1.5px solid #E3EDF6',
-                    background: '#fff',
-                    color: '#F63D68',
-                    fontSize: 16,
-                    outline: isDateFocused ? '2px solid #F63D6822' : 'none',
-                    boxSizing: 'border-box',
-                    fontFamily: 'inherit',
-                    position: 'relative',
-                    zIndex: 1,
-                  }}
-                  required
-                />
-                {(!form.expired && !isDateFocused) && (
-                  <span
+              <Box>
+                <Typography fontSize={18} mb={1.5}>
+                  Start Date & End Date
+                </Typography>
+                <Box sx={{ position: "relative", mb: 3 }}>
+                  <input
+                    ref={dateInputRef}
+                    type="datetime-local"
+                    name="expired"
+                    value={form.expired}
+                    onChange={handleInputChange}
+                    onFocus={() => setIsDateFocused(true)}
+                    onBlur={() => setIsDateFocused(false)}
                     style={{
-                      position: 'absolute',
-                      left: 1,
-                      top: '50%',
-                      transform: 'translateY(-50%)',
-                      color: '#F63D68',
-                      fontWeight: 400,
+                      width: "100%",
+                      padding: "16.5px 14px",
+                      borderRadius: 8,
+                      border: "1.5px solid #E3EDF6",
+                      background: "#fff",
+                      color: "#F63D68",
                       fontSize: 16,
-                      pointerEvents: 'none',
-                      opacity: 1,
-                      zIndex: 2,
-                      background: '#fff',
-                      width: '70%',
-                      padding: '0 14px',
+                      outline: isDateFocused ? "2px solid #F63D6822" : "none",
+                      boxSizing: "border-box",
+                      fontFamily: "inherit",
+                      position: "relative",
+                      zIndex: 1,
                     }}
-                  >
-                    25 January, 12PM
-                  </span>
-                )}
-              </Box>
-            </Box>
-            <Box gridColumn="span 1">
-              <Typography variant="h6" fontWeight={500} mt={1.5} mb={1} color="#344054" sx={{ fontSize: 19 }}>
-                Description
-              </Typography>
-              <TextField
-                fullWidth
-                multiline
-                rows={4}
-                placeholder="Please enter text"
-                name="description"
-                value={form.description}
-                onChange={handleInputChange}
-                error={!!formError.description}
-                helperText={formError.description}
-                required
-                sx={{
-                  '& .MuiOutlinedInput-root': {
-                    borderRadius: 3,
-                    bgcolor: '#fff',
-                    fontSize: 19,
-                    padding: '16px 20px',
-                    '& fieldset': {
-                      borderColor: '#E4E7EC',
-                    },
-                    '&:hover fieldset': {
-                      borderColor: '#E4E7EC',
-                    },
-                    '& textarea': {
-                      fontSize: 19,
-                      color: '#667085',
-                      padding: 0,
-                      '&::placeholder': {
-                        color: '#FF4D7D',
+                    required
+                  />
+                  {!form.expired && !isDateFocused && (
+                    <span
+                      style={{
+                        position: "absolute",
+                        left: 1,
+                        top: "50%",
+                        transform: "translateY(-50%)",
+                        color: "#F63D68",
+                        fontWeight: 400,
+                        fontSize: 16,
+                        pointerEvents: "none",
                         opacity: 1,
+                        zIndex: 2,
+                        background: "#fff",
+                        width: "70%",
+                        padding: "0 14px",
+                      }}
+                    >
+                      25 January, 12PM
+                    </span>
+                  )}
+                </Box>
+              </Box>
+              <Box gridColumn="span 1">
+                <Typography
+                  variant="h6"
+                  fontWeight={500}
+                  mt={1.5}
+                  mb={1}
+                  color="#344054"
+                  sx={{ fontSize: 19 }}
+                >
+                  Description
+                </Typography>
+                <TextField
+                  fullWidth
+                  multiline
+                  rows={4}
+                  placeholder="Please enter text"
+                  name="description"
+                  value={form.description}
+                  onChange={handleInputChange}
+                  error={!!formError.description}
+                  helperText={formError.description}
+                  required
+                  sx={{
+                    "& .MuiOutlinedInput-root": {
+                      borderRadius: 3,
+                      bgcolor: "#fff",
+                      fontSize: 19,
+                      padding: "16px 20px",
+                      "& fieldset": {
+                        borderColor: "#E4E7EC",
+                      },
+                      "&:hover fieldset": {
+                        borderColor: "#E4E7EC",
+                      },
+                      "& textarea": {
+                        fontSize: 19,
+                        color: "#667085",
+                        padding: 0,
+                        "&::placeholder": {
+                          color: "#FF4D7D",
+                          opacity: 1,
+                        },
                       },
                     },
-                  },
-                }}
+                  }}
                 />
-            </Box>
+              </Box>
             </div>
           </Box>
           <Box display="flex" justifyContent="flex-end" gap={3} mt={5}>
@@ -581,17 +662,17 @@ export default function Promotions() {
                 setFormError({});
               }}
               sx={{
-                bgcolor: '#000',
-                color: '#fff',
+                bgcolor: "#000",
+                color: "#fff",
                 borderRadius: 3,
                 px: 7,
                 py: 2,
                 fontSize: 19,
                 fontWeight: 500,
-                textTransform: 'none',
+                textTransform: "none",
                 minWidth: 160,
-                '&:hover': {
-                  bgcolor: '#000',
+                "&:hover": {
+                  bgcolor: "#000",
                 },
               }}
             >
@@ -600,17 +681,17 @@ export default function Promotions() {
             <Button
               onClick={handleFormSave}
               sx={{
-                bgcolor: '#FF4D7D',
-                color: '#fff',
+                bgcolor: "#FF4D7D",
+                color: "#fff",
                 borderRadius: 3,
                 px: 7,
                 py: 2,
                 fontSize: 19,
                 fontWeight: 500,
-                textTransform: 'none',
+                textTransform: "none",
                 minWidth: 160,
-                '&:hover': {
-                  bgcolor: '#FF3366',
+                "&:hover": {
+                  bgcolor: "#FF3366",
                 },
               }}
             >
@@ -620,29 +701,38 @@ export default function Promotions() {
         </Box>
       ) : (
         <>
-        <Box display="flex" alignItems="center" justifyContent="space-between" mb={2}>
-          <Typography variant="subtitle1" fontWeight={600} style={{fontSize: 24}} mb={1}>
-            Active Campaigns
-          </Typography>
-        <Button
-          variant="contained"
-          sx={{
-            background: "#F63D68",
-            borderRadius: 2,
-            fontWeight: 600,
-            textTransform: "none",
-            px: 3,
-            py: 1,
-            boxShadow: "0 4px 16px 0 rgba(246, 61, 104, 0.16)",
-            "&:hover": { background: "#e13a5e" },
-            "&:focus": { outline: "none" }
-          }}
-          onClick={() => setShowForm(true)}
-        >
-          Create New Promotion
-        </Button>
-
-      </Box>
+          <Box
+            display="flex"
+            alignItems="center"
+            justifyContent="space-between"
+            mb={2}
+          >
+            <Typography
+              variant="subtitle1"
+              fontWeight={600}
+              style={{ fontSize: 24 }}
+              mb={1}
+            >
+              Active Campaigns
+            </Typography>
+            <Button
+              variant="contained"
+              sx={{
+                background: "#F63D68",
+                borderRadius: 2,
+                fontWeight: 600,
+                textTransform: "none",
+                px: 3,
+                py: 1,
+                boxShadow: "0 4px 16px 0 rgba(246, 61, 104, 0.16)",
+                "&:hover": { background: "#e13a5e" },
+                "&:focus": { outline: "none" },
+              }}
+              onClick={() => setShowForm(true)}
+            >
+              Create New Promotion
+            </Button>
+          </Box>
           {/* Table */}
           <TableContainer
             component={Paper}
@@ -658,10 +748,12 @@ export default function Promotions() {
                 <TableRow sx={{ background: "#F9FAFB" }}>
                   <TableCell sx={{ fontWeight: 600 }}>ID</TableCell>
                   <TableCell sx={{ fontWeight: 600 }}>Promotion Name</TableCell>
+                  <TableCell sx={{ fontWeight: 600 }}>Merchant Name</TableCell>
+                  <TableCell sx={{ fontWeight: 600 }}>Merchant Email</TableCell>
                   <TableCell sx={{ fontWeight: 600 }}>Offer Details</TableCell>
                   <TableCell sx={{ fontWeight: 600 }}>Start Date</TableCell>
                   <TableCell sx={{ fontWeight: 600 }}>End Date</TableCell>
-                  <TableCell sx={{ fontWeight: 600, px:5 }}>STATUS</TableCell>
+                  <TableCell sx={{ fontWeight: 600, px: 5 }}>STATUS</TableCell>
                   <TableCell sx={{ fontWeight: 600 }} align="right"></TableCell>
                 </TableRow>
               </TableHead>
@@ -680,13 +772,15 @@ export default function Promotions() {
                               width: 32,
                               height: 32,
                               borderRadius: 1,
-                              objectFit: 'cover'
+                              objectFit: "cover",
                             }}
                           />
                         )}
                         {row.name}
                       </Box>
                     </TableCell>
+                    <TableCell>{row.merchantName}</TableCell>
+                    <TableCell>{row.merchantEmail}</TableCell>
                     <TableCell>{row.discountValue}</TableCell>
                     <TableCell>{row.startDate}</TableCell>
                     <TableCell>{row.endDate}</TableCell>
@@ -694,8 +788,12 @@ export default function Promotions() {
                       <Chip
                         label={row.status}
                         sx={{
-                          background: statusColor[row.status as keyof typeof statusColor]?.bg,
-                          color: statusColor[row.status as keyof typeof statusColor]?.color,
+                          background:
+                            statusColor[row.status as keyof typeof statusColor]
+                              ?.bg,
+                          color:
+                            statusColor[row.status as keyof typeof statusColor]
+                              ?.color,
                           fontWeight: 500,
                           fontSize: 13,
                           borderRadius: "6px",
@@ -705,7 +803,7 @@ export default function Promotions() {
                       />
                     </TableCell>
                     <TableCell align="right">
-                    <Box
+                      <Box
                         sx={{
                           display: "flex",
                           alignItems: "self-end",
@@ -730,15 +828,45 @@ export default function Promotions() {
                             "&:hover": { background: "#F3F4F6" },
                           }}
                         >
-                          <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <svg
+                            width="18"
+                            height="18"
+                            viewBox="0 0 18 18"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
                             <g opacity="0.6">
-                              <path fill-rule="evenodd" clip-rule="evenodd" d="M9.69671 10.4239L7.22205 10.7779L7.57538 8.30261L13.9394 1.93861C14.5252 1.35282 15.4749 1.35282 16.0607 1.93861C16.6465 2.5244 16.6465 3.47415 16.0607 4.05994L9.69671 10.4239Z" stroke="black" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
-                              <path d="M13.2321 2.646L15.3534 4.76733" stroke="black" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
-                              <path d="M13.5 10.5V15.5C13.5 16.0523 13.0523 16.5 12.5 16.5H2.5C1.94772 16.5 1.5 16.0523 1.5 15.5V5.5C1.5 4.94772 1.94772 4.5 2.5 4.5H7.5" stroke="black" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+                              <path
+                                fill-rule="evenodd"
+                                clip-rule="evenodd"
+                                d="M9.69671 10.4239L7.22205 10.7779L7.57538 8.30261L13.9394 1.93861C14.5252 1.35282 15.4749 1.35282 16.0607 1.93861C16.6465 2.5244 16.6465 3.47415 16.0607 4.05994L9.69671 10.4239Z"
+                                stroke="black"
+                                stroke-width="1.2"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                              />
+                              <path
+                                d="M13.2321 2.646L15.3534 4.76733"
+                                stroke="black"
+                                stroke-width="1.2"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                              />
+                              <path
+                                d="M13.5 10.5V15.5C13.5 16.0523 13.0523 16.5 12.5 16.5H2.5C1.94772 16.5 1.5 16.0523 1.5 15.5V5.5C1.5 4.94772 1.94772 4.5 2.5 4.5H7.5"
+                                stroke="black"
+                                stroke-width="1.2"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                              />
                             </g>
                           </svg>
                         </Box>
-                        <Divider orientation="vertical" flexItem sx={{ borderColor: "#E5E7EB" }} />
+                        <Divider
+                          orientation="vertical"
+                          flexItem
+                          sx={{ borderColor: "#E5E7EB" }}
+                        />
                         <Box
                           sx={{
                             flex: 1,
@@ -751,12 +879,52 @@ export default function Promotions() {
                             "&:hover": { background: "#FFF0EE" },
                           }}
                         >
-                          <svg width="18" height="16" viewBox="0 0 18 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path fill-rule="evenodd" clip-rule="evenodd" d="M13.2 15.3999H4.79998C4.13723 15.3999 3.59998 14.8626 3.59998 14.1999V3.3999H14.4V14.1999C14.4 14.8626 13.8627 15.3999 13.2 15.3999Z" stroke="#EF3826" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
-                            <path d="M7.19993 11.8V7" stroke="#EF3826" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
-                            <path d="M10.7999 11.8V7" stroke="#EF3826" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
-                            <path d="M1.19995 3.4H16.8" stroke="#EF3826" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
-                            <path fill-rule="evenodd" clip-rule="evenodd" d="M10.8 1H7.2C6.53726 1 6 1.53726 6 2.2V3.4H12V2.2C12 1.53726 11.4627 1 10.8 1Z" stroke="#EF3826" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+                          <svg
+                            width="18"
+                            height="16"
+                            viewBox="0 0 18 16"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <path
+                              fill-rule="evenodd"
+                              clip-rule="evenodd"
+                              d="M13.2 15.3999H4.79998C4.13723 15.3999 3.59998 14.8626 3.59998 14.1999V3.3999H14.4V14.1999C14.4 14.8626 13.8627 15.3999 13.2 15.3999Z"
+                              stroke="#EF3826"
+                              stroke-width="1.2"
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                            />
+                            <path
+                              d="M7.19993 11.8V7"
+                              stroke="#EF3826"
+                              stroke-width="1.2"
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                            />
+                            <path
+                              d="M10.7999 11.8V7"
+                              stroke="#EF3826"
+                              stroke-width="1.2"
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                            />
+                            <path
+                              d="M1.19995 3.4H16.8"
+                              stroke="#EF3826"
+                              stroke-width="1.2"
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                            />
+                            <path
+                              fill-rule="evenodd"
+                              clip-rule="evenodd"
+                              d="M10.8 1H7.2C6.53726 1 6 1.53726 6 2.2V3.4H12V2.2C12 1.53726 11.4627 1 10.8 1Z"
+                              stroke="#EF3826"
+                              stroke-width="1.2"
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                            />
                           </svg>
                         </Box>
                       </Box>
@@ -772,109 +940,141 @@ export default function Promotions() {
             Analytics
           </Typography>
           <Box display="flex" gap={3}>
-            <div style={{ flex: 1,minHeight: 320}}>
-                <Typography fontWeight={700} fontSize={18} mb={1}>
-                  Weekly Conversion Rate
-                </Typography>
-            <Paper
-              sx={{
-                borderRadius: "16px",
-                
-                py: 1,
-                boxShadow: "none",
-                border: "1px solid #E5E7EB",
-                display: "flex",
-                flexDirection: "column",
-                m:"auto"
-              }}
-            >
-              <Box display="flex" justifyContent="flex-end" alignItems="center" mb={1}>
-                <Box display="flex" alignItems="center" gap={2}>
-                  <Box display="flex" alignItems="center" gap={1}>
-                    <Box width={12} height={12} borderRadius="50%" bgcolor="#F63D68" />
-                    <Typography fontSize={13} color="#667085" >View</Typography>
-                  </Box>
-                  <Box display="flex" alignItems="center" gap={1}>
-                    <Box width={12} height={12} borderRadius="50%" bgcolor="#000" />
-                    <Typography fontSize={13} color="#667085" mr={4}>Use</Typography>
+            <div style={{ flex: 1, minHeight: 320 }}>
+              <Typography fontWeight={700} fontSize={18} mb={1}>
+                Weekly Conversion Rate
+              </Typography>
+              <Paper
+                sx={{
+                  borderRadius: "16px",
+
+                  py: 1,
+                  boxShadow: "none",
+                  border: "1px solid #E5E7EB",
+                  display: "flex",
+                  flexDirection: "column",
+                  m: "auto",
+                }}
+              >
+                <Box
+                  display="flex"
+                  justifyContent="flex-end"
+                  alignItems="center"
+                  mb={1}
+                >
+                  <Box display="flex" alignItems="center" gap={2}>
+                    <Box display="flex" alignItems="center" gap={1}>
+                      <Box
+                        width={12}
+                        height={12}
+                        borderRadius="50%"
+                        bgcolor="#F63D68"
+                      />
+                      <Typography fontSize={13} color="#667085">
+                        View
+                      </Typography>
+                    </Box>
+                    <Box display="flex" alignItems="center" gap={1}>
+                      <Box
+                        width={12}
+                        height={12}
+                        borderRadius="50%"
+                        bgcolor="#000"
+                      />
+                      <Typography fontSize={13} color="#667085" mr={4}>
+                        Use
+                      </Typography>
+                    </Box>
                   </Box>
                 </Box>
-              </Box>
-              <ResponsiveContainer width="100%" height={200}>
-                <BarChart data={barData}>
-                  <XAxis dataKey="name" axisLine={false} tickLine={false} />
-                  <YAxis axisLine={false} tickLine={false} />
-                  <Tooltip />
-                  <Bar dataKey="Today" fill="#F63D68" radius={[8, 8, 0, 0]} barSize={8} />
-                  <Bar dataKey="Week" fill="#000000" radius={[8, 8, 0, 0]} barSize={8} />
-                </BarChart>
-              </ResponsiveContainer>
-            </Paper>
+                <ResponsiveContainer width="100%" height={200}>
+                  <BarChart data={barData}>
+                    <XAxis dataKey="name" axisLine={false} tickLine={false} />
+                    <YAxis axisLine={false} tickLine={false} />
+                    <Tooltip />
+                    <Bar
+                      dataKey="Today"
+                      fill="#F63D68"
+                      radius={[8, 8, 0, 0]}
+                      barSize={8}
+                    />
+                    <Bar
+                      dataKey="Week"
+                      fill="#000000"
+                      radius={[8, 8, 0, 0]}
+                      barSize={8}
+                    />
+                  </BarChart>
+                </ResponsiveContainer>
+              </Paper>
             </div>
 
             {/* Total Revenue Generated */}
-            <div style={{ flex: 1,minHeight: 320}}>
+            <div style={{ flex: 1, minHeight: 320 }}>
               <Typography fontWeight={700} fontSize={18} mb={2}>
                 Total Revenue Generated
               </Typography>
-            <Paper
-              sx={{
-                borderRadius: "16px",
-                pt:4,
-                px:0.7,
-                boxShadow: "none",
-                border: "1px solid #E5E7EB",
-                display: "flex",
-                flexDirection: "column",
-                m:"auto"
-              }}
-            >
-              <ResponsiveContainer width="100%" height={200}>
-                <LineChart data={revenueData}>
-                  <XAxis 
-                    dataKey="name" 
-                    axisLine={false} 
-                    tickLine={false}
-                    stroke="#94A3B8"
-                    fontSize={12}
+              <Paper
+                sx={{
+                  borderRadius: "16px",
+                  pt: 4,
+                  px: 0.7,
+                  boxShadow: "none",
+                  border: "1px solid #E5E7EB",
+                  display: "flex",
+                  flexDirection: "column",
+                  m: "auto",
+                }}
+              >
+                <ResponsiveContainer width="100%" height={200}>
+                  <LineChart data={revenueData}>
+                    <XAxis
+                      dataKey="name"
+                      axisLine={false}
+                      tickLine={false}
+                      stroke="#94A3B8"
+                      fontSize={12}
                     />
-                  <YAxis 
-                    axisLine={false} 
-                    tickLine={false}
-                    stroke="#94A3B8"
-                    fontSize={12}
-                    tickFormatter={(value) => `$${value.toLocaleString()}`}
-                  />
-                  <Tooltip 
-                    formatter={(value) => [`$${value.toLocaleString()}`, "Revenue"]}
-                    contentStyle={{
-                      backgroundColor: '#fff',
-                      border: '1px solid #E2E8F0',
-                      borderRadius: '8px',
-                      boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
-                    }}
-                  />
-                  <Line 
-                    type="linear"
-                    dataKey="amount" 
-                    stroke="#FF9500" 
-                    strokeWidth={2}
-                    dot={{ 
-                      fill: "#FFF",
-                      stroke: "#FF9500",
-                      strokeWidth: 2,
-                      r: 5
-                    }}
-                    activeDot={{
-                      fill: "#FF9500",
-                      stroke: "#FFF",
-                      strokeWidth: 2,
-                      r: 6
-                    }}
+                    <YAxis
+                      axisLine={false}
+                      tickLine={false}
+                      stroke="#94A3B8"
+                      fontSize={12}
+                      tickFormatter={(value) => `$${value.toLocaleString()}`}
                     />
-                </LineChart>
-              </ResponsiveContainer>
-            </Paper>
+                    <Tooltip
+                      formatter={(value) => [
+                        `$${value.toLocaleString()}`,
+                        "Revenue",
+                      ]}
+                      contentStyle={{
+                        backgroundColor: "#fff",
+                        border: "1px solid #E2E8F0",
+                        borderRadius: "8px",
+                        boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
+                      }}
+                    />
+                    <Line
+                      type="linear"
+                      dataKey="amount"
+                      stroke="#FF9500"
+                      strokeWidth={2}
+                      dot={{
+                        fill: "#FFF",
+                        stroke: "#FF9500",
+                        strokeWidth: 2,
+                        r: 5,
+                      }}
+                      activeDot={{
+                        fill: "#FF9500",
+                        stroke: "#FFF",
+                        strokeWidth: 2,
+                        r: 6,
+                      }}
+                    />
+                  </LineChart>
+                </ResponsiveContainer>
+              </Paper>
             </div>
 
             {/* Total Redemptions */}
@@ -893,12 +1093,22 @@ export default function Promotions() {
                 justifyContent: "space-between",
               }}
             >
-              <Box display="flex" alignItems="center" justifyContent="space-between" mb={0}>
+              <Box
+                display="flex"
+                alignItems="center"
+                justifyContent="space-between"
+                mb={0}
+              >
                 <Typography fontWeight={700} fontSize={18}>
                   Total Redemptions
                 </Typography>
               </Box>
-              <Box display="flex" alignItems="center" justifyContent="space-between" flex={1}>
+              <Box
+                display="flex"
+                alignItems="center"
+                justifyContent="space-between"
+                flex={1}
+              >
                 <Box
                   sx={{
                     width: 180,
@@ -928,7 +1138,7 @@ export default function Promotions() {
                     >
                       <Cell fill="#f0effb" />
                     </Pie>
-                      {/* Segment 2 */}
+                    {/* Segment 2 */}
                     <Pie
                       data={[{ value: 30 }]}
                       dataKey="value"
@@ -981,4 +1191,4 @@ export default function Promotions() {
       )}
     </Box>
   );
-} 
+}

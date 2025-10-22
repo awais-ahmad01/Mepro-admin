@@ -22,7 +22,14 @@ import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import { DayPicker } from "react-day-picker";
 import "react-day-picker/dist/style.css";
-import { format, parseISO, isToday, isYesterday, isTomorrow, isSameDay } from "date-fns";
+import {
+  format,
+  parseISO,
+  isToday,
+  isYesterday,
+  isTomorrow,
+  isSameDay,
+} from "date-fns";
 
 const orderStatusColor = {
   Completed: { bg: "#D1FADF", color: "#039855" },
@@ -45,7 +52,10 @@ const orderTypes = [
 const orders = [
   {
     id: "00001",
-    name: "Christine Brooks",
+    customerName: "Christine Brooks",
+    customerEmail: "christine@example.com",
+    merchantName: "Starbucks",
+    merchantEmail: "orders@starbucks.com",
     address: "089 Kutch Green Apt. 448",
     date: "2019-09-04",
     type: "Coffee",
@@ -53,7 +63,10 @@ const orders = [
   },
   {
     id: "00002",
-    name: "Rosie Pearson",
+    customerName: "Rosie Pearson",
+    customerEmail: "rosie@example.com",
+    merchantName: "Dragon Palace",
+    merchantEmail: "info@dragonpalace.com",
     address: "979 Immanuel Ferry Suite 526",
     date: "2019-05-28",
     type: "Chinese Food",
@@ -61,7 +74,10 @@ const orders = [
   },
   {
     id: "00003",
-    name: "Darrell Caldwell",
+    customerName: "Darrell Caldwell",
+    customerEmail: "darrell@example.com",
+    merchantName: "Thai Spa",
+    merchantEmail: "bookings@thaispa.com",
     address: "8587 Frida Ports",
     date: "2019-11-23",
     type: "Thai Message",
@@ -69,7 +85,10 @@ const orders = [
   },
   {
     id: "00004",
-    name: "Gilbert Johnston",
+    customerName: "Gilbert Johnston",
+    customerEmail: "gilbert@example.com",
+    merchantName: "Coffee Corner",
+    merchantEmail: "support@coffeecorner.com",
     address: "768 Destiny Lake Suite 600",
     date: "2019-02-05",
     type: "Coffee",
@@ -77,7 +96,10 @@ const orders = [
   },
   {
     id: "00005",
-    name: "Alan Cain",
+    customerName: "Alan Cain",
+    customerEmail: "alan@example.com",
+    merchantName: "Brew & Bean",
+    merchantEmail: "orders@brewbean.com",
     address: "042 Mylene Throughway",
     date: "2019-07-29",
     type: "Coffee",
@@ -85,7 +107,10 @@ const orders = [
   },
   {
     id: "00006",
-    name: "Alfred Murray",
+    customerName: "Alfred Murray",
+    customerEmail: "alfred@example.com",
+    merchantName: "Burger Hub",
+    merchantEmail: "contact@burgerhub.com",
     address: "543 Weimann Mountain",
     date: "2019-08-15",
     type: "Burgurs",
@@ -93,7 +118,10 @@ const orders = [
   },
   {
     id: "00007",
-    name: "Maggie Sullivan",
+    customerName: "Maggie Sullivan",
+    customerEmail: "maggie@example.com",
+    merchantName: "Rice Garden",
+    merchantEmail: "orders@ricegarden.com",
     address: "New Scottieberg",
     date: "2019-12-21",
     type: "Chinese rice",
@@ -101,7 +129,10 @@ const orders = [
   },
   {
     id: "00008",
-    name: "Rosie Todd",
+    customerName: "Rosie Todd",
+    customerEmail: "rosie.t@example.com",
+    merchantName: "Fresh Juice Bar",
+    merchantEmail: "hello@freshjuice.com",
     address: "New Jon",
     date: "2019-04-30",
     type: "Juice",
@@ -109,7 +140,10 @@ const orders = [
   },
   {
     id: "00009",
-    name: "Dollie Hines",
+    customerName: "Dollie Hines",
+    customerEmail: "dollie@example.com",
+    merchantName: "Thai Special",
+    merchantEmail: "info@thaispecial.com",
     address: "124 Lyla Forge Suite 975",
     date: "2019-01-09",
     type: "Thai Special",
@@ -117,7 +151,10 @@ const orders = [
   },
   {
     id: "00010",
-    name: "Rosie Todd",
+    customerName: "Rosie Todd",
+    customerEmail: "rosie.t@example.com",
+    merchantName: "Fresh Juice Bar",
+    merchantEmail: "hello@freshjuice.com",
     address: "New Jon",
     date: "2019-04-30",
     type: "Juice",
@@ -125,7 +162,10 @@ const orders = [
   },
   {
     id: "00011",
-    name: "Alfred Murray",
+    customerName: "Alfred Murray",
+    customerEmail: "alfred@example.com",
+    merchantName: "Burger Hub",
+    merchantEmail: "contact@burgerhub.com",
     address: "543 Weimann Mountain",
     date: "2019-08-15",
     type: "Burgurs",
@@ -142,12 +182,16 @@ function renderDate(dateStr: string) {
 }
 
 const ArrowIcon = (props: React.ComponentProps<typeof ArrowForwardIosIcon>) => (
-  <ArrowForwardIosIcon {...props} sx={{ fontSize: 16, transform: "rotate(90deg)" }} />
+  <ArrowForwardIosIcon
+    {...props}
+    sx={{ fontSize: 16, transform: "rotate(90deg)" }}
+  />
 );
 
 export default function Order() {
   // Filter state
-  const [calendarAnchor, setCalendarAnchor] = React.useState<null | HTMLElement>(null);
+  const [calendarAnchor, setCalendarAnchor] =
+    React.useState<null | HTMLElement>(null);
   const [selectedDates, setSelectedDates] = React.useState<Date[]>([]);
   const [selectedType, setSelectedType] = React.useState("");
   const [selectedStatus, setSelectedStatus] = React.useState("");
@@ -173,7 +217,10 @@ export default function Order() {
   // Pagination
   const totalRows = filteredOrders.length;
   const totalPages = Math.ceil(totalRows / rowsPerPage);
-  const paginatedOrders = filteredOrders.slice((page - 1) * rowsPerPage, page * rowsPerPage);
+  const paginatedOrders = filteredOrders.slice(
+    (page - 1) * rowsPerPage,
+    page * rowsPerPage
+  );
 
   // Navigation
   const handlePrevPage = () => setPage((p) => Math.max(1, p - 1));
@@ -219,7 +266,11 @@ export default function Order() {
         }}
       >
         {/* Filter Icon */}
-        <Divider orientation="vertical" flexItem sx={{ borderColor: "#E5E7EB" }} />
+        <Divider
+          orientation="vertical"
+          flexItem
+          sx={{ borderColor: "#E5E7EB" }}
+        />
         <Box
           sx={{
             display: "flex",
@@ -231,13 +282,37 @@ export default function Order() {
             mx: 1,
           }}
         >
-          <svg width="22" height="24" viewBox="0 0 22 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path fill-rule="evenodd" clip-rule="evenodd" d="M11 9.75C16.3848 9.75 20.75 7.73528 20.75 5.25C20.75 2.76472 16.3848 0.75 11 0.75C5.61522 0.75 1.25 2.76472 1.25 5.25C1.25 7.73528 5.61522 9.75 11 9.75Z" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                <path d="M1.25 5.25C1.25253 9.76548 4.35614 13.688 8.75 14.729V21C8.75 22.2426 9.75736 23.25 11 23.25C12.2426 23.25 13.25 22.2426 13.25 21V14.729C17.6439 13.688 20.7475 9.76548 20.75 5.25" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          <svg
+            width="22"
+            height="24"
+            viewBox="0 0 22 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              fill-rule="evenodd"
+              clip-rule="evenodd"
+              d="M11 9.75C16.3848 9.75 20.75 7.73528 20.75 5.25C20.75 2.76472 16.3848 0.75 11 0.75C5.61522 0.75 1.25 2.76472 1.25 5.25C1.25 7.73528 5.61522 9.75 11 9.75Z"
+              stroke="black"
+              stroke-width="1.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+            <path
+              d="M1.25 5.25C1.25253 9.76548 4.35614 13.688 8.75 14.729V21C8.75 22.2426 9.75736 23.25 11 23.25C12.2426 23.25 13.25 22.2426 13.25 21V14.729C17.6439 13.688 20.7475 9.76548 20.75 5.25"
+              stroke="black"
+              stroke-width="1.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
           </svg>
         </Box>
         {/* Filter By */}
-        <Divider orientation="vertical" flexItem sx={{ borderColor: "#E5E7EB" }} />
+        <Divider
+          orientation="vertical"
+          flexItem
+          sx={{ borderColor: "#E5E7EB" }}
+        />
         <Box
           sx={{
             display: "flex",
@@ -255,7 +330,11 @@ export default function Order() {
           Filter By
         </Box>
         {/* Date */}
-        <Divider orientation="vertical" flexItem sx={{ borderColor: "#E5E7EB" }} />
+        <Divider
+          orientation="vertical"
+          flexItem
+          sx={{ borderColor: "#E5E7EB" }}
+        />
         <Box
           sx={{
             display: "flex",
@@ -274,7 +353,9 @@ export default function Order() {
           onClick={handleCalendarOpen}
         >
           Date
-          <ArrowForwardIosIcon sx={{ fontSize: 16, ml: 1, transform: "rotate(90deg)" }} />
+          <ArrowForwardIosIcon
+            sx={{ fontSize: 16, ml: 1, transform: "rotate(90deg)" }}
+          />
         </Box>
         <Popover
           open={Boolean(calendarAnchor)}
@@ -290,7 +371,7 @@ export default function Order() {
                 minWidth: 340,
                 maxWidth: 360,
               },
-            }
+            },
           }}
         >
           <Box sx={{ p: 3, pt: 2 }}>
@@ -343,7 +424,11 @@ export default function Order() {
           </Box>
         </Popover>
         {/* Order Type */}
-        <Divider orientation="vertical" flexItem sx={{ borderColor: "#E5E7EB" }} />
+        <Divider
+          orientation="vertical"
+          flexItem
+          sx={{ borderColor: "#E5E7EB" }}
+        />
         <Box
           sx={{
             display: "flex",
@@ -363,7 +448,7 @@ export default function Order() {
             <Select
               disableUnderline
               value={selectedType}
-              onChange={e => setSelectedType(e.target.value)}
+              onChange={(e) => setSelectedType(e.target.value)}
               displayEmpty
               sx={{
                 fontWeight: 600,
@@ -432,7 +517,11 @@ export default function Order() {
           </FormControl>
         </Box>
         {/* Order Status */}
-        <Divider orientation="vertical" flexItem sx={{ borderColor: "#E5E7EB" }} />
+        <Divider
+          orientation="vertical"
+          flexItem
+          sx={{ borderColor: "#E5E7EB" }}
+        />
         <Box
           sx={{
             display: "flex",
@@ -452,7 +541,7 @@ export default function Order() {
             <Select
               disableUnderline
               value={selectedStatus}
-              onChange={e => setSelectedStatus(e.target.value)}
+              onChange={(e) => setSelectedStatus(e.target.value)}
               displayEmpty
               sx={{
                 fontWeight: 600,
@@ -521,35 +610,40 @@ export default function Order() {
           </FormControl>
         </Box>
         {/* Reset Filter */}
-        <Divider orientation="vertical" flexItem sx={{ borderColor: "#E5E7EB" }} />
+        <Divider
+          orientation="vertical"
+          flexItem
+          sx={{ borderColor: "#E5E7EB" }}
+        />
         <Box
-              onClick={handleReset}
-              tabIndex={0}
-              role="button"
-              sx={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                width: 140,
-                minWidth: 140,
-                height: "100%",
-                mx: 0,
-                px: 5,
-                color: "#F63D68",
-                fontWeight: 600,
-                fontSize: 16,
-                cursor: "pointer",
-                userSelect: "none",
-                gap: 1,
-                background: "transparent",
-                borderRadius: 2,
-                transition: "background 0.15s",
-                
-              }}
-            >
-              <RefreshIcon sx={{ color: "#F63D68", fontSize: 20,  }} />
-              <span style={{ whiteSpace: 'nowrap', lineHeight: 1 }}>Reset Filter</span>
-            </Box>
+          onClick={handleReset}
+          tabIndex={0}
+          role="button"
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            width: 140,
+            minWidth: 140,
+            height: "100%",
+            mx: 0,
+            px: 5,
+            color: "#F63D68",
+            fontWeight: 600,
+            fontSize: 16,
+            cursor: "pointer",
+            userSelect: "none",
+            gap: 1,
+            background: "transparent",
+            borderRadius: 2,
+            transition: "background 0.15s",
+          }}
+        >
+          <RefreshIcon sx={{ color: "#F63D68", fontSize: 20 }} />
+          <span style={{ whiteSpace: "nowrap", lineHeight: 1 }}>
+            Reset Filter
+          </span>
+        </Box>
       </Box>
       {/* Table */}
       <TableContainer
@@ -565,7 +659,10 @@ export default function Order() {
           <TableHead>
             <TableRow sx={{ background: "#F9FAFB" }}>
               <TableCell sx={{ fontWeight: 600 }}>ID</TableCell>
-              <TableCell sx={{ fontWeight: 600 }}>NAME</TableCell>
+              <TableCell sx={{ fontWeight: 600 }}>CUSTOMER NAME</TableCell>
+              <TableCell sx={{ fontWeight: 600 }}>CUSTOMER EMAIL</TableCell>
+              <TableCell sx={{ fontWeight: 600 }}>MERCHANT NAME</TableCell>
+              <TableCell sx={{ fontWeight: 600 }}>MERCHANT EMAIL</TableCell>
               <TableCell sx={{ fontWeight: 600 }}>ADDRESS</TableCell>
               <TableCell sx={{ fontWeight: 600 }}>DATE</TableCell>
               <TableCell sx={{ fontWeight: 600 }}>TYPE</TableCell>
@@ -576,7 +673,14 @@ export default function Order() {
             {paginatedOrders.map((o, i) => (
               <TableRow key={i}>
                 <TableCell>{o.id}</TableCell>
-                <TableCell sx={{ fontWeight: 500 }}>{o.name}</TableCell>
+                <TableCell sx={{ fontWeight: 500 }}>{o.customerName}</TableCell>
+                <TableCell sx={{ color: "#667085" }}>
+                  {o.customerEmail}
+                </TableCell>
+                <TableCell sx={{ fontWeight: 500 }}>{o.merchantName}</TableCell>
+                <TableCell sx={{ color: "#667085" }}>
+                  {o.merchantEmail}
+                </TableCell>
                 <TableCell sx={{ color: "#667085" }}>{o.address}</TableCell>
                 <TableCell>{renderDate(o.date)}</TableCell>
                 <TableCell>{o.type}</TableCell>
@@ -584,8 +688,14 @@ export default function Order() {
                   <Chip
                     label={o.status}
                     sx={{
-                      background: orderStatusColor[o.status as keyof typeof orderStatusColor]?.bg,
-                      color: orderStatusColor[o.status as keyof typeof orderStatusColor]?.color,
+                      background:
+                        orderStatusColor[
+                          o.status as keyof typeof orderStatusColor
+                        ]?.bg,
+                      color:
+                        orderStatusColor[
+                          o.status as keyof typeof orderStatusColor
+                        ]?.color,
                       fontWeight: 500,
                       fontSize: 13,
                       borderRadius: "6px",
@@ -610,81 +720,95 @@ export default function Order() {
           {Math.min(page * rowsPerPage, totalRows)} of {totalRows}
         </span>
         <Box
-              sx={{
-                display: 'flex',
-                alignItems: 'center',
-                borderRadius: '7px',
-                boxShadow: '0px 1px 4px 0px #101E361A',
-                border: '1px solid #E5E7EB',
-                overflow: 'hidden',
-                bgcolor: '#FAFAFB',
-                height: 32,
-                width: 90,
-              }}
-            >
-              <Box
-                onClick={page === 1 ? undefined : handlePrevPage}
-                tabIndex={0}
-                role="button"
-                aria-disabled={page === 1}
-                sx={{
-                  width: 56,
-                  height: 48,
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  cursor: page === 1 ? 'not-allowed' : 'pointer',
-                  color: page === 1 ? '#A0AEC0' : '#232323',
-                  transition: 'background 0.15s',
-                  background: 'transparent',
-                  borderRight: '1px solid #E5E7EB',
-                  outline: 'none',
-                  '&:hover': {
-                    background: page === 1 ? 'transparent' : '#F6F8FB',
-                  },
-                  '&:active': {
-                    background: page === 1 ? 'transparent' : '#F1F4F9',
-                  },
-                  '&:focus, &:focus-visible': {
-                    outline: 'none',
-                    background: '#F6F8FB',
-                  },
-                }}
-              >
-                <ArrowBackIosNewIcon sx={{ fontSize: 20, color: 'inherit' }} />
-              </Box>
-              <Box
-                onClick={page === totalPages || totalRows === 0 ? undefined : handleNextPage}
-                tabIndex={0}
-                role="button"
-                aria-disabled={page === totalPages || totalRows === 0}
-                sx={{
-                  width: 56,
-                  height: 48,
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  cursor: (page === totalPages || totalRows === 0) ? 'not-allowed' : 'pointer',
-                  color: (page === totalPages || totalRows === 0) ? '#A0AEC0' : '#232323',
-                  transition: 'background 0.15s',
-                  background: 'transparent',
-                  outline: 'none',
-                  '&:hover': {
-                    background: (page === totalPages || totalRows === 0) ? 'transparent' : '#F6F8FB',
-                  },
-                  '&:active': {
-                    background: (page === totalPages || totalRows === 0) ? 'transparent' : '#F1F4F9',
-                  },
-                  '&:focus, &:focus-visible': {
-                    outline: 'none',
-                    background: '#F6F8FB',
-                  },
-                }}
-              >
-                <ArrowForwardIosIcon sx={{ fontSize: 20, color: 'inherit' }} />
-              </Box>
-            </Box>
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            borderRadius: "7px",
+            boxShadow: "0px 1px 4px 0px #101E361A",
+            border: "1px solid #E5E7EB",
+            overflow: "hidden",
+            bgcolor: "#FAFAFB",
+            height: 32,
+            width: 90,
+          }}
+        >
+          <Box
+            onClick={page === 1 ? undefined : handlePrevPage}
+            tabIndex={0}
+            role="button"
+            aria-disabled={page === 1}
+            sx={{
+              width: 56,
+              height: 48,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              cursor: page === 1 ? "not-allowed" : "pointer",
+              color: page === 1 ? "#A0AEC0" : "#232323",
+              transition: "background 0.15s",
+              background: "transparent",
+              borderRight: "1px solid #E5E7EB",
+              outline: "none",
+              "&:hover": {
+                background: page === 1 ? "transparent" : "#F6F8FB",
+              },
+              "&:active": {
+                background: page === 1 ? "transparent" : "#F1F4F9",
+              },
+              "&:focus, &:focus-visible": {
+                outline: "none",
+                background: "#F6F8FB",
+              },
+            }}
+          >
+            <ArrowBackIosNewIcon sx={{ fontSize: 20, color: "inherit" }} />
+          </Box>
+          <Box
+            onClick={
+              page === totalPages || totalRows === 0
+                ? undefined
+                : handleNextPage
+            }
+            tabIndex={0}
+            role="button"
+            aria-disabled={page === totalPages || totalRows === 0}
+            sx={{
+              width: 56,
+              height: 48,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              cursor:
+                page === totalPages || totalRows === 0
+                  ? "not-allowed"
+                  : "pointer",
+              color:
+                page === totalPages || totalRows === 0 ? "#A0AEC0" : "#232323",
+              transition: "background 0.15s",
+              background: "transparent",
+              outline: "none",
+              "&:hover": {
+                background:
+                  page === totalPages || totalRows === 0
+                    ? "transparent"
+                    : "#F6F8FB",
+              },
+              "&:active": {
+                background:
+                  page === totalPages || totalRows === 0
+                    ? "transparent"
+                    : "#F1F4F9",
+              },
+              "&:focus, &:focus-visible": {
+                outline: "none",
+                background: "#F6F8FB",
+              },
+            }}
+          >
+            <ArrowForwardIosIcon sx={{ fontSize: 20, color: "inherit" }} />
+          </Box>
+        </Box>
       </Box>
     </Box>
   );
-} 
+}

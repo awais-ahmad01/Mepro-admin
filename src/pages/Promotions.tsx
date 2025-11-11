@@ -31,6 +31,24 @@ import {
   Line,
 } from "recharts";
 import PhotoCameraIcon from "@mui/icons-material/PhotoCamera";
+
+import {
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Alert,
+  Badge,
+  Grid,
+  Card,
+  CardContent,
+  Avatar,
+} from "@mui/material";
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import CancelIcon from '@mui/icons-material/Cancel';
+import PendingIcon from '@mui/icons-material/Pending';
+import AssignmentIcon from '@mui/icons-material/Assignment';
+
 const statusColor = {
   Active: { bg: "#D1FADF", color: "#039855" },
   Hold: { bg: "#E9D7FE", color: "#6941C6" },
@@ -69,6 +87,25 @@ type Promotion = {
   merchantName: string;
   merchantEmail: string;
 };
+
+interface PendingPromotion {
+  id: string;
+  promotionName: string;
+  merchantName: string;
+  merchantEmail: string;
+  discountType: string;
+  discountValue: string;
+  eligibilityCriteria: string;
+  startDate: string;
+  endDate: string;
+  expiryDate: string;
+  dateCreated: string;
+  status: 'Pending Approval' | 'Approved' | 'Rejected';
+  submittedBy: string;
+  description: string;
+  image?: string;
+}
+
 
 export default function Promotions() {
   const [promotions] = useState<Promotion[]>([
@@ -129,6 +166,70 @@ export default function Promotions() {
       merchantEmail: "info@dragonpalace.com",
     },
   ]);
+
+
+
+  const mockPendingPromotions: PendingPromotion[] = [
+  {
+    id: 'PP001',
+    promotionName: 'Summer Sale 2025',
+    merchantName: 'Burger King',
+    merchantEmail: 'partner@burgerking.com',
+    discountType: 'percentage',
+    discountValue: '40%',
+    eligibilityCriteria: 'all',
+    startDate: '2024-11-15',
+    endDate: '2024-12-15',
+    expiryDate: '2024-12-15T23:59:00',
+    dateCreated: '2024-11-08T10:30:00',
+    status: 'Pending Approval',
+    submittedBy: 'BK Manager',
+    description: 'Get 40% off on all burgers during summer season. Valid for dine-in and takeaway.',
+    image: '/burger.png',
+  },
+  {
+    id: 'PP002',
+    promotionName: 'Weekend Spa Special',
+    merchantName: 'Spa Relax',
+    merchantEmail: 'bookings@sparelax.com',
+    discountType: 'fixed',
+    discountValue: '$25',
+    eligibilityCriteria: 'new',
+    startDate: '2024-11-10',
+    endDate: '2024-11-30',
+    expiryDate: '2024-11-30T23:59:00',
+    dateCreated: '2024-11-07T14:20:00',
+    status: 'Pending Approval',
+    submittedBy: 'Spa Admin',
+    description: '$25 off on all spa services for new customers on weekends. Book your relaxation today.',
+    image: '/massage.png',
+  },
+  {
+    id: 'PP003',
+    promotionName: 'Holiday Coffee Deal',
+    merchantName: 'Starbucks',
+    merchantEmail: 'rewards@starbucks.com',
+    discountType: 'percentage',
+    discountValue: '30%',
+    eligibilityCriteria: 'vip',
+    startDate: '2024-11-20',
+    endDate: '2024-12-25',
+    expiryDate: '2024-12-25T23:59:00',
+    dateCreated: '2024-11-06T09:15:00',
+    status: 'Pending Approval',
+    submittedBy: 'Starbucks Team',
+    description: 'VIP members get 30% off on all holiday-themed beverages. Spread the joy of coffee.',
+    image: '/coffee.png',
+  },
+];
+
+
+const [pendingPromotions, setPendingPromotions] = useState<PendingPromotion[]>(mockPendingPromotions);
+const [showApprovalQueue, setShowApprovalQueue] = useState(false);
+const [approvalDialogOpen, setApprovalDialogOpen] = useState(false);
+const [rejectDialogOpen, setRejectDialogOpen] = useState(false);
+const [selectedPendingPromotion, setSelectedPendingPromotion] = useState<PendingPromotion | null>(null);
+const [rejectionReason, setRejectionReason] = useState('');
 
   const [showForm, setShowForm] = useState(false);
   const [form, setForm] = useState({
@@ -213,6 +314,52 @@ export default function Promotions() {
       console.error("Error saving promotion:", err);
     }
   };
+
+
+
+  const handleApprovePromotion = (promotion: PendingPromotion) => {
+  setSelectedPendingPromotion(promotion);
+  setApprovalDialogOpen(true);
+};
+
+const handleRejectPromotion = (promotion: PendingPromotion) => {
+  setSelectedPendingPromotion(promotion);
+  setRejectDialogOpen(true);
+};
+
+const confirmApproval = () => {
+  if (selectedPendingPromotion) {
+    setPendingPromotions(prev =>
+      prev.map(p => p.id === selectedPendingPromotion.id ? { ...p, status: 'Approved' as const } : p)
+    );
+    setApprovalDialogOpen(false);
+    setSelectedPendingPromotion(null);
+  }
+};
+
+const confirmRejection = () => {
+  if (selectedPendingPromotion && rejectionReason.trim()) {
+    setPendingPromotions(prev =>
+      prev.map(p => p.id === selectedPendingPromotion.id ? { ...p, status: 'Rejected' as const } : p)
+    );
+    setRejectDialogOpen(false);
+    setSelectedPendingPromotion(null);
+    setRejectionReason('');
+  }
+};
+
+const getTimeSince = (dateString: string) => {
+  const date = new Date(dateString);
+  const now = new Date();
+  const diffMs = now.getTime() - date.getTime();
+  const diffMins = Math.floor(diffMs / 60000);
+  const diffHours = Math.floor(diffMs / 3600000);
+  const diffDays = Math.floor(diffMs / 86400000);
+  
+  if (diffMins < 60) return `${diffMins} minutes ago`;
+  if (diffHours < 24) return `${diffHours} hours ago`;
+  return `${diffDays} days ago`;
+};
 
   return (
     <Box
@@ -701,40 +848,421 @@ export default function Promotions() {
         </Box>
       ) : (
         <>
-          <Box
-            display="flex"
-            alignItems="center"
-            justifyContent="space-between"
-            mb={2}
-          >
-            <Typography
-              variant="subtitle1"
-              fontWeight={600}
-              style={{ fontSize: 24 }}
-              mb={1}
-            >
-              Active Campaigns
-            </Typography>
-            <Button
-              variant="contained"
-              sx={{
-                background: "#F63D68",
-                borderRadius: 2,
-                fontWeight: 600,
-                textTransform: "none",
-                px: 3,
-                py: 1,
-                boxShadow: "0 4px 16px 0 rgba(246, 61, 104, 0.16)",
-                "&:hover": { background: "#e13a5e" },
-                "&:focus": { outline: "none" },
-              }}
-              onClick={() => setShowForm(true)}
-            >
-              Create New Promotion
-            </Button>
+             <Box display="flex" alignItems="center" justifyContent="space-between" mb={2}>
+  <Box display="flex" alignItems="center" gap={2}>
+    <Button
+      variant={!showApprovalQueue ? "contained" : "outlined"}
+      sx={{
+        background: !showApprovalQueue ? "#F63D68" : "transparent",
+        color: !showApprovalQueue ? "#fff" : "#F63D68",
+        borderColor: "#F63D68",
+        borderRadius: 2,
+        fontWeight: 600,
+        textTransform: "none",
+        px: 3,
+        py: 1,
+        "&:hover": { 
+          background: !showApprovalQueue ? "#e13a5e" : "rgba(246, 61, 104, 0.1)",
+          borderColor: "#F63D68",
+        },
+      }}
+      onClick={() => setShowApprovalQueue(false)}
+    >
+      Active Campaigns
+    </Button>
+    <Button
+      variant={showApprovalQueue ? "contained" : "outlined"}
+      startIcon={
+        <Badge 
+          badgeContent={pendingPromotions.filter(p => p.status === 'Pending Approval').length} 
+          color="error"
+        >
+          <AssignmentIcon sx={{ color: showApprovalQueue ? "#fff" : "#6941C6" }} />
+        </Badge>
+      }
+      sx={{
+        background: showApprovalQueue ? "#6941C6" : "transparent",
+        color: showApprovalQueue ? "#fff" : "#6941C6",
+        borderColor: "#6941C6",
+        borderRadius: 2,
+        fontWeight: 600,
+        textTransform: "none",
+        px: 3,
+        py: 1,
+        "&:hover": { 
+          background: showApprovalQueue ? "#5a2fb8" : "rgba(105, 65, 198, 0.1)",
+          borderColor: "#6941C6",
+        },
+      }}
+      onClick={() => setShowApprovalQueue(true)}
+    >
+      Approval Queue
+    </Button>
+  </Box>
+  {!showApprovalQueue && (
+    <Button
+      variant="contained"
+      sx={{
+        background: "#F63D68",
+        borderRadius: 2,
+        fontWeight: 600,
+        textTransform: "none",
+        px: 3,
+        py: 1,
+        boxShadow: "0 4px 16px 0 rgba(246, 61, 104, 0.16)",
+        "&:hover": { background: "#e13a5e" },
+        "&:focus": { outline: "none" },
+      }}
+      onClick={() => setShowForm(true)}
+    >
+      Create New Promotion
+    </Button>
+  )}
+</Box>
+
+{showApprovalQueue ? (
+  <>
+    {/* Approval Queue View */}
+    <Alert severity="info" sx={{ mb: 3, borderRadius: 2 }}>
+      <Typography fontWeight={600} mb={0.5}>Moderator Approval Queue</Typography>
+      Review and approve promotions created by merchants. Ensure all promotion details comply with platform guidelines and are accurate before going live.
+    </Alert>
+
+    {/* Summary Cards */}
+    <Grid container spacing={3} mb={3}>
+      <Grid size={{xs:12, md:4}}>
+        <Card sx={{ borderRadius: 2, boxShadow: '0 2px 8px rgba(0,0,0,0.08)' }}>
+          <CardContent>
+            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <Box>
+                <Typography color="text.secondary" fontSize={14}>Pending Approval</Typography>
+                <Typography fontSize={32} fontWeight={700} color="#B54708">
+                  {pendingPromotions.filter(p => p.status === 'Pending Approval').length}
+                </Typography>
+              </Box>
+              <Box sx={{ bgcolor: '#FEF0C7', p: 2, borderRadius: 2 }}>
+                <PendingIcon sx={{ color: '#B54708', fontSize: 32 }} />
+              </Box>
+            </Box>
+          </CardContent>
+        </Card>
+      </Grid>
+
+      <Grid size={{xs:12, md:4}}>
+        <Card sx={{ borderRadius: 2, boxShadow: '0 2px 8px rgba(0,0,0,0.08)' }}>
+          <CardContent>
+            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <Box>
+                <Typography color="text.secondary" fontSize={14}>Approved Today</Typography>
+                <Typography fontSize={32} fontWeight={700} color="#039855">
+                  {pendingPromotions.filter(p => p.status === 'Approved').length}
+                </Typography>
+              </Box>
+              <Box sx={{ bgcolor: '#D1FAE5', p: 2, borderRadius: 2 }}>
+                <CheckCircleIcon sx={{ color: '#039855', fontSize: 32 }} />
+              </Box>
+            </Box>
+          </CardContent>
+        </Card>
+      </Grid>
+
+      <Grid size={{xs:12, md:4}}>
+        <Card sx={{ borderRadius: 2, boxShadow: '0 2px 8px rgba(0,0,0,0.08)' }}>
+          <CardContent>
+            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <Box>
+                <Typography color="text.secondary" fontSize={14}>Rejected</Typography>
+                <Typography fontSize={32} fontWeight={700} color="#D92D20">
+                  {pendingPromotions.filter(p => p.status === 'Rejected').length}
+                </Typography>
+              </Box>
+              <Box sx={{ bgcolor: '#FEE4E2', p: 2, borderRadius: 2 }}>
+                <CancelIcon sx={{ color: '#D92D20', fontSize: 32 }} />
+              </Box>
+            </Box>
+          </CardContent>
+        </Card>
+      </Grid>
+    </Grid>
+
+    {/* Pending Promotions List */}
+    <Paper sx={{ borderRadius: 3, boxShadow: '0 2px 8px rgba(0,0,0,0.08)' }}>
+      {pendingPromotions.filter(p => p.status === 'Pending Approval').map((promotion, index) => (
+        <Box
+          key={promotion.id}
+          sx={{
+            p: 3,
+            borderBottom: index < pendingPromotions.filter(p => p.status === 'Pending Approval').length - 1 ? '1px solid #F1F1F1' : 'none',
+          }}
+        >
+          <Grid container spacing={3} alignItems="center">
+            <Grid size={{xs:12, md:8}}>
+              <Box sx={{ display: 'flex', alignItems: 'start', gap: 2 }}>
+                {promotion.image ? (
+                  <Box
+                    component="img"
+                    src={promotion.image}
+                    alt={promotion.promotionName}
+                    sx={{
+                      width: 80,
+                      height: 80,
+                      borderRadius: 2,
+                      objectFit: 'cover',
+                      border: '2px solid #F1F1F1',
+                    }}
+                  />
+                ) : (
+                  <Avatar sx={{ bgcolor: '#6941C6', width: 80, height: 80, fontSize: 24, fontWeight: 700 }}>
+                    {promotion.promotionName.substring(0, 2).toUpperCase()}
+                  </Avatar>
+                )}
+                <Box sx={{ flex: 1 }}>
+                  <Typography fontSize={18} fontWeight={700} mb={0.5}>
+                    {promotion.promotionName}
+                  </Typography>
+                  <Typography color="text.secondary" fontSize={13} mb={2}>
+                    Submitted {getTimeSince(promotion.dateCreated)} by {promotion.submittedBy}
+                  </Typography>
+                  
+                  <Grid container spacing={2} mb={2}>
+                    <Grid size={{xs:6}}>
+                      <Typography fontSize={12} color="text.secondary">Merchant</Typography>
+                      <Typography fontSize={14} fontWeight={600}>{promotion.merchantName}</Typography>
+                      <Typography fontSize={13} color="text.secondary">{promotion.merchantEmail}</Typography>
+                    </Grid>
+                    <Grid size={{xs:6}}>
+                      <Typography fontSize={12} color="text.secondary">Discount</Typography>
+                      <Typography fontSize={14} fontWeight={700} color="#F63D68">
+                        {promotion.discountValue} off
+                      </Typography>
+                      <Typography fontSize={13} color="text.secondary" textTransform="capitalize">
+                        {promotion.discountType} discount
+                      </Typography>
+                    </Grid>
+                    <Grid size={{xs:6}}>
+                      <Typography fontSize={12} color="text.secondary">Campaign Duration</Typography>
+                      <Typography fontSize={14} fontWeight={600}>
+                        {new Date(promotion.startDate).toLocaleDateString()} - {new Date(promotion.endDate).toLocaleDateString()}
+                      </Typography>
+                    </Grid>
+                    <Grid size={{xs:6}}>
+                      <Typography fontSize={12} color="text.secondary">Eligible Customers</Typography>
+                      <Typography fontSize={14} fontWeight={600} textTransform="capitalize">
+                        {promotion.eligibilityCriteria === 'all' ? 'All Customers' : 
+                         promotion.eligibilityCriteria === 'new' ? 'New Customers' : 'VIP Members'}
+                      </Typography>
+                    </Grid>
+                  </Grid>
+
+                  <Box sx={{ display: 'flex', gap: 1, mb: 2 }}>
+                    <Chip
+                      label={promotion.discountType === 'percentage' ? 'Percentage' : 'Fixed Amount'}
+                      size="small"
+                      sx={{
+                        bgcolor: '#E9D7FE',
+                        color: '#6941C6',
+                        fontWeight: 600,
+                      }}
+                    />
+                    <Chip
+                      label={`Expires: ${new Date(promotion.expiryDate).toLocaleDateString()}`}
+                      size="small"
+                      sx={{
+                        bgcolor: '#FEF0C7',
+                        color: '#B54708',
+                        fontWeight: 600,
+                      }}
+                    />
+                  </Box>
+
+                  {promotion.description && (
+                    <Box sx={{ p: 2, bgcolor: '#F9FAFB', borderRadius: 2 }}>
+                      <Typography fontSize={12} color="text.secondary" fontWeight={600} mb={0.5}>
+                        Promotion Description:
+                      </Typography>
+                      <Typography fontSize={13} color="text.secondary">
+                        {promotion.description}
+                      </Typography>
+                    </Box>
+                  )}
+                </Box>
+              </Box>
+            </Grid>
+
+            <Grid size={{xs:12, md:4}}>
+              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+                <Button
+                  fullWidth
+                  variant="contained"
+                  startIcon={<CheckCircleIcon />}
+                  onClick={() => handleApprovePromotion(promotion)}
+                  sx={{
+                    bgcolor: '#039855',
+                    '&:hover': { bgcolor: '#027a48' },
+                    textTransform: 'none',
+                    fontWeight: 600,
+                    py: 1.2,
+                  }}
+                >
+                  Approve Promotion
+                </Button>
+                <Button
+                  fullWidth
+                  variant="outlined"
+                  startIcon={<CancelIcon />}
+                  onClick={() => handleRejectPromotion(promotion)}
+                  sx={{
+                    color: '#D92D20',
+                    borderColor: '#D92D20',
+                    '&:hover': {
+                      borderColor: '#B42318',
+                      bgcolor: 'rgba(217, 45, 32, 0.1)',
+                    },
+                    textTransform: 'none',
+                    fontWeight: 600,
+                    py: 1.2,
+                  }}
+                >
+                  Reject Promotion
+                </Button>
+              </Box>
+            </Grid>
+          </Grid>
+        </Box>
+      ))}
+
+      {pendingPromotions.filter(p => p.status === 'Pending Approval').length === 0 && (
+        <Box sx={{ p: 6, textAlign: 'center' }}>
+          <CheckCircleIcon sx={{ fontSize: 64, color: '#D0D5DD', mb: 2 }} />
+          <Typography fontSize={18} fontWeight={600} color="text.secondary" mb={1}>
+            All Caught Up!
+          </Typography>
+          <Typography color="text.secondary">
+            There are no pending promotions awaiting approval at this time
+          </Typography>
+        </Box>
+      )}
+    </Paper>
+
+    {/* Approval Dialog */}
+    <Dialog open={approvalDialogOpen} onClose={() => setApprovalDialogOpen(false)} maxWidth="sm" fullWidth>
+      <DialogTitle>
+        <Typography fontSize={20} fontWeight={600}>Approve Promotion</Typography>
+      </DialogTitle>
+      <DialogContent>
+        {selectedPendingPromotion && (
+          <Box sx={{ pt: 2 }}>
+            <Alert severity="success" sx={{ mb: 3 }}>
+              You are about to approve <strong>{selectedPendingPromotion.promotionName}</strong> from <strong>{selectedPendingPromotion.merchantName}</strong>.
+            </Alert>
+
+            <Box sx={{ p: 2, bgcolor: '#F9FAFB', borderRadius: 2, mb: 2 }}>
+              <Typography fontSize={14} fontWeight={600} mb={1}>Promotion Summary:</Typography>
+              <Typography fontSize={13} color="text.secondary" mb={0.5}>
+                • Discount: {selectedPendingPromotion.discountValue} ({selectedPendingPromotion.discountType})
+              </Typography>
+              <Typography fontSize={13} color="text.secondary" mb={0.5}>
+                • Eligible: {selectedPendingPromotion.eligibilityCriteria === 'all' ? 'All Customers' : 
+                             selectedPendingPromotion.eligibilityCriteria === 'new' ? 'New Customers' : 'VIP Members'}
+              </Typography>
+              <Typography fontSize={13} color="text.secondary" mb={0.5}>
+                • Duration: {new Date(selectedPendingPromotion.startDate).toLocaleDateString()} - {new Date(selectedPendingPromotion.endDate).toLocaleDateString()}
+              </Typography>
+              <Typography fontSize={13} color="text.secondary">
+                • Expiry: {new Date(selectedPendingPromotion.expiryDate).toLocaleString()}
+              </Typography>
+            </Box>
+
+            <Box sx={{ p: 2, bgcolor: '#D1FAE5', borderRadius: 2 }}>
+              <Typography fontSize={14} fontWeight={600} mb={1}>
+                What happens next:
+              </Typography>
+              <Typography fontSize={13} color="text.secondary">
+                • Promotion will go live immediately<br/>
+                • Merchant will be notified of approval<br/>
+                • Customers can start using the promotion<br/>
+                • Promotion analytics and tracking will begin
+              </Typography>
+            </Box>
           </Box>
-          {/* Table */}
-          <TableContainer
+        )}
+      </DialogContent>
+      <DialogActions sx={{ p: 3 }}>
+        <Button onClick={() => setApprovalDialogOpen(false)} sx={{ color: '#667085', textTransform: 'none' }}>
+          Cancel
+        </Button>
+        <Button
+          variant="contained"
+          onClick={confirmApproval}
+          sx={{
+            bgcolor: '#039855',
+            '&:hover': { bgcolor: '#027a48' },
+            textTransform: 'none',
+          }}
+        >
+          Confirm Approval
+        </Button>
+      </DialogActions>
+    </Dialog>
+
+    {/* Rejection Dialog */}
+    <Dialog open={rejectDialogOpen} onClose={() => setRejectDialogOpen(false)} maxWidth="sm" fullWidth>
+      <DialogTitle>
+        <Typography fontSize={20} fontWeight={600}>Reject Promotion</Typography>
+      </DialogTitle>
+      <DialogContent>
+        {selectedPendingPromotion && (
+          <Box sx={{ pt: 2 }}>
+            <Alert severity="warning" sx={{ mb: 3 }}>
+              You are about to reject the promotion <strong>{selectedPendingPromotion.promotionName}</strong>.
+            </Alert>
+
+            <Typography fontWeight={600} mb={2}>
+              Reason for Rejection *
+            </Typography>
+            <TextField
+              fullWidth
+              multiline
+              rows={4}
+              placeholder="Please provide a detailed reason for rejecting this promotion..."
+              value={rejectionReason}
+              onChange={(e) => setRejectionReason(e.target.value)}
+              required
+              sx={{
+                "& .MuiOutlinedInput-root": {
+                  borderRadius: 2,
+                },
+              }}
+            />
+
+            <Typography fontSize={13} color="text.secondary" mt={2}>
+              The merchant will be notified via email with this reason and can resubmit with corrections.
+            </Typography>
+          </Box>
+        )}
+      </DialogContent>
+      <DialogActions sx={{ p: 3 }}>
+        <Button onClick={() => setRejectDialogOpen(false)} sx={{ color: '#667085', textTransform: 'none' }}>
+          Cancel
+        </Button>
+        <Button
+          variant="contained"
+          disabled={!rejectionReason.trim()}
+          onClick={confirmRejection}
+          sx={{
+            bgcolor: '#D92D20',
+            '&:hover': { bgcolor: '#B42318' },
+            textTransform: 'none',
+          }}
+        >
+          Confirm Rejection
+        </Button>
+      </DialogActions>
+    </Dialog>
+  </>
+) : (
+  <>
+       <TableContainer
             component={Paper}
             sx={{
               borderRadius: "16px",
@@ -1187,7 +1715,12 @@ export default function Promotions() {
               </Box>
             </Paper>
           </Box>
-        </>
+    
+  </>
+
+      )}
+
+      </>
       )}
     </Box>
   );

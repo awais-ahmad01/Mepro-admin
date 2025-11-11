@@ -29,6 +29,25 @@ import {
   Bar,
   XAxis,
 } from "recharts";
+import {
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Alert,
+  Badge,
+  Tabs,
+  Tab,
+  Grid,
+  Card,
+  CardContent,
+  Avatar,
+  Tooltip,
+} from "@mui/material";
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import CancelIcon from '@mui/icons-material/Cancel';
+import PendingIcon from '@mui/icons-material/Pending';
+import AssignmentIcon from '@mui/icons-material/Assignment';
 import PhotoCameraIcon from "@mui/icons-material/PhotoCamera";
 import { Reward } from "../types";
 
@@ -37,6 +56,22 @@ const statusColor = {
   Hold: { bg: "#E9D7FE", color: "#6941C6" },
   Inactive: { bg: "#FEE4E2", color: "#D92D20" },
 };
+
+
+interface PendingReward {
+  id: string;
+  rewardName: string;
+  merchantName: string;
+  merchantEmail: string;
+  points: number;
+  level: string;
+  type: string;
+  dateCreated: string;
+  status: 'Pending Approval' | 'Approved' | 'Rejected';
+  submittedBy: string;
+  description?: string;
+  image?: string;
+}
 
 const barData = [
   { name: "Jan", value: 6 },
@@ -108,6 +143,51 @@ const rewards: Reward[] = [
     status: "Active",
     merchantName: "Apple",
     merchantEmail: "programs@apple.com",
+  },
+];
+
+
+
+
+const mockPendingRewards: PendingReward[] = [
+  {
+    id: 'PR001',
+    rewardName: 'Free Coffee Monday',
+    merchantName: 'Starbucks',
+    merchantEmail: 'partner@starbucks.com',
+    points: 300,
+    level: 'silver',
+    type: 'discount',
+    dateCreated: '2024-11-09T10:30:00',
+    status: 'Pending Approval',
+    submittedBy: 'Starbucks Manager',
+    description: 'Get a free coffee every Monday with 300 points',
+  },
+  {
+    id: 'PR002',
+    rewardName: '20% Off Weekend Deal',
+    merchantName: 'Nike',
+    merchantEmail: 'loyalty@nike.com',
+    points: 800,
+    level: 'gold',
+    type: 'discount',
+    dateCreated: '2024-11-08T14:20:00',
+    status: 'Pending Approval',
+    submittedBy: 'Nike Admin',
+    description: '20% discount on all products during weekends',
+  },
+  {
+    id: 'PR003',
+    rewardName: 'Birthday Special $25',
+    merchantName: 'Amazon',
+    merchantEmail: 'rewards@amazon.com',
+    points: 1200,
+    level: 'platinum',
+    type: 'cashback',
+    dateCreated: '2024-11-07T09:15:00',
+    status: 'Pending Approval',
+    submittedBy: 'Amazon Team',
+    description: '$25 cashback on birthday month purchases',
   },
 ];
 
@@ -200,6 +280,16 @@ export default function Rewards() {
   const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
     setMenuAnchor(event.currentTarget);
   };
+
+  const [pendingRewards, setPendingRewards] = useState<PendingReward[]>(mockPendingRewards);
+const [showApprovalQueue, setShowApprovalQueue] = useState(false);
+const [approvalDialogOpen, setApprovalDialogOpen] = useState(false);
+const [rejectDialogOpen, setRejectDialogOpen] = useState(false);
+const [selectedPendingReward, setSelectedPendingReward] = useState<PendingReward | null>(null);
+const [rejectionReason, setRejectionReason] = useState('');
+
+
+
   const handleMenuClose = () => {
     setMenuAnchor(null);
   };
@@ -264,6 +354,53 @@ export default function Rewards() {
     });
     setFormError({});
   };
+
+
+  const handleApproveReward = (reward: PendingReward) => {
+  setSelectedPendingReward(reward);
+  setApprovalDialogOpen(true);
+};
+
+const handleRejectReward = (reward: PendingReward) => {
+  setSelectedPendingReward(reward);
+  setRejectDialogOpen(true);
+};
+
+const confirmApproval = () => {
+  if (selectedPendingReward) {
+    setPendingRewards(prev =>
+      prev.map(r => r.id === selectedPendingReward.id ? { ...r, status: 'Approved' as const } : r)
+    );
+    setApprovalDialogOpen(false);
+    setSelectedPendingReward(null);
+  }
+};
+
+const confirmRejection = () => {
+  if (selectedPendingReward && rejectionReason.trim()) {
+    setPendingRewards(prev =>
+      prev.map(r => r.id === selectedPendingReward.id ? { ...r, status: 'Rejected' as const } : r)
+    );
+    setRejectDialogOpen(false);
+    setSelectedPendingReward(null);
+    setRejectionReason('');
+  }
+};
+
+const getTimeSince = (dateString: string) => {
+  const date = new Date(dateString);
+  const now = new Date();
+  const diffMs = now.getTime() - date.getTime();
+  const diffMins = Math.floor(diffMs / 60000);
+  const diffHours = Math.floor(diffMs / 3600000);
+  const diffDays = Math.floor(diffMs / 86400000);
+  
+  if (diffMins < 60) return `${diffMins} minutes ago`;
+  if (diffHours < 24) return `${diffHours} hours ago`;
+  return `${diffDays} days ago`;
+};
+
+
 
   return (
     <Box
@@ -693,41 +830,382 @@ export default function Rewards() {
         </Box>
       ) : (
         <>
-          <Box
-            display="flex"
-            alignItems="center"
-            justifyContent="space-between"
-            mb={2}
-          >
-            <Typography
-              variant="subtitle1"
-              fontWeight={600}
-              style={{ fontSize: 24 }}
-              mb={1}
-            >
-              Active Compaigns
-            </Typography>
-            <Button
-              variant="contained"
-              sx={{
-                background: "#F63D68",
-                borderRadius: 2,
-                fontWeight: 600,
-                textTransform: "none",
-                px: 3,
-                py: 1,
-                boxShadow: "0 4px 16px 0 rgba(246, 61, 104, 0.16)",
-                "&:hover": { background: "#e13a5e" },
-                "&:focus": { outline: "none" },
-              }}
-              onClick={() => setShowForm(true)}
-            >
-              Create New Reward
-            </Button>
+          
+           
+<Box
+  display="flex"
+  alignItems="center"
+  justifyContent="space-between"
+  mb={2}
+>
+  <Box display="flex" alignItems="center" gap={2}>
+    <Button
+      variant={!showApprovalQueue ? "contained" : "outlined"}
+      sx={{
+        background: !showApprovalQueue ? "#F63D68" : "transparent",
+        color: !showApprovalQueue ? "#fff" : "#F63D68",
+        borderColor: "#F63D68",
+        borderRadius: 2,
+        fontWeight: 600,
+        textTransform: "none",
+        px: 3,
+        py: 1,
+        "&:hover": { 
+          background: !showApprovalQueue ? "#e13a5e" : "rgba(246, 61, 104, 0.1)",
+          borderColor: "#F63D68",
+        },
+      }}
+      onClick={() => setShowApprovalQueue(false)}
+    >
+      Active Campaigns
+    </Button>
+    <Button
+      variant={showApprovalQueue ? "contained" : "outlined"}
+      startIcon={
+        <Badge 
+          badgeContent={pendingRewards.filter(r => r.status === 'Pending Approval').length} 
+          color="error"
+        >
+          <AssignmentIcon sx={{ color: showApprovalQueue ? "#fff" : "#6941C6" }} />
+        </Badge>
+      }
+      sx={{
+        background: showApprovalQueue ? "#6941C6" : "transparent",
+        color: showApprovalQueue ? "#fff" : "#6941C6",
+        borderColor: "#6941C6",
+        borderRadius: 2,
+        fontWeight: 600,
+        textTransform: "none",
+        px: 3,
+        py: 1,
+        "&:hover": { 
+          background: showApprovalQueue ? "#5a2fb8" : "rgba(105, 65, 198, 0.1)",
+          borderColor: "#6941C6",
+        },
+      }}
+      onClick={() => setShowApprovalQueue(true)}
+    >
+      Approval Queue
+    </Button>
+  </Box>
+  {!showApprovalQueue && (
+    <Button
+      variant="contained"
+      sx={{
+        background: "#F63D68",
+        borderRadius: 2,
+        fontWeight: 600,
+        textTransform: "none",
+        px: 3,
+        py: 1,
+        boxShadow: "0 4px 16px 0 rgba(246, 61, 104, 0.16)",
+        "&:hover": { background: "#e13a5e" },
+      }}
+      onClick={() => setShowForm(true)}
+    >
+      Create New Reward
+    </Button>
+  )}
+  </Box>
+
+
+
+  
+{showApprovalQueue ? (
+  <>
+    <Alert severity="info" sx={{ mb: 3, borderRadius: 2 }}>
+      <Typography fontWeight={600} mb={0.5}>Moderator Approval Queue</Typography>
+      Review and approve rewards created by merchants. Ensure all reward details comply with platform guidelines.
+    </Alert>
+
+    {/* Summary Cards */}
+    <Grid container spacing={3} mb={3}>
+      <Grid size={{xs:12, md:4}}>
+        <Card sx={{ borderRadius: 2, boxShadow: '0 2px 8px rgba(0,0,0,0.08)' }}>
+          <CardContent>
+            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <Box>
+                <Typography color="text.secondary" fontSize={14}>Pending Approval</Typography>
+                <Typography fontSize={32} fontWeight={700} color="#B54708">
+                  {pendingRewards.filter(r => r.status === 'Pending Approval').length}
+                </Typography>
+              </Box>
+              <Box sx={{ bgcolor: '#FEF0C7', p: 2, borderRadius: 2 }}>
+                <PendingIcon sx={{ color: '#B54708', fontSize: 32 }} />
+              </Box>
+            </Box>
+          </CardContent>
+        </Card>
+      </Grid>
+
+      <Grid size={{xs:12, md:4}}>
+        <Card sx={{ borderRadius: 2, boxShadow: '0 2px 8px rgba(0,0,0,0.08)' }}>
+          <CardContent>
+            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <Box>
+                <Typography color="text.secondary" fontSize={14}>Approved Today</Typography>
+                <Typography fontSize={32} fontWeight={700} color="#039855">
+                  {pendingRewards.filter(r => r.status === 'Approved').length}
+                </Typography>
+              </Box>
+              <Box sx={{ bgcolor: '#D1FAE5', p: 2, borderRadius: 2 }}>
+                <CheckCircleIcon sx={{ color: '#039855', fontSize: 32 }} />
+              </Box>
+            </Box>
+          </CardContent>
+        </Card>
+      </Grid>
+
+      <Grid size={{xs:12, md:4}}>
+        <Card sx={{ borderRadius: 2, boxShadow: '0 2px 8px rgba(0,0,0,0.08)' }}>
+          <CardContent>
+            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <Box>
+                <Typography color="text.secondary" fontSize={14}>Rejected</Typography>
+                <Typography fontSize={32} fontWeight={700} color="#D92D20">
+                  {pendingRewards.filter(r => r.status === 'Rejected').length}
+                </Typography>
+              </Box>
+              <Box sx={{ bgcolor: '#FEE4E2', p: 2, borderRadius: 2 }}>
+                <CancelIcon sx={{ color: '#D92D20', fontSize: 32 }} />
+              </Box>
+            </Box>
+          </CardContent>
+        </Card>
+      </Grid>
+    </Grid>
+
+    {/* Pending Rewards List */}
+    <Paper sx={{ borderRadius: 3, boxShadow: '0 2px 8px rgba(0,0,0,0.08)' }}>
+      {pendingRewards.filter(r => r.status === 'Pending Approval').map((reward, index) => (
+        <Box
+          key={reward.id}
+          sx={{
+            p: 3,
+            borderBottom: index < pendingRewards.filter(r => r.status === 'Pending Approval').length - 1 ? '1px solid #F1F1F1' : 'none',
+          }}
+        >
+          <Grid container spacing={3} alignItems="center">
+            <Grid size={{xs:12, md:8}}>
+              <Box sx={{ display: 'flex', alignItems: 'start', gap: 2 }}>
+                <Avatar sx={{ bgcolor: '#6941C6', width: 56, height: 56, fontSize: 20 }}>
+                  {reward.rewardName.substring(0, 2).toUpperCase()}
+                </Avatar>
+                <Box sx={{ flex: 1 }}>
+                  <Typography fontSize={18} fontWeight={700} mb={0.5}>
+                    {reward.rewardName}
+                  </Typography>
+                  <Typography color="text.secondary" fontSize={13} mb={2}>
+                    Submitted {getTimeSince(reward.dateCreated)} by {reward.submittedBy}
+                  </Typography>
+                  
+                  <Grid container spacing={2}>
+                    <Grid size={{xs:6}}>
+                      <Typography fontSize={12} color="text.secondary">Merchant</Typography>
+                      <Typography fontSize={14} fontWeight={600}>{reward.merchantName}</Typography>
+                      <Typography fontSize={13} color="text.secondary">{reward.merchantEmail}</Typography>
+                    </Grid>
+                    <Grid size={{xs:6}}>
+                      <Typography fontSize={12} color="text.secondary">Points Required</Typography>
+                      <Typography fontSize={14} fontWeight={700} color="#F63D68">
+                        {reward.points} points
+                      </Typography>
+                    </Grid>
+                  </Grid>
+
+                  <Box sx={{ mt: 2, display: 'flex', gap: 1 }}>
+                    <Chip
+                      label={reward.level}
+                      size="small"
+                      sx={{
+                        bgcolor: reward.level === 'platinum' ? '#E9D7FE' : reward.level === 'gold' ? '#FEF0C7' : '#D1FADF',
+                        color: reward.level === 'platinum' ? '#6941C6' : reward.level === 'gold' ? '#B54708' : '#039855',
+                        fontWeight: 600,
+                        textTransform: 'capitalize',
+                      }}
+                    />
+                    <Chip
+                      label={reward.type}
+                      size="small"
+                      sx={{
+                        bgcolor: '#F9FAFB',
+                        color: '#667085',
+                        fontWeight: 600,
+                        textTransform: 'capitalize',
+                      }}
+                    />
+                  </Box>
+
+                  {reward.description && (
+                    <Box sx={{ mt: 2, p: 2, bgcolor: '#F9FAFB', borderRadius: 2 }}>
+                      <Typography fontSize={13} color="text.secondary">
+                        {reward.description}
+                      </Typography>
+                    </Box>
+                  )}
+                </Box>
+              </Box>
+            </Grid>
+
+            <Grid size={{xs:12, md:4}}>
+              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+                <Button
+                  fullWidth
+                  variant="contained"
+                  startIcon={<CheckCircleIcon />}
+                  onClick={() => handleApproveReward(reward)}
+                  sx={{
+                    bgcolor: '#039855',
+                    '&:hover': { bgcolor: '#027a48' },
+                    textTransform: 'none',
+                    fontWeight: 600,
+                    py: 1.2,
+                  }}
+                >
+                  Approve Reward
+                </Button>
+                <Button
+                  fullWidth
+                  variant="outlined"
+                  startIcon={<CancelIcon />}
+                  onClick={() => handleRejectReward(reward)}
+                  sx={{
+                    color: '#D92D20',
+                    borderColor: '#D92D20',
+                    '&:hover': {
+                      borderColor: '#B42318',
+                      bgcolor: 'rgba(217, 45, 32, 0.1)',
+                    },
+                    textTransform: 'none',
+                    fontWeight: 600,
+                    py: 1.2,
+                  }}
+                >
+                  Reject Reward
+                </Button>
+              </Box>
+            </Grid>
+          </Grid>
+        </Box>
+      ))}
+
+      {pendingRewards.filter(r => r.status === 'Pending Approval').length === 0 && (
+        <Box sx={{ p: 6, textAlign: 'center' }}>
+          <CheckCircleIcon sx={{ fontSize: 64, color: '#D0D5DD', mb: 2 }} />
+          <Typography fontSize={18} fontWeight={600} color="text.secondary" mb={1}>
+            All Caught Up!
+          </Typography>
+          <Typography color="text.secondary">
+            There are no pending rewards awaiting approval at this time
+          </Typography>
+        </Box>
+      )}
+    </Paper>
+
+    {/* Approval Dialog */}
+    <Dialog open={approvalDialogOpen} onClose={() => setApprovalDialogOpen(false)} maxWidth="sm" fullWidth>
+      <DialogTitle>
+        <Typography fontSize={20} fontWeight={600}>Approve Reward</Typography>
+      </DialogTitle>
+      <DialogContent>
+        {selectedPendingReward && (
+          <Box sx={{ pt: 2 }}>
+            <Alert severity="success" sx={{ mb: 3 }}>
+              You are about to approve <strong>{selectedPendingReward.rewardName}</strong> from <strong>{selectedPendingReward.merchantName}</strong>.
+            </Alert>
+
+            <Box sx={{ p: 2, bgcolor: '#F9FAFB', borderRadius: 2 }}>
+              <Typography fontSize={14} fontWeight={600} mb={1}>
+                What happens next:
+              </Typography>
+              <Typography fontSize={13} color="text.secondary">
+                • Reward will be published and visible to customers<br/>
+                • Merchant will be notified of approval<br/>
+                • Customers can start redeeming with {selectedPendingReward.points} points<br/>
+                • Reward analytics will begin tracking
+              </Typography>
+            </Box>
           </Box>
-          {/* Table */}
-          {/* Table */}
-          <TableContainer
+        )}
+      </DialogContent>
+      <DialogActions sx={{ p: 3 }}>
+        <Button onClick={() => setApprovalDialogOpen(false)} sx={{ color: '#667085', textTransform: 'none' }}>
+          Cancel
+        </Button>
+        <Button
+          variant="contained"
+          onClick={confirmApproval}
+          sx={{
+            bgcolor: '#039855',
+            '&:hover': { bgcolor: '#027a48' },
+            textTransform: 'none',
+          }}
+        >
+          Confirm Approval
+        </Button>
+      </DialogActions>
+    </Dialog>
+
+    {/* Rejection Dialog */}
+    <Dialog open={rejectDialogOpen} onClose={() => setRejectDialogOpen(false)} maxWidth="sm" fullWidth>
+      <DialogTitle>
+        <Typography fontSize={20} fontWeight={600}>Reject Reward</Typography>
+      </DialogTitle>
+      <DialogContent>
+        {selectedPendingReward && (
+          <Box sx={{ pt: 2 }}>
+            <Alert severity="warning" sx={{ mb: 3 }}>
+              You are about to reject the reward <strong>{selectedPendingReward.rewardName}</strong>.
+            </Alert>
+
+            <Typography fontWeight={600} mb={2}>
+              Reason for Rejection *
+            </Typography>
+            <TextField
+              fullWidth
+              multiline
+              rows={4}
+              placeholder="Please provide a reason for rejecting this reward..."
+              value={rejectionReason}
+              onChange={(e) => setRejectionReason(e.target.value)}
+              required
+              sx={{
+                "& .MuiOutlinedInput-root": {
+                  borderRadius: 2,
+                },
+              }}
+            />
+
+            <Typography fontSize={13} color="text.secondary" mt={2}>
+              The merchant will be notified via email with this reason.
+            </Typography>
+          </Box>
+        )}
+      </DialogContent>
+      <DialogActions sx={{ p: 3 }}>
+        <Button onClick={() => setRejectDialogOpen(false)} sx={{ color: '#667085', textTransform: 'none' }}>
+          Cancel
+        </Button>
+        <Button
+          variant="contained"
+          disabled={!rejectionReason.trim()}
+          onClick={confirmRejection}
+          sx={{
+            bgcolor: '#D92D20',
+            '&:hover': { bgcolor: '#B42318' },
+            textTransform: 'none',
+          }}
+        >
+          Confirm Rejection
+        </Button>
+      </DialogActions>
+    </Dialog>
+  
+  </>
+) : (
+  // EXISTING TABLE CODE GOES HERE (wrap the existing TableContainer in this else block)
+  <>
+  <TableContainer
             component={Paper}
             sx={{
               borderRadius: "16px",
@@ -915,6 +1393,7 @@ export default function Rewards() {
             </Table>
           </TableContainer>
 
+          
           {/* Analytics Section */}
           <Typography variant="h6" fontWeight={600} mb={2}>
             Analytics
@@ -1272,9 +1751,11 @@ export default function Rewards() {
                 </Box>
               </Box>
             </Paper>
-          </Box>
+            </Box>
+            </>
+          )}
         </>
       )}
-    </Box>
+    </Box>  
   );
-}
+}  

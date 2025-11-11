@@ -31,6 +31,21 @@ import TransactionsManagement from "./pages/Transactions";
 import ReportsAnalytics from "./pages/Reports";
 import DiamondPromotions from "./pages/DiamondPromotions";
 
+import Commisions from "./pages/commisions";
+
+import SalesRepDashboard from "./pages/salesRepDashboard";
+
+import TermsAndConditions from "./pages/termsAndConditions";
+
+import CompleteCommissionManagement from "./pages/comm";
+import Commissions from "./pages/commisions";
+
+import CustomerManagement from "./pages/customerManagment";
+
+import FinanceDashboard from "./pages/finance";
+
+import DiamondManagement from "./pages/manageDiamonds";
+
 export default function App() {
   return (
     <AuthProvider>
@@ -46,8 +61,26 @@ export default function App() {
           <Route path="/" element={<ProtectedRoute><DashboardLayout><Dashboard /></DashboardLayout></ProtectedRoute>} />
           <Route path="/dashboard" element={<ProtectedRoute><DashboardLayout><Dashboard /></DashboardLayout></ProtectedRoute>} />
           <Route path="/merchant" element={<ProtectedRoute><DashboardLayout><MerchantManagement /></DashboardLayout></ProtectedRoute>} />
+
+           <Route path="/commissions" element={<ProtectedRoute><DashboardLayout><CompleteCommissionManagement /></DashboardLayout></ProtectedRoute>} />
+
+               <Route path="/commission" element={<ProtectedRoute><DashboardLayout><Commissions /></DashboardLayout></ProtectedRoute>} />
+
+                <Route path="/terms" element={<ProtectedRoute><DashboardLayout><TermsAndConditions /></DashboardLayout></ProtectedRoute>} />
+
+
+                  <Route path="/customers" element={<ProtectedRoute><DashboardLayout><CustomerManagement /></DashboardLayout></ProtectedRoute>} />
+
+                  <Route path="/finance" element={<ProtectedRoute><DashboardLayout><FinanceDashboard /></DashboardLayout></ProtectedRoute>} />
+
+                  <Route path="/diamonds" element={<ProtectedRoute><DashboardLayout><DiamondManagement /></DashboardLayout></ProtectedRoute>} />
+
+             <Route path="/sales-rep" element={<ProtectedRoute><DashboardLayout><SalesRepDashboard salesRepId="default-id" salesRepName="Sales Representative" /></DashboardLayout></ProtectedRoute>} />
+
+
+
           <Route path="/edit-merchant" element={<ProtectedRoute><DashboardLayout><MerchantEditDemo /></DashboardLayout></ProtectedRoute>} />
-          <Route path="/customers" element={<ProtectedRoute><DashboardLayout><Customers /></DashboardLayout></ProtectedRoute>} />
+          {/* <Route path="/customers" element={<ProtectedRoute><DashboardLayout><Customers /></DashboardLayout></ProtectedRoute>} /> */}
           <Route path="/menu" element={<ProtectedRoute><DashboardLayout><Menu /></DashboardLayout></ProtectedRoute>} />
           <Route path="/order" element={<ProtectedRoute><DashboardLayout><Order /></DashboardLayout></ProtectedRoute>} />
           <Route path="/loyalty-program" element={<ProtectedRoute><DashboardLayout><LoyaltyProgram /></DashboardLayout></ProtectedRoute>} />

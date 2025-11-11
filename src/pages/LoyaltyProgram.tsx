@@ -26,11 +26,46 @@ import { PieChart, Pie, Cell, ResponsiveContainer, BarChart, Bar, XAxis } from "
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 
+
+import {
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Alert,
+  Badge,
+  Grid,
+  Card,
+  CardContent,
+  Avatar,
+} from "@mui/material";
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import CancelIcon from '@mui/icons-material/Cancel';
+import PendingIcon from '@mui/icons-material/Pending';
+import AssignmentIcon from '@mui/icons-material/Assignment';
+
 const statusColor = {
   Active: { bg: "#D1FADF", color: "#039855" },
   Hold: { bg: "#E9D7FE", color: "#6941C6" },
   Inactive: { bg: "#FEE4E2", color: "#D92D20" },
 };
+
+
+interface PendingLoyaltyProgram {
+  id: string;
+  programName: string;
+  merchantName: string;
+  merchantEmail: string;
+  pointsRule: string;
+  tierLevel: string;
+  rewardPoints: number;
+  duration: string;
+  expirationDate: string;
+  dateCreated: string;
+  status: 'Pending Approval' | 'Approved' | 'Rejected';
+  submittedBy: string;
+  description: string;
+}
 
 const barData = [
   { name: "Jan", value: 6 },
@@ -155,6 +190,64 @@ export default function LoyaltyProgram() {
       description: "",
     },
   ]);
+
+
+const mockPendingPrograms: PendingLoyaltyProgram[] = [
+  {
+    id: 'LP001',
+    programName: 'Premium Coffee Rewards',
+    merchantName: 'Starbucks Downtown',
+    merchantEmail: 'manager@starbucks-downtown.com',
+    pointsRule: '$10 = 1 point',
+    tierLevel: 'Gold',
+    rewardPoints: 500,
+    duration: '12 months',
+    expirationDate: '2025-11-09',
+    dateCreated: '2024-11-08T09:30:00',
+    status: 'Pending Approval',
+    submittedBy: 'Starbucks Manager',
+    description: 'Earn 1 point for every $10 spent. Redeem 500 points for exclusive gold tier benefits including free drinks and merchandise.',
+  },
+  {
+    id: 'LP002',
+    programName: 'VIP Fashion Club',
+    merchantName: 'Nike Flagship Store',
+    merchantEmail: 'loyalty@nike-flagship.com',
+    pointsRule: '$100 = 10 points',
+    tierLevel: 'Platinum',
+    rewardPoints: 1000,
+    duration: '24 months',
+    expirationDate: '2026-11-09',
+    dateCreated: '2024-11-07T14:15:00',
+    status: 'Pending Approval',
+    submittedBy: 'Nike Admin',
+    description: 'Exclusive platinum tier program. Earn 10 points per $100 spent. Get early access to new releases and special discounts.',
+  },
+  {
+    id: 'LP003',
+    programName: 'Book Lovers Points',
+    merchantName: 'Barnes & Noble',
+    merchantEmail: 'rewards@barnesnoble.com',
+    pointsRule: '$1000 = 100 points',
+    tierLevel: 'Silver',
+    rewardPoints: 200,
+    duration: '6 months',
+    expirationDate: '2025-05-09',
+    dateCreated: '2024-11-06T11:45:00',
+    status: 'Pending Approval',
+    submittedBy: 'B&N Team',
+    description: 'Build your reading rewards with our silver tier program. Perfect for avid readers who want to save on their next purchase.',
+  },
+];
+
+
+const [pendingPrograms, setPendingPrograms] = useState<PendingLoyaltyProgram[]>(mockPendingPrograms);
+const [showApprovalQueue, setShowApprovalQueue] = useState(false);
+const [approvalDialogOpen, setApprovalDialogOpen] = useState(false);
+const [rejectDialogOpen, setRejectDialogOpen] = useState(false);
+const [selectedPendingProgram, setSelectedPendingProgram] = useState<PendingLoyaltyProgram | null>(null);
+const [rejectionReason, setRejectionReason] = useState('');
+
   const [showForm, setShowForm] = React.useState(false);
   const [form, setForm] = React.useState({
     name: "",
@@ -246,6 +339,52 @@ export default function LoyaltyProgram() {
   };
 
   const mainValue = 82.3;
+
+
+
+  const handleApproveProgram = (program: PendingLoyaltyProgram) => {
+  setSelectedPendingProgram(program);
+  setApprovalDialogOpen(true);
+};
+
+const handleRejectProgram = (program: PendingLoyaltyProgram) => {
+  setSelectedPendingProgram(program);
+  setRejectDialogOpen(true);
+};
+
+const confirmApproval = () => {
+  if (selectedPendingProgram) {
+    setPendingPrograms(prev =>
+      prev.map(p => p.id === selectedPendingProgram.id ? { ...p, status: 'Approved' as const } : p)
+    );
+    setApprovalDialogOpen(false);
+    setSelectedPendingProgram(null);
+  }
+};
+
+const confirmRejection = () => {
+  if (selectedPendingProgram && rejectionReason.trim()) {
+    setPendingPrograms(prev =>
+      prev.map(p => p.id === selectedPendingProgram.id ? { ...p, status: 'Rejected' as const } : p)
+    );
+    setRejectDialogOpen(false);
+    setSelectedPendingProgram(null);
+    setRejectionReason('');
+  }
+};
+
+const getTimeSince = (dateString: string) => {
+  const date = new Date(dateString);
+  const now = new Date();
+  const diffMs = now.getTime() - date.getTime();
+  const diffMins = Math.floor(diffMs / 60000);
+  const diffHours = Math.floor(diffMs / 3600000);
+  const diffDays = Math.floor(diffMs / 86400000);
+  
+  if (diffMins < 60) return `${diffMins} minutes ago`;
+  if (diffHours < 24) return `${diffHours} hours ago`;
+  return `${diffDays} days ago`;
+};
 
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -469,30 +608,410 @@ export default function LoyaltyProgram() {
             </Box>
           </Box>
         ) : (
-          <>
+         
+
+           <>
+    {/* Toggle Buttons */}
+    <Box display="flex" alignItems="center" justifyContent="space-between" mb={2}>
+      <Box display="flex" alignItems="center" gap={2}>
+        <Button
+          variant={!showApprovalQueue ? "contained" : "outlined"}
+          sx={{
+            background: !showApprovalQueue ? "#F63D68" : "transparent",
+            color: !showApprovalQueue ? "#fff" : "#F63D68",
+            borderColor: "#F63D68",
+            borderRadius: 2,
+            fontWeight: 600,
+            textTransform: "none",
+            px: 3,
+            py: 1,
+            "&:hover": { 
+              background: !showApprovalQueue ? "#e13a5e" : "rgba(246, 61, 104, 0.1)",
+              borderColor: "#F63D68",
+            },
+          }}
+          onClick={() => setShowApprovalQueue(false)}
+        >
+          Active Programs
+        </Button>
+        <Button
+          variant={showApprovalQueue ? "contained" : "outlined"}
+          startIcon={
+            <Badge 
+              badgeContent={pendingPrograms.filter(p => p.status === 'Pending Approval').length} 
+              color="error"
+            >
+              <AssignmentIcon sx={{ color: showApprovalQueue ? "#fff" : "#6941C6" }} />
+            </Badge>
+          }
+          sx={{
+            background: showApprovalQueue ? "#6941C6" : "transparent",
+            color: showApprovalQueue ? "#fff" : "#6941C6",
+            borderColor: "#6941C6",
+            borderRadius: 2,
+            fontWeight: 600,
+            textTransform: "none",
+            px: 3,
+            py: 1,
+            "&:hover": { 
+              background: showApprovalQueue ? "#5a2fb8" : "rgba(105, 65, 198, 0.1)",
+              borderColor: "#6941C6",
+            },
+          }}
+          onClick={() => setShowApprovalQueue(true)}
+        >
+          Approval Queue
+        </Button>
+      </Box>
+      {!showApprovalQueue && (
+        <Button
+          variant="contained"
+          sx={{
+            background: "#F63D68",
+            borderRadius: 2,
+            fontWeight: 600,
+            textTransform: "none",
+            px: 3,
+            py: 1,
+            boxShadow: "0 4px 16px 0 rgba(246, 61, 104, 0.16)",
+            "&:hover": { background: "#e13a5e" },
+          }}
+          onClick={() => setShowForm(true)}
+        >
+          Create New Program
+        </Button>
+      )}
+    </Box>
+
+    {showApprovalQueue ? (
+      <>
+        {/* Approval Queue View */}
+        <Alert severity="info" sx={{ mb: 3, borderRadius: 2 }}>
+          <Typography fontWeight={600} mb={0.5}>Moderator Approval Queue</Typography>
+          Review and approve loyalty programs created by merchants. Ensure all program details comply with platform guidelines and business rules.
+        </Alert>
+
+        {/* Summary Cards */}
+        <Grid container spacing={3} mb={3}>
+          <Grid size={{xs:12, md:4}}>
+            <Card sx={{ borderRadius: 2, boxShadow: '0 2px 8px rgba(0,0,0,0.08)' }}>
+              <CardContent>
+                <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                  <Box>
+                    <Typography color="text.secondary" fontSize={14}>Pending Approval</Typography>
+                    <Typography fontSize={32} fontWeight={700} color="#B54708">
+                      {pendingPrograms.filter(p => p.status === 'Pending Approval').length}
+                    </Typography>
+                  </Box>
+                  <Box sx={{ bgcolor: '#FEF0C7', p: 2, borderRadius: 2 }}>
+                    <PendingIcon sx={{ color: '#B54708', fontSize: 32 }} />
+                  </Box>
+                </Box>
+              </CardContent>
+            </Card>
+          </Grid>
+
+          <Grid size={{xs:12, md:4}}>
+            <Card sx={{ borderRadius: 2, boxShadow: '0 2px 8px rgba(0,0,0,0.08)' }}>
+              <CardContent>
+                <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                  <Box>
+                    <Typography color="text.secondary" fontSize={14}>Approved Today</Typography>
+                    <Typography fontSize={32} fontWeight={700} color="#039855">
+                      {pendingPrograms.filter(p => p.status === 'Approved').length}
+                    </Typography>
+                  </Box>
+                  <Box sx={{ bgcolor: '#D1FAE5', p: 2, borderRadius: 2 }}>
+                    <CheckCircleIcon sx={{ color: '#039855', fontSize: 32 }} />
+                  </Box>
+                </Box>
+              </CardContent>
+            </Card>
+          </Grid>
+
+          <Grid size={{xs:12, md:4}}>
+            <Card sx={{ borderRadius: 2, boxShadow: '0 2px 8px rgba(0,0,0,0.08)' }}>
+              <CardContent>
+                <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                  <Box>
+                    <Typography color="text.secondary" fontSize={14}>Rejected</Typography>
+                    <Typography fontSize={32} fontWeight={700} color="#D92D20">
+                      {pendingPrograms.filter(p => p.status === 'Rejected').length}
+                    </Typography>
+                  </Box>
+                  <Box sx={{ bgcolor: '#FEE4E2', p: 2, borderRadius: 2 }}>
+                    <CancelIcon sx={{ color: '#D92D20', fontSize: 32 }} />
+                  </Box>
+                </Box>
+              </CardContent>
+            </Card>
+          </Grid>
+        </Grid>
+
+        {/* Pending Programs List */}
+        <Paper sx={{ borderRadius: 3, boxShadow: '0 2px 8px rgba(0,0,0,0.08)' }}>
+          {pendingPrograms.filter(p => p.status === 'Pending Approval').map((program, index) => (
+            <Box
+              key={program.id}
+              sx={{
+                p: 3,
+                borderBottom: index < pendingPrograms.filter(p => p.status === 'Pending Approval').length - 1 ? '1px solid #F1F1F1' : 'none',
+              }}
+            >
+              <Grid container spacing={3} alignItems="center">
+                <Grid size={{xs:12, md:8}}>
+                  <Box sx={{ display: 'flex', alignItems: 'start', gap: 2 }}>
+                    <Avatar sx={{ bgcolor: '#6941C6', width: 56, height: 56, fontSize: 20, fontWeight: 700 }}>
+                      {program.programName.substring(0, 2).toUpperCase()}
+                    </Avatar>
+                    <Box sx={{ flex: 1 }}>
+                      <Typography fontSize={18} fontWeight={700} mb={0.5}>
+                        {program.programName}
+                      </Typography>
+                      <Typography color="text.secondary" fontSize={13} mb={2}>
+                        Submitted {getTimeSince(program.dateCreated)} by {program.submittedBy}
+                      </Typography>
+                      
+                      <Grid container spacing={2} mb={2}>
+                        <Grid size={{xs:6}}>
+                          <Typography fontSize={12} color="text.secondary">Merchant</Typography>
+                          <Typography fontSize={14} fontWeight={600}>{program.merchantName}</Typography>
+                          <Typography fontSize={13} color="text.secondary">{program.merchantEmail}</Typography>
+                        </Grid>
+                        <Grid size={{xs:6}}>
+                          <Typography fontSize={12} color="text.secondary">Points Rule</Typography>
+                          <Typography fontSize={14} fontWeight={700} color="#F63D68">
+                            {program.pointsRule}
+                          </Typography>
+                        </Grid>
+                        <Grid size={{xs:6}}>
+                          <Typography fontSize={12} color="text.secondary">Reward Points</Typography>
+                          <Typography fontSize={14} fontWeight={600}>
+                            {program.rewardPoints} points
+                          </Typography>
+                        </Grid>
+                        <Grid size={{xs:6}}>
+                          <Typography fontSize={12} color="text.secondary">Duration</Typography>
+                          <Typography fontSize={14} fontWeight={600}>
+                            {program.duration}
+                          </Typography>
+                        </Grid>
+                      </Grid>
+
+                      <Box sx={{ display: 'flex', gap: 1, mb: 2 }}>
+                        <Chip
+                          label={program.tierLevel}
+                          size="small"
+                          sx={{
+                            bgcolor: program.tierLevel === 'Platinum' ? '#E9D7FE' : program.tierLevel === 'Gold' ? '#FEF0C7' : '#D1FADF',
+                            color: program.tierLevel === 'Platinum' ? '#6941C6' : program.tierLevel === 'Gold' ? '#B54708' : '#039855',
+                            fontWeight: 600,
+                          }}
+                        />
+                        <Chip
+                          label={`Expires: ${new Date(program.expirationDate).toLocaleDateString()}`}
+                          size="small"
+                          sx={{
+                            bgcolor: '#F9FAFB',
+                            color: '#667085',
+                            fontWeight: 600,
+                          }}
+                        />
+                      </Box>
+
+                      {program.description && (
+                        <Box sx={{ p: 2, bgcolor: '#F9FAFB', borderRadius: 2 }}>
+                          <Typography fontSize={12} color="text.secondary" fontWeight={600} mb={0.5}>
+                            Program Description:
+                          </Typography>
+                          <Typography fontSize={13} color="text.secondary">
+                            {program.description}
+                          </Typography>
+                        </Box>
+                      )}
+                    </Box>
+                  </Box>
+                </Grid>
+
+                <Grid size={{xs:12, md:4}}>
+                  <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+                    <Button
+                      fullWidth
+                      variant="contained"
+                      startIcon={<CheckCircleIcon />}
+                      onClick={() => handleApproveProgram(program)}
+                      sx={{
+                        bgcolor: '#039855',
+                        '&:hover': { bgcolor: '#027a48' },
+                        textTransform: 'none',
+                        fontWeight: 600,
+                        py: 1.2,
+                      }}
+                    >
+                      Approve Program
+                    </Button>
+                    <Button
+                      fullWidth
+                      variant="outlined"
+                      startIcon={<CancelIcon />}
+                      onClick={() => handleRejectProgram(program)}
+                      sx={{
+                        color: '#D92D20',
+                        borderColor: '#D92D20',
+                        '&:hover': {
+                          borderColor: '#B42318',
+                          bgcolor: 'rgba(217, 45, 32, 0.1)',
+                        },
+                        textTransform: 'none',
+                        fontWeight: 600,
+                        py: 1.2,
+                      }}
+                    >
+                      Reject Program
+                    </Button>
+                  </Box>
+                </Grid>
+              </Grid>
+            </Box>
+          ))}
+
+          {pendingPrograms.filter(p => p.status === 'Pending Approval').length === 0 && (
+            <Box sx={{ p: 6, textAlign: 'center' }}>
+              <CheckCircleIcon sx={{ fontSize: 64, color: '#D0D5DD', mb: 2 }} />
+              <Typography fontSize={18} fontWeight={600} color="text.secondary" mb={1}>
+                All Caught Up!
+              </Typography>
+              <Typography color="text.secondary">
+                There are no pending loyalty programs awaiting approval at this time
+              </Typography>
+            </Box>
+          )}
+        </Paper>
+
+        {/* Approval Dialog */}
+        <Dialog open={approvalDialogOpen} onClose={() => setApprovalDialogOpen(false)} maxWidth="sm" fullWidth>
+          <DialogTitle>
+            <Typography fontSize={20} fontWeight={600}>Approve Loyalty Program</Typography>
+          </DialogTitle>
+          <DialogContent>
+            {selectedPendingProgram && (
+              <Box sx={{ pt: 2 }}>
+                <Alert severity="success" sx={{ mb: 3 }}>
+                  You are about to approve <strong>{selectedPendingProgram.programName}</strong> from <strong>{selectedPendingProgram.merchantName}</strong>.
+                </Alert>
+
+                <Box sx={{ p: 2, bgcolor: '#F9FAFB', borderRadius: 2, mb: 2 }}>
+                  <Typography fontSize={14} fontWeight={600} mb={1}>Program Summary:</Typography>
+                  <Typography fontSize={13} color="text.secondary" mb={0.5}>
+                    • Points Rule: {selectedPendingProgram.pointsRule}
+                  </Typography>
+                  <Typography fontSize={13} color="text.secondary" mb={0.5}>
+                    • Tier Level: {selectedPendingProgram.tierLevel}
+                  </Typography>
+                  <Typography fontSize={13} color="text.secondary" mb={0.5}>
+                    • Reward Points: {selectedPendingProgram.rewardPoints} points
+                  </Typography>
+                  <Typography fontSize={13} color="text.secondary">
+                    • Duration: {selectedPendingProgram.duration}
+                  </Typography>
+                </Box>
+
+                <Box sx={{ p: 2, bgcolor: '#D1FAE5', borderRadius: 2 }}>
+                  <Typography fontSize={14} fontWeight={600} mb={1}>
+                    What happens next:
+                  </Typography>
+                  <Typography fontSize={13} color="text.secondary">
+                    • Program will be activated and visible to customers<br/>
+                    • Merchant will be notified of approval<br/>
+                    • Customers can start earning points immediately<br/>
+                    • Program analytics and tracking will begin
+                  </Typography>
+                </Box>
+              </Box>
+            )}
+          </DialogContent>
+          <DialogActions sx={{ p: 3 }}>
+            <Button onClick={() => setApprovalDialogOpen(false)} sx={{ color: '#667085', textTransform: 'none' }}>
+              Cancel
+            </Button>
+            <Button
+              variant="contained"
+              onClick={confirmApproval}
+              sx={{
+                bgcolor: '#039855',
+                '&:hover': { bgcolor: '#027a48' },
+                textTransform: 'none',
+              }}
+            >
+              Confirm Approval
+            </Button>
+          </DialogActions>
+        </Dialog>
+
+        {/* Rejection Dialog */}
+        <Dialog open={rejectDialogOpen} onClose={() => setRejectDialogOpen(false)} maxWidth="sm" fullWidth>
+          <DialogTitle>
+            <Typography fontSize={20} fontWeight={600}>Reject Loyalty Program</Typography>
+          </DialogTitle>
+          <DialogContent>
+            {selectedPendingProgram && (
+              <Box sx={{ pt: 2 }}>
+                <Alert severity="warning" sx={{ mb: 3 }}>
+                  You are about to reject the loyalty program <strong>{selectedPendingProgram.programName}</strong>.
+                </Alert>
+
+                <Typography fontWeight={600} mb={2}>
+                  Reason for Rejection *
+                </Typography>
+                <TextField
+                  fullWidth
+                  multiline
+                  rows={4}
+                  placeholder="Please provide a detailed reason for rejecting this program..."
+                  value={rejectionReason}
+                  onChange={(e) => setRejectionReason(e.target.value)}
+                  required
+                  sx={{
+                    "& .MuiOutlinedInput-root": {
+                      borderRadius: 2,
+                    },
+                  }}
+                />
+
+                <Typography fontSize={13} color="text.secondary" mt={2}>
+                  The merchant will be notified via email with this reason and can resubmit with corrections.
+                </Typography>
+              </Box>
+            )}
+          </DialogContent>
+          <DialogActions sx={{ p: 3 }}>
+            <Button onClick={() => setRejectDialogOpen(false)} sx={{ color: '#667085', textTransform: 'none' }}>
+              Cancel
+            </Button>
+            <Button
+              variant="contained"
+              disabled={!rejectionReason.trim()}
+              onClick={confirmRejection}
+              sx={{
+                bgcolor: '#D92D20',
+                '&:hover': { bgcolor: '#B42318' },
+                textTransform: 'none',
+              }}
+            >
+              Confirm Rejection
+            </Button>
+          </DialogActions>
+        </Dialog>
+      </>
+    ) : (
+      <>
+         <>
             {/* Table */}
             <Box display="flex" alignItems="center" justifyContent="space-between" mb={2}>
           <Typography fontSize={24} fontWeight={600}>
             Active Compaigns
           </Typography>
-          <Button
-            variant="contained"
-            sx={{
-              background: "#F63D68",
-              borderRadius: 2,
-              fontWeight: 600,
-              textTransform: "none",
-              
-              px: 3,
-              py: 1,
-              boxShadow: "0 4px 16px 0 rgba(246, 61, 104, 0.16)",
-              "&:hover": { background: "#e13a5e" },
-               "&:focus": { outline: "none" } 
-            }}
-            onClick={() => setShowForm(true)}
-          >
-            Create New Program
-          </Button>
+         
         </Box>
             <TableContainer
               component={Paper}
@@ -888,6 +1407,19 @@ export default function LoyaltyProgram() {
               </Paper>
             </Box>
           </>
+      </>
+
+
+
+
+    )}
+
+    </>
+
+
+
+
+
         )}
       </Box>
     </LocalizationProvider>

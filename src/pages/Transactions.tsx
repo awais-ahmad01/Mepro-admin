@@ -37,7 +37,7 @@ import { Popover, InputBase } from "@mui/material";
 
 import { Refresh as RefreshIcon } from "@mui/icons-material";
 
-import { Transaction } from "../components/Transactions/types";
+import { Transaction } from "../types";
 import TransactionDetails from "../components/Transactions/TransactionDetails";
 import Invoice from "../components/Transactions/Invoice";
 

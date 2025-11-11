@@ -18,6 +18,10 @@ import {
   Checkbox,
   MenuItem,
   InputAdornment,
+  FormControl,
+  Select,
+  Grid,
+  Chip
 } from "@mui/material";
 import EditIcon from '@mui/icons-material/Edit';
 import Visibility from '@mui/icons-material/Visibility';
@@ -48,27 +52,29 @@ const preferencesData = {
   },
 };
 
+// Updated member list structure based on client requirements
+// Updated member list structure
 const memberList = [
   {
     id: "ID238976",
-    name: "SmokeShack Burger",
+    name: "Alex Johnson",
     date: "Apr 24, 2022",
-    email: "abc@gmail.com",
-    role: "Sub-admin",
+    email: "alex.johnson@company.com",
+    role: "Sales",
   },
   {
     id: "ID238975",
-    name: "Waffle Fries",
-    date: "Apr 24, 2022",
-    email: "abc@gmail.com",
-    role: "Staff view",
+    name: "Sarah Wilson",
+    date: "Mar 15, 2022",
+    email: "sarah.wilson@company.com",
+    role: "Moderator",
   },
   {
     id: "ID238974",
-    name: "Chalupa Supreme",
-    date: "Apr 24, 2022",
-    email: "abc@gmail.com",
-    role: "Author",
+    name: "Mike Chen",
+    date: "Feb 08, 2022",
+    email: "mike.chen@company.com",
+    role: "Admin",
   },
 ];
 
@@ -76,7 +82,7 @@ const tabLabels = [
   "Edit Profile",
   "Preferences",
   "Security",
-  // "Add new member"
+  "Add new member"
 ];
 
 const currencyOptions = [
@@ -99,7 +105,17 @@ const timezoneOptions = [
   '(GMT+10:00) Sydney',
 ];
 
-// 1. Define custom icons for circular checkboxes at the top of the file:
+// Role options based on client requirements
+const roleOptions = [
+  { value: 'admin', label: 'Admin' },
+  { value: 'moderator', label: 'Moderator' },
+  { value: 'sales', label: 'Sales' },
+  { value: 'sub-admin', label: 'Sub-admin' },
+  { value: 'staff', label: 'Staff view' },
+  { value: 'author', label: 'Author' },
+];
+
+// Custom icons for checkboxes
 const CircleIcon = () => (
   <span style={{
     borderRadius: '50%',
@@ -136,6 +152,18 @@ export default function Settings() {
   const [showCurrentPassword, setShowCurrentPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
 
+  // New state for Add Member form based on client requirements
+  const [newMember, setNewMember] = useState({
+    email: '',
+    role: '',
+    fullName: '',
+    ukAddress: '',
+    niNumber: '',
+    bankAccount: '',
+    password: ''
+  });
+  const [showNewMemberPassword, setShowNewMemberPassword] = useState(false);
+
   // Handlers
   const handleTabChange = (_: React.SyntheticEvent, newValue: number) => setTab(newValue);
   const handleProfileChange = (field: string, value: string) => setProfile({ ...profile, [field]: value });
@@ -150,7 +178,34 @@ export default function Settings() {
   const handleMemberSelect = (id: string) => {
     setSelectedMembers((prev) => prev.includes(id) ? prev.filter(m => m !== id) : [...prev, id]);
   };
-  // UI
+
+  // New member handlers
+  const handleNewMemberChange = (field: string, value: string) => {
+    setNewMember(prev => ({ ...prev, [field]: value }));
+  };
+
+  const handleAddMember = () => {
+    // Here you would typically make an API call to add the member
+    console.log('Adding new member:', newMember);
+    
+    // Reset form after submission
+    setNewMember({
+      email: '',
+      role: '',
+      fullName: '',
+      ukAddress: '',
+      niNumber: '',
+      bankAccount: '',
+      password: ''
+    });
+    
+    // Show success message or handle accordingly
+    alert('New member added successfully!');
+  };
+
+  // Check if sales role is selected to show additional fields
+  const showSalesFields = newMember.role === 'sales';
+
   return (
     <>
       <Typography variant="subtitle1" fontWeight={600} style={{ fontSize: 32 }} mb={1}>
@@ -190,7 +245,8 @@ export default function Settings() {
             />
           ))}
         </Tabs>
-        {/* Edit Profile Tab */}
+
+        {/* Edit Profile Tab - Keep existing */}
         {tab === 0 && (
           <Box sx={{ display: 'flex', gap: 4, mt: 4, alignItems: 'flex-start' }}>
             {/* Avatar */}
@@ -279,7 +335,8 @@ export default function Settings() {
             </Box>
           </Box>
         )}
-        {/* Preferences Tab */}
+
+        {/* Preferences Tab - Keep existing */}
         {tab === 1 && (
           <Box sx={{ mt: 4 }}>
             <Box sx={{ display: 'flex', gap: 4, mb: 4 }}>
@@ -466,14 +523,14 @@ export default function Settings() {
             </Box>
           </Box>
         )}
-        {/* Security Tab */}
+
+        {/* Security Tab - Keep existing */}
         {tab === 2 && (
           <Box sx={{ position: 'relative', minHeight: 400, pt: 3, pl: 3, pr: 3 }}>
             <Typography fontWeight={700} fontSize={20} color="#23235B" mb={1.5}>
               Two-factor Authentication
             </Typography>
             <Box sx={{ display: 'flex', alignItems: 'center', mb: 3.5 }}>
-              {/* Custom Switch */}
               <Box
                 sx={{
                   width: 44,
@@ -611,183 +668,361 @@ export default function Settings() {
             </Box>
           </Box>
         )}
-        {/* Add new member Tab */}
-        {/* {tab === 3 && (
-          <Box sx={{ mt: 4 }}>
-            <Typography fontWeight={500} fontSize={20} mb={4} color="#23235B">
-              Please add email and role as new member access
-            </Typography>
-            
-            <Box sx={{ display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, gap: 3, mb: 2, width: "100%" }}>
-              <Box sx={{ flex: 1 }}>
-                <Typography fontWeight={500} fontSize={18} mb={1} color="#23235B">Email</Typography>
-                <TextField
-                  fullWidth
-                  size="small"
-                  placeholder="abc@gmail.com"
-                  sx={{
-                    background: '#FAFBFC',
-                    borderRadius: 2,
-                    '& .MuiOutlinedInput-root': {
-                      borderRadius: 2,
-                      fontSize: 15,
-                      background: '#FAFBFC',
-                      border: '1px solid #EAF0F7',
-                      padding: '6px 12px',
-                    },
-                    '& .MuiOutlinedInput-notchedOutline': {
-                      border: '1px solid #EAF0F7',
-                    },
-                    '& .MuiInputBase-input': { color: '#718EBF' },
-                  }}
-                />
-              </Box>
-              <Box sx={{ flex: 1 }}>
-                <Typography fontWeight={500} fontSize={18} mb={1} color="#23235B">Role</Typography>
-                <TextField
-                  select
-                  fullWidth
-                  size="small"
-                  placeholder="select the role"
-                  defaultValue=""
-                  sx={{
-                    background: '#FAFBFC',
-                    borderRadius: 2,
-                    '& .MuiOutlinedInput-root': {
-                      borderRadius: 2,
-                      fontSize: 15,
-                      background: '#FAFBFC',
-                      border: '1px solid #EAF0F7',
-                      padding: '6px 12px',
-                    },
-                    '& .MuiOutlinedInput-notchedOutline': {
-                      border: '1px solid #EAF0F7',
-                    },
-                    '& .MuiInputBase-input': { color: '#718EBF' },
-                  }}
-                >
-                  <MenuItem value="" disabled sx={{ color: '#A0AEC0' }}>select the role</MenuItem>
-                  <MenuItem value="Sub-admin">Sub-admin</MenuItem>
-                  <MenuItem value="Staff view">Staff view</MenuItem>
-                  <MenuItem value="Author">Author</MenuItem>
-                </TextField>
-              </Box>
-            </Box>
-            <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 4 }}>
-              <Button
-                variant="contained"
-                sx={{
-                  bgcolor: '#FF4D7D',
-                  color: 'white',
-                  borderRadius: 3,
-                  px: 6,
-                  py: 0.5,
-                  fontWeight: 600,
-                  fontSize: 20,
-                  textTransform: 'none',
-                  boxShadow: 'none',
-                  '&:hover': { bgcolor: '#FF3366' },
-                }}
-              >
-                Save
-              </Button>
-            </Box>
-            <Typography fontWeight={700} fontSize={18} mb={2} color="#23235B">
-              List of user can access
-            </Typography>
-            <TableContainer component={Paper} sx={{ borderRadius: 3, boxShadow: 'none', mb: 2, mt: 2 }}>
-              <Table>
-                <TableHead>
-                  <TableRow sx={{ background: '#F6F8FB' }}>
-                    <TableCell padding="checkbox" sx={{ width: 48 }}>
-                      <Checkbox
-                        icon={<CircleIcon />}
-                        checkedIcon={<CircleCheckedIcon />}
-                        checked={selectedMembers.length === memberList.length && memberList.length > 0}
-                        indeterminate={selectedMembers.length > 0 && selectedMembers.length < memberList.length}
-                        onChange={e => {
-                          if (e.target.checked) {
-                            setSelectedMembers(memberList.map(m => m.id));
-                          } else {
-                            setSelectedMembers([]);
-                          }
-                        }}
-                        sx={{ p: 0, ml: 1 }}
-                      />
-                    </TableCell>
-                    <TableCell sx={{ fontWeight: 600 }}>
-                      <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
-                        Name
-                        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                          <path d="M11.3333 2V14" stroke="#718096" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-                          <path d="M6.66666 12L4.66666 14L2.66666 12" stroke="#718096" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-                          <path d="M4.66666 14V2" stroke="#718096" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-                          <path d="M13.3333 4L11.3333 2L9.33331 4" stroke="#718096" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-                        </svg>
-                      </span>
-                    </TableCell>
-                    <TableCell sx={{ fontWeight: 600 }}>
-                      <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
-                        Date
-                        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                          <path d="M10 4.1665V15.8332" stroke="#0CAF60" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-                          <path d="M13.3333 7.49984L10 4.1665" stroke="#0CAF60" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-                          <path d="M6.66666 7.49984L9.99999 4.1665" stroke="#0CAF60" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-                        </svg>
-                      </span>
-                    </TableCell>
-                    <TableCell sx={{ fontWeight: 600 }}>
-                      <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
-                        E-mail
-                        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                          <path d="M11.3334 2V14" stroke="#718096" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                          <path d="M6.66669 12L4.66669 14L2.66669 12" stroke="#718096" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                          <path d="M4.66669 14V2" stroke="#718096" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                          <path d="M13.3334 4L11.3334 2L9.33337 4" stroke="#718096" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                        </svg>
-                      </span>
-                    </TableCell>
-                    <TableCell sx={{ fontWeight: 600 }}>
-                      <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
-                        Role
-                        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                          <path d="M11.3334 2V14" stroke="#718096" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                          <path d="M6.66669 12L4.66669 14L2.66669 12" stroke="#718096" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                          <path d="M4.66669 14V2" stroke="#718096" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                          <path d="M13.3334 4L11.3334 2L9.33337 4" stroke="#718096" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                        </svg>
-                      </span>
-                    </TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {memberList.map((row) => (
-                    <TableRow key={row.id}>
-                      <TableCell padding="checkbox">
-                        <Checkbox
-                          icon={<CircleIcon />}
-                          checkedIcon={<CircleCheckedIcon />}
-                          checked={selectedMembers.includes(row.id)}
-                          onChange={() => handleMemberSelect(row.id)}
-                          sx={{ color: '#FF4D7D', '&.Mui-checked': { color: '#FF4D7D' }, p: 0, ml: 1 }}
-                        />
-                      </TableCell>
-                      <TableCell>
-                        <Typography fontWeight={700}>{row.name}</Typography>
-                        <Typography fontSize={13} color="#888">#{row.id}</Typography>
-                      </TableCell>
-                      <TableCell><Typography fontWeight={500}>{row.date}</Typography></TableCell>
-                      <TableCell><Typography fontWeight={500}>{row.email}</Typography></TableCell>
-                      <TableCell><Typography fontWeight={500}>{row.role}</Typography></TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </TableContainer>
 
-          </Box>
-        )} */}
+        {/* Add new member Tab - UPDATED BASED ON CLIENT REQUIREMENTS */}
+       {/* Add new member Tab - UPDATED & SIMPLIFIED */}
+{/* Add new member Tab - UPDATED WITH EDIT/DELETE FUNCTIONALITY */}
+{tab === 3 && (
+  <Box sx={{ mt: 4 }}>
+    <Typography fontWeight={500} fontSize={20} mb={4} color="#23235B">
+      Please add email and role as new member access
+    </Typography>
+    
+    {/* New Member Form */}
+    <Box sx={{ mb: 6 }}>
+      <Grid container spacing={3}>
+        {/* Email Field */}
+        <Grid size={{xs:12, md:6}}>
+          <Typography fontWeight={500} fontSize={18} mb={1} color="#23235B">Email</Typography>
+          <TextField
+            fullWidth
+            size="small"
+            placeholder="user@company.com"
+            value={newMember.email}
+            onChange={(e) => handleNewMemberChange('email', e.target.value)}
+            sx={{
+              background: '#FAFBFC',
+              borderRadius: 2,
+              '& .MuiOutlinedInput-root': {
+                borderRadius: 2,
+                fontSize: 15,
+                background: '#FAFBFC',
+                border: '1px solid #EAF0F7',
+                padding: '6px 12px',
+              },
+              '& .MuiOutlinedInput-notchedOutline': {
+                border: '1px solid #EAF0F7',
+              },
+              '& .MuiInputBase-input': { color: '#718EBF' },
+            }}
+          />
+        </Grid>
+
+        {/* Role Field */}
+        <Grid size={{xs:12, md:6}}>
+          <Typography fontWeight={500} fontSize={18} mb={1} color="#23235B">Role</Typography>
+          <FormControl fullWidth size="small">
+            <Select
+              value={newMember.role}
+              onChange={(e) => handleNewMemberChange('role', e.target.value)}
+              displayEmpty
+              sx={{
+                background: '#FAFBFC',
+                borderRadius: 2,
+                '& .MuiOutlinedInput-notchedOutline': {
+                  border: '1px solid #EAF0F7',
+                },
+                '& .MuiSelect-select': { color: newMember.role ? '#718EBF' : '#A0AEC0' },
+              }}
+            >
+              <MenuItem value="" disabled>
+                Select Role
+              </MenuItem>
+              <MenuItem value="admin">Admin</MenuItem>
+              <MenuItem value="moderator">Moderator</MenuItem>
+              <MenuItem value="sales">Sales</MenuItem>
+            </Select>
+          </FormControl>
+        </Grid>
+
+        {/* Conditional Fields for Sales Role */}
+        {showSalesFields && (
+          <>
+            <Grid size={{xs:12, md:6}}>
+              <Typography fontWeight={500} fontSize={18} mb={1} color="#23235B">Full Name</Typography>
+              <TextField
+                fullWidth
+                size="small"
+                placeholder="John Smith"
+                value={newMember.fullName}
+                onChange={(e) => handleNewMemberChange('fullName', e.target.value)}
+                sx={{
+                  background: '#FAFBFC',
+                  borderRadius: 2,
+                  '& .MuiOutlinedInput-root': {
+                    borderRadius: 2,
+                    fontSize: 15,
+                    background: '#FAFBFC',
+                    border: '1px solid #EAF0F7',
+                    padding: '6px 12px',
+                  },
+                  '& .MuiOutlinedInput-notchedOutline': {
+                    border: '1px solid #EAF0F7',
+                  },
+                  '& .MuiInputBase-input': { color: '#718EBF' },
+                }}
+              />
+            </Grid>
+
+            <Grid size={{xs:12, md:6}}>
+              <Typography fontWeight={500} fontSize={18} mb={1} color="#23235B">UK Address</Typography>
+              <TextField
+                fullWidth
+                size="small"
+                placeholder="123 Main Street, London"
+                value={newMember.ukAddress}
+                onChange={(e) => handleNewMemberChange('ukAddress', e.target.value)}
+                sx={{
+                  background: '#FAFBFC',
+                  borderRadius: 2,
+                  '& .MuiOutlinedInput-root': {
+                    borderRadius: 2,
+                    fontSize: 15,
+                    background: '#FAFBFC',
+                    border: '1px solid #EAF0F7',
+                    padding: '6px 12px',
+                  },
+                  '& .MuiOutlinedInput-notchedOutline': {
+                    border: '1px solid #EAF0F7',
+                  },
+                  '& .MuiInputBase-input': { color: '#718EBF' },
+                }}
+              />
+            </Grid>
+
+            <Grid size={{xs:12, md:6}}>
+              <Typography fontWeight={500} fontSize={18} mb={1} color="#23235B">NI Number</Typography>
+              <TextField
+                fullWidth
+                size="small"
+                placeholder="QQ123456A"
+                value={newMember.niNumber}
+                onChange={(e) => handleNewMemberChange('niNumber', e.target.value)}
+                sx={{
+                  background: '#FAFBFC',
+                  borderRadius: 2,
+                  '& .MuiOutlinedInput-root': {
+                    borderRadius: 2,
+                    fontSize: 15,
+                    background: '#FAFBFC',
+                    border: '1px solid #EAF0F7',
+                    padding: '6px 12px',
+                  },
+                  '& .MuiOutlinedInput-notchedOutline': {
+                    border: '1px solid #EAF0F7',
+                  },
+                  '& .MuiInputBase-input': { color: '#718EBF' },
+                }}
+              />
+            </Grid>
+
+            <Grid size={{xs:12, md:6}}>
+              <Typography fontWeight={500} fontSize={18} mb={1} color="#23235B">Bank Account</Typography>
+              <TextField
+                fullWidth
+                size="small"
+                placeholder="1234 5678 9012 3456"
+                value={newMember.bankAccount}
+                onChange={(e) => handleNewMemberChange('bankAccount', e.target.value)}
+                sx={{
+                  background: '#FAFBFC',
+                  borderRadius: 2,
+                  '& .MuiOutlinedInput-root': {
+                    borderRadius: 2,
+                    fontSize: 15,
+                    background: '#FAFBFC',
+                    border: '1px solid #EAF0F7',
+                    padding: '6px 12px',
+                  },
+                  '& .MuiOutlinedInput-notchedOutline': {
+                    border: '1px solid #EAF0F7',
+                  },
+                  '& .MuiInputBase-input': { color: '#718EBF' },
+                }}
+              />
+            </Grid>
+          </>
+        )}
+      </Grid>
+
+      {/* Information Alert */}
+      <Box sx={{ 
+        mt: 3, 
+        p: 2, 
+        backgroundColor: '#E8F4FD', 
+        borderRadius: 2,
+        border: '1px solid #B6E0FE'
+      }}>
+        <Typography fontSize={14} color="#1E6FA9" fontWeight={500}>
+          💡 <strong>How it works:</strong> When you add a new team member, they will receive an email invitation 
+          with a temporary password. They'll be required to set their own password on first login.
+        </Typography>
+      </Box>
+
+      <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 4 }}>
+        <Button
+          variant="contained"
+          onClick={handleAddMember}
+          disabled={!newMember.email || !newMember.role || (showSalesFields && (!newMember.fullName || !newMember.ukAddress || !newMember.niNumber || !newMember.bankAccount))}
+          sx={{
+            bgcolor: '#FF4D7D',
+            color: 'white',
+            borderRadius: 3,
+            px: 6,
+            py: 0.5,
+            fontWeight: 600,
+            fontSize: 20,
+            textTransform: 'none',
+            boxShadow: 'none',
+            '&:hover': { bgcolor: '#FF3366' },
+            '&:disabled': { bgcolor: '#cccccc', color: '#666666' },
+          }}
+        >
+          Send Invitation
+        </Button>
+      </Box>
+    </Box>
+
+    {/* Existing Members Table - UPDATED WITH ACTIONS */}
+    <Typography fontWeight={700} fontSize={18} mb={2} color="#23235B">
+      List of users with access
+    </Typography>
+    <TableContainer component={Paper} sx={{ borderRadius: 3, boxShadow: 'none', mb: 2, mt: 2 }}>
+      <Table>
+        <TableHead>
+          <TableRow sx={{ background: '#F6F8FB' }}>
+            <TableCell sx={{ fontWeight: 600 }}>
+              <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+                Name
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M11.3333 2V14" stroke="#718096" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                  <path d="M6.66666 12L4.66666 14L2.66666 12" stroke="#718096" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                  <path d="M4.66666 14V2" stroke="#718096" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                  <path d="M13.3333 4L11.3333 2L9.33331 4" stroke="#718096" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              </span>
+            </TableCell>
+            <TableCell sx={{ fontWeight: 600 }}>
+              <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+                Date
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M10 4.1665V15.8332" stroke="#0CAF60" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                  <path d="M13.3333 7.49984L10 4.1665" stroke="#0CAF60" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                  <path d="M6.66666 7.49984L9.99999 4.1665" stroke="#0CAF60" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              </span>
+            </TableCell>
+            <TableCell sx={{ fontWeight: 600 }}>
+              <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+                E-mail
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M11.3334 2V14" stroke="#718096" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                  <path d="M6.66669 12L4.66669 14L2.66669 12" stroke="#718096" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                  <path d="M4.66669 14V2" stroke="#718096" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                  <path d="M13.3334 4L11.3334 2L9.33337 4" stroke="#718096" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              </span>
+            </TableCell>
+            <TableCell sx={{ fontWeight: 600 }}>
+              <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+                Role
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M11.3334 2V14" stroke="#718096" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                  <path d="M6.66669 12L4.66669 14L2.66669 12" stroke="#718096" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                  <path d="M4.66669 14V2" stroke="#718096" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                  <path d="M13.3334 4L11.3334 2L9.33337 4" stroke="#718096" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              </span>
+            </TableCell>
+            <TableCell sx={{ fontWeight: 600 }}>Actions</TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {memberList.map((row) => (
+            <TableRow key={row.id}>
+              <TableCell>
+                <Typography fontWeight={700}>{row.name}</Typography>
+                <Typography fontSize={13} color="#888">#{row.id}</Typography>
+              </TableCell>
+              <TableCell><Typography fontWeight={500}>{row.date}</Typography></TableCell>
+              <TableCell><Typography fontWeight={500}>{row.email}</Typography></TableCell>
+              <TableCell>
+                <FormControl size="small" sx={{ minWidth: 120 }}>
+                  <Select
+                    value={row.role.toLowerCase()}
+                    onChange={(e) => {
+                      // Handle role change
+                      console.log(`Changing role for ${row.name} to ${e.target.value}`);
+                    }}
+                    sx={{
+                      '& .MuiOutlinedInput-notchedOutline': {
+                        border: 'none',
+                      },
+                      '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                        border: '1px solid #FF4D7D',
+                      },
+                      backgroundColor: 
+                        row.role === 'Admin' ? '#E9D7FE' :
+                        row.role === 'Moderator' ? '#FEF3C7' :
+                        row.role === 'Sales' ? '#D1FADF' : '#FEE4E2',
+                      color: 
+                        row.role === 'Admin' ? '#6941C6' :
+                        row.role === 'Moderator' ? '#D97706' :
+                        row.role === 'Sales' ? '#039855' : '#D92D20',
+                      borderRadius: 2,
+                      fontWeight: 600,
+                      fontSize: 14,
+                    }}
+                  >
+                    <MenuItem value="admin">Admin</MenuItem>
+                    <MenuItem value="moderator">Moderator</MenuItem>
+                    <MenuItem value="sales">Sales</MenuItem>
+                  </Select>
+                </FormControl>
+              </TableCell>
+              <TableCell>
+                <Box sx={{ display: 'flex', gap: 1 }}>
+                  <IconButton
+                    size="small"
+                    onClick={() => {
+                      // Handle edit action
+                      console.log(`Editing user: ${row.name}`);
+                    }}
+                    sx={{
+                      color: '#FF4D7D',
+                      '&:hover': { backgroundColor: 'rgba(255, 77, 125, 0.1)' },
+                    }}
+                  >
+                    <EditIcon fontSize="small" />
+                  </IconButton>
+                  <IconButton
+                    size="small"
+                    onClick={() => {
+                      // Handle delete action - show confirmation dialog
+                      if (window.confirm(`Are you sure you want to delete ${row.name}?`)) {
+                        console.log(`Deleting user: ${row.name}`);
+                      }
+                    }}
+                    sx={{
+                      color: '#EF4444',
+                      '&:hover': { backgroundColor: 'rgba(239, 68, 68, 0.1)' },
+                    }}
+                  >
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M3 6H5H21" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                      <path d="M8 6V4C8 3.46957 8.21071 2.96086 8.58579 2.58579C8.96086 2.21071 9.46957 2 10 2H14C14.5304 2 15.0391 2.21071 15.4142 2.58579C15.7893 2.96086 16 3.46957 16 4V6M19 6V20C19 20.5304 18.7893 21.0391 18.4142 21.4142C18.0391 21.7893 17.5304 22 17 22H7C6.46957 22 5.96086 21.7893 5.58579 21.4142C5.21071 21.0391 5 20.5304 5 20V6H19Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>
+                  </IconButton>
+                </Box>
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </TableContainer>
+  </Box>
+)}
       </Box>
     </>
   );
-} 
+}

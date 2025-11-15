@@ -25,19 +25,16 @@ import lightTheme from './theme';
 import { AuthProvider } from "./auth";
 import MerchantManagement from "./pages/merchants";
 import MerchantEditDemo from "./components/MerchantManagement/edit-merchant";
-import TiersManagement from "./pages/Tiers";
-import PointsPricingManagement from "./pages/PointsManagement";
+// import TiersManagement from "./pages/Tiers";
+// import PointsPricingManagement from "./pages/PointsManagement";
 import TransactionsManagement from "./pages/Transactions";
 import ReportsAnalytics from "./pages/Reports";
 import DiamondPromotions from "./pages/DiamondPromotions";
-
-import Commisions from "./pages/commisions";
 
 import SalesRepDashboard from "./pages/salesRepDashboard";
 
 import TermsAndConditions from "./pages/termsAndConditions";
 
-import CompleteCommissionManagement from "./pages/comm";
 import Commissions from "./pages/commisions";
 
 import CustomerManagement from "./pages/customerManagment";
@@ -62,7 +59,7 @@ export default function App() {
           <Route path="/dashboard" element={<ProtectedRoute><DashboardLayout><Dashboard /></DashboardLayout></ProtectedRoute>} />
           <Route path="/merchant" element={<ProtectedRoute><DashboardLayout><MerchantManagement /></DashboardLayout></ProtectedRoute>} />
 
-           <Route path="/commissions" element={<ProtectedRoute><DashboardLayout><CompleteCommissionManagement /></DashboardLayout></ProtectedRoute>} />
+         
 
                <Route path="/commission" element={<ProtectedRoute><DashboardLayout><Commissions /></DashboardLayout></ProtectedRoute>} />
 
@@ -94,8 +91,8 @@ export default function App() {
 
           <Route path="/payment" element={<ProtectedRoute><DashboardLayout><Payment /></DashboardLayout></ProtectedRoute>} />
           <Route path="/feedback" element={<ProtectedRoute><DashboardLayout><Feedback /></DashboardLayout></ProtectedRoute>} />
-          <Route path="/tiers" element={<ProtectedRoute><DashboardLayout><TiersManagement /></DashboardLayout></ProtectedRoute>} />
-          <Route path="/points-management" element={<ProtectedRoute><DashboardLayout><PointsPricingManagement /></DashboardLayout></ProtectedRoute>} />
+          {/* <Route path="/tiers" element={<ProtectedRoute><DashboardLayout><TiersManagement /></DashboardLayout></ProtectedRoute>} /> */}
+          {/* <Route path="/points-management" element={<ProtectedRoute><DashboardLayout><PointsPricingManagement /></DashboardLayout></ProtectedRoute>} /> */}
           <Route path="/reports-analytics" element={<ProtectedRoute><DashboardLayout><ReportsAnalytics /></DashboardLayout></ProtectedRoute>} />
           <Route path="/settings" element={<ProtectedRoute><DashboardLayout><Settings /></DashboardLayout></ProtectedRoute>} />
           <Route path="/logout" element={<ProtectedRoute><DashboardLayout><Logout /></DashboardLayout></ProtectedRoute>} />

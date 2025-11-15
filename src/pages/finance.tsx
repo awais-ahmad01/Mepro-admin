@@ -1,4 +1,10 @@
-import React, { useState } from 'react';
+import { useEffect, useState } from "react";
+import { isSameDay } from 'date-fns';
+import { Popover, InputBase } from "@mui/material";
+import { DayPicker } from "react-day-picker";
+import "react-day-picker/dist/style.css";
+import { ArrowForwardIos, Refresh as RefreshIcon } from "@mui/icons-material";
+
 import {
   Box,
   Typography,
@@ -22,7 +28,7 @@ import {
   CardContent,
   Alert,
   InputAdornment,
-  Grid
+  Grid, Divider
 } from '@mui/material';
 
 import {
@@ -263,11 +269,20 @@ const planDistribution = [
 
 // ==================== SUBSCRIPTION PAYMENTS COMPONENT ====================
 // ==================== SUBSCRIPTION PAYMENTS COMPONENT ====================
-const SubscriptionPayments = () => {
-  const [subscriptions, setSubscriptions] = useState(mockSubscriptions);
+const SubscriptionPayments = ({ data }: { data: SubscriptionPayment[] }) => {
+  const [subscriptions, setSubscriptions] = useState(data);
   const [searchTerm, setSearchTerm] = useState('');
   const [filterPlan, setFilterPlan] = useState('All');
   const [filterStatus, setFilterStatus] = useState('All');
+
+  // Add this useEffect to sync with parent data changes
+  useEffect(() => {
+    setSubscriptions(data);
+  }, [data]);
+
+
+  
+  
 
   const filteredSubscriptions = subscriptions.filter((sub) => {
     const matchesSearch = sub.merchantName.toLowerCase().includes(searchTerm.toLowerCase());
@@ -496,10 +511,17 @@ const SubscriptionPayments = () => {
 };
 
 // ==================== MERCHANT PAYOUTS COMPONENT ====================
-const MerchantPayouts = () => {
-  const [payouts, setPayouts] = useState(mockMerchantPayouts);
+const MerchantPayouts = ({ data }: { data: MerchantPayout[] }) => {
+  const [payouts, setPayouts] = useState(data);
   const [searchTerm, setSearchTerm] = useState('');
   const [filterStatus, setFilterStatus] = useState('All');
+
+  // Add this useEffect
+  useEffect(() => {
+    setPayouts(data);
+  }, [data]);
+
+  // ... rest of the component stays the same
 
   const filteredPayouts = payouts.filter((payout) => {
     const matchesSearch = payout.merchantName.toLowerCase().includes(searchTerm.toLowerCase());
@@ -747,14 +769,128 @@ export default function FinanceDashboard() {
   const [incomeSubTab, setIncomeSubTab] = useState(0);
   const [outgoingSubTab, setOutgoingSubTab] = useState(0);
 
-  // Calculate totals for main summary cards
-  const totalSubscriptionIncome = mockSubscriptions.reduce((sum, s) => sum + s.amount, 0);
-  const totalCommissionIncome = mockTransactionCommissions.reduce((sum, t) => sum + t.commissionAmount, 0);
-  const totalSalesCommission = mockSalesCommissions.reduce((sum, s) => sum + s.amount, 0);
-  const totalMerchantPayouts = mockMerchantPayouts.reduce((sum, m) => sum + m.netAmount, 0);
+  // State variables
+  const [calendarAnchor, setCalendarAnchor] = useState<null | HTMLElement>(null);
+  const [selectedDates, setSelectedDates] = useState<Date[]>([]);
+  const [dateFilteredSubscriptions, setDateFilteredSubscriptions] = useState(mockSubscriptions);
+  const [dateFilteredCommissions, setDateFilteredCommissions] = useState(mockTransactionCommissions);
+  const [dateFilteredSalesCommissions, setDateFilteredSalesCommissions] = useState(mockSalesCommissions);
+  const [dateFilteredMerchantPayouts, setDateFilteredMerchantPayouts] = useState(mockMerchantPayouts);
+
+  // Calendar handlers
+  const handleCalendarOpen = (event: React.MouseEvent<HTMLElement>) => {
+    setCalendarAnchor(event.currentTarget);
+  };
+
+  const handleCalendarClose = () => {
+    setCalendarAnchor(null);
+  };
+
+  const applyDateFilter = () => {
+    if (selectedDates.length === 0) {
+      setDateFilteredSubscriptions(mockSubscriptions);
+      setDateFilteredCommissions(mockTransactionCommissions);
+      setDateFilteredSalesCommissions(mockSalesCommissions);
+      setDateFilteredMerchantPayouts(mockMerchantPayouts);
+    } else {
+      setDateFilteredSubscriptions(
+        mockSubscriptions.filter((item) =>
+          selectedDates.some((d) => isSameDay(d, parseISO(item.date)))
+        )
+      );
+      setDateFilteredCommissions(
+        mockTransactionCommissions.filter((item) =>
+          selectedDates.some((d) => isSameDay(d, parseISO(item.date)))
+        )
+      );
+      setDateFilteredSalesCommissions(
+        mockSalesCommissions.filter((item) =>
+          selectedDates.some((d) => isSameDay(d, parseISO(item.date)))
+        )
+      );
+      setDateFilteredMerchantPayouts(
+        mockMerchantPayouts.filter((item) =>
+          selectedDates.some((d) => isSameDay(d, parseISO(item.date)))
+        )
+      );
+    }
+    handleCalendarClose();
+  };
+
+  const resetFilters = () => {
+    setSelectedDates([]);
+    setDateFilteredSubscriptions(mockSubscriptions);
+    setDateFilteredCommissions(mockTransactionCommissions);
+    setDateFilteredSalesCommissions(mockSalesCommissions);
+    setDateFilteredMerchantPayouts(mockMerchantPayouts);
+  };
+
+  // Export function - CSV only
+  const exportToCSV = () => {
+    let data: any[] = [];
+    let filename = '';
+
+    // Determine which data to export based on current tab
+    if (mainTab === 0) {
+      // Income tab
+      if (incomeSubTab === 0) {
+        data = dateFilteredSubscriptions;
+        filename = 'subscription_payments';
+      } else {
+        data = dateFilteredCommissions;
+        filename = 'commission_payments';
+      }
+    } else {
+      // Outgoing tab
+      if (outgoingSubTab === 0) {
+        data = dateFilteredSalesCommissions;
+        filename = 'sales_commission_payouts';
+      } else {
+        data = dateFilteredMerchantPayouts;
+        filename = 'merchant_payouts';
+      }
+    }
+
+    if (data.length === 0) {
+      alert('No data to export!');
+      return;
+    }
+
+    // Create CSV content
+    const headers = Object.keys(data[0]);
+    const csvRows = [
+      headers.join(','),
+      ...data.map(row => 
+        headers.map(header => {
+          const value = row[header];
+          // Escape commas and quotes in values
+          return typeof value === 'string' && value.includes(',') 
+            ? `"${value}"` 
+            : value;
+        }).join(',')
+      )
+    ];
+    
+    const csvContent = csvRows.join('\n');
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${filename}_${format(new Date(), 'yyyy-MM-dd')}.csv`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    window.URL.revokeObjectURL(url);
+  };
+
+  // Calculate totals for main summary cards using filtered data
+  const totalSubscriptionIncome = dateFilteredSubscriptions.reduce((sum, s) => sum + s.amount, 0);
+  const totalCommissionIncome = dateFilteredCommissions.reduce((sum, t) => sum + t.commissionAmount, 0);
+  const totalSalesCommission = dateFilteredSalesCommissions.reduce((sum, s) => sum + s.amount, 0);
+  const totalMerchantPayouts = dateFilteredMerchantPayouts.reduce((sum, m) => sum + m.netAmount, 0);
 
   return (
-    <Box sx={{ bgcolor: '#F7F8FA', minHeight: '100vh' }}>
+    <Box sx={{ bgcolor: '#F7F8FA', minHeight: '100vh', p: 3 }}>
       <Typography fontSize={32} fontWeight={700} mb={1}>
         Finance & Payments Management
       </Typography>
@@ -765,7 +901,11 @@ export default function FinanceDashboard() {
       {/* Overall Summary Cards */}
       <Grid container spacing={3} mb={4}>
         <Grid size={{ xs: 12, md: 6 }}>
-          <Card sx={{ borderRadius: 3, boxShadow: '0 4px 12px rgba(0,0,0,0.1)', bgcolor: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' }}>
+          <Card sx={{ 
+            borderRadius: 3, 
+            boxShadow: '0 4px 12px rgba(0,0,0,0.1)', 
+            background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'
+          }}>
             <CardContent sx={{ p: 3 }}>
               <Typography color="rgba(255,255,255,0.9)" fontSize={14} mb={1} fontWeight={500}>
                 Total Income This Week
@@ -796,7 +936,11 @@ export default function FinanceDashboard() {
         </Grid>
 
         <Grid size={{ xs: 12, md: 6 }}>
-          <Card sx={{ borderRadius: 3, boxShadow: '0 4px 12px rgba(0,0,0,0.1)', bgcolor: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)' }}>
+          <Card sx={{ 
+            borderRadius: 3, 
+            boxShadow: '0 4px 12px rgba(0,0,0,0.1)', 
+            background: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)'
+          }}>
             <CardContent sx={{ p: 3 }}>
               <Typography color="rgba(255,255,255,0.9)" fontSize={14} mb={1} fontWeight={500}>
                 Total Outgoing This Week
@@ -826,6 +970,221 @@ export default function FinanceDashboard() {
           </Card>
         </Grid>
       </Grid>
+
+      {/* Filter Bar */}
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          background: "#FCFCFD",
+          borderRadius: "18px",
+          border: "1px solid #E5E7EB",
+          overflow: "hidden",
+          mb: 4,
+          minHeight: 70,
+          maxWidth: "fit-content",
+        }}
+      >
+        {/* Filter Icon */}
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            width: 56,
+            minWidth: 56,
+            height: 70,
+            px: 2,
+          }}
+        >
+          <svg
+            width="22"
+            height="24"
+            viewBox="0 0 22 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              fillRule="evenodd"
+              clipRule="evenodd"
+              d="M11 9.75C16.3848 9.75 20.75 7.73528 20.75 5.25C20.75 2.76472 16.3848 0.75 11 0.75C5.61522 0.75 1.25 2.76472 1.25 5.25C1.25 7.73528 5.61522 9.75 11 9.75Z"
+              stroke="black"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+            <path
+              d="M1.25 5.25C1.25253 9.76548 4.35614 13.688 8.75 14.729V21C8.75 22.2426 9.75736 23.25 11 23.25C12.2426 23.25 13.25 22.2426 13.25 21V14.729C17.6439 13.688 20.7475 9.76548 20.75 5.25"
+              stroke="black"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+        </Box>
+
+        <Divider orientation="vertical" flexItem sx={{ borderColor: "#E5E7EB", height: 70 }} />
+
+        {/* Filter By */}
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            px: 3,
+            height: 70,
+            fontWeight: 700,
+            fontSize: 16,
+            color: "#101828",
+            whiteSpace: "nowrap",
+          }}
+        >
+          Filter By
+        </Box>
+
+        <Divider orientation="vertical" flexItem sx={{ borderColor: "#E5E7EB", height: 70 }} />
+
+        {/* Date */}
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            px: 3,
+            height: 70,
+            fontWeight: 700,
+            fontSize: 16,
+            color: "#101828",
+            cursor: "pointer",
+            userSelect: "none",
+            whiteSpace: "nowrap",
+            "&:hover": { bgcolor: "rgba(0,0,0,0.02)" },
+          }}
+          onClick={handleCalendarOpen}
+        >
+          Date
+          <ArrowForwardIos
+            sx={{ fontSize: 16, ml: 1, transform: "rotate(90deg)" }}
+          />
+        </Box>
+
+        <Popover
+          open={Boolean(calendarAnchor)}
+          anchorEl={calendarAnchor}
+          onClose={handleCalendarClose}
+          anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
+          slotProps={{
+            paper: {
+              sx: {
+                borderRadius: 4,
+                boxShadow: "0 8px 32px 0 rgba(16, 30, 54, 0.16)",
+                p: 0,
+                minWidth: 340,
+                maxWidth: 360,
+                mt: 1,
+              },
+            },
+          }}
+        >
+          <Box sx={{ p: 3, pt: 2 }}>
+            <DayPicker
+              mode="multiple"
+              selected={selectedDates}
+              onSelect={(dates) => setSelectedDates(dates ?? [])}
+              required={false}
+              showOutsideDays
+              styles={{
+                caption: { fontWeight: 600, fontSize: 18, textAlign: "left" },
+                day_selected: {
+                  backgroundColor: "#F63D68",
+                  color: "#fff",
+                  borderRadius: 12,
+                },
+                day: { borderRadius: 12, height: 40, width: 40 },
+                head_cell: { fontWeight: 500, color: "#757575" },
+              }}
+              modifiersClassNames={{
+                selected: "selected-day",
+              }}
+            />
+            <Typography
+              variant="body2"
+              color="text.secondary"
+              sx={{ mt: 2, mb: 1, fontSize: 12 }}
+            >
+              *You can choose multiple dates
+            </Typography>
+            <Button
+              variant="contained"
+              fullWidth
+              sx={{
+                background: "#F63D68",
+                borderRadius: 2,
+                boxShadow: "0 4px 16px 0 rgba(246, 61, 104, 0.16)",
+                fontWeight: 600,
+                fontSize: 16,
+                textTransform: "none",
+                py: 1.5,
+                mt: 1,
+                mb: 1,
+                "&:hover": { background: "#e13a5e" },
+              }}
+              onClick={applyDateFilter}
+            >
+              Apply Filter
+            </Button>
+          </Box>
+        </Popover>
+
+        <Divider orientation="vertical" flexItem sx={{ borderColor: "#E5E7EB", height: 70 }} />
+
+        {/* Export CSV Button */}
+        <Button
+          onClick={exportToCSV}
+          startIcon={<Download />}
+          sx={{
+            mx: 2,
+            px: 3,
+            height: 40,
+            fontWeight: 600,
+            fontSize: 14,
+            color: "#6941C6",
+            textTransform: "none",
+            borderRadius: 2,
+            whiteSpace: "nowrap",
+            "&:hover": { bgcolor: "rgba(105, 65, 198, 0.08)" },
+          }}
+        >
+          Export CSV
+        </Button>
+
+        <Divider orientation="vertical" flexItem sx={{ borderColor: "#E5E7EB", height: 70 }} />
+
+        {/* Reset Filter */}
+        <Box
+          onClick={resetFilters}
+          tabIndex={0}
+          role="button"
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            px: 3,
+            height: 70,
+            color: "#F63D68",
+            fontWeight: 600,
+            fontSize: 16,
+            cursor: "pointer",
+            userSelect: "none",
+            gap: 1,
+            whiteSpace: "nowrap",
+            "&:hover": { bgcolor: "rgba(246, 61, 104, 0.08)" },
+          }}
+        >
+          <RefreshIcon sx={{ color: "#F63D68", fontSize: 20 }} />
+          Reset Filter
+        </Box>
+      </Box>
 
       {/* Main Tabs */}
       <Paper sx={{ borderRadius: 3, boxShadow: '0 2px 8px rgba(0,0,0,0.08)' }}>
@@ -906,8 +1265,8 @@ export default function FinanceDashboard() {
                 />
               </Tabs>
 
-              {incomeSubTab === 0 && <SubscriptionPayments />}
-              {incomeSubTab === 1 && <TransactionCommissions />}
+              {incomeSubTab === 0 && <SubscriptionPayments data={dateFilteredSubscriptions} />}
+              {incomeSubTab === 1 && <TransactionCommissions data={dateFilteredCommissions} />}
             </Box>
           )}
 
@@ -954,25 +1313,29 @@ export default function FinanceDashboard() {
                 />
               </Tabs>
 
-              {outgoingSubTab === 0 && <SalesCommissionPayouts />}
-              {outgoingSubTab === 1 && <MerchantPayouts />}
+              {outgoingSubTab === 0 && <SalesCommissionPayouts data={dateFilteredSalesCommissions} />}
+              {outgoingSubTab === 1 && <MerchantPayouts data={dateFilteredMerchantPayouts} />}
             </Box>
           )}
         </Box>
       </Paper>
     </Box>
   );
-} 
-
+}
 
 
 
 
 // ==================== TRANSACTION COMMISSIONS COMPONENT ====================
-const TransactionCommissions = () => {
-  const [transactions, setTransactions] = useState(mockTransactionCommissions);
+const TransactionCommissions = ({ data }: { data: TransactionCommission[] }) => {
+  const [transactions, setTransactions] = useState(data);
   const [searchTerm, setSearchTerm] = useState('');
   const [filterStatus, setFilterStatus] = useState('All');
+
+  // Add this useEffect
+  useEffect(() => {
+    setTransactions(data);
+  }, [data]);
 
   const filteredTransactions = transactions.filter((txn) => {
     const matchesSearch =
@@ -1181,10 +1544,15 @@ const TransactionCommissions = () => {
 };
 
 // ==================== SALES COMMISSION PAYOUTS COMPONENT ====================
-const SalesCommissionPayouts = () => {
-  const [payouts, setPayouts] = useState(mockSalesCommissions);
+const SalesCommissionPayouts = ({ data }: { data: SalesCommissionPayout[] }) => {
+  const [payouts, setPayouts] = useState(data);
   const [searchTerm, setSearchTerm] = useState('');
   const [filterStatus, setFilterStatus] = useState('All');
+
+  // Add this useEffect
+  useEffect(() => {
+    setPayouts(data);
+  }, [data]);
 
   const filteredPayouts = payouts.filter((payout) => {
     const matchesSearch = payout.salesRepName.toLowerCase().includes(searchTerm.toLowerCase());

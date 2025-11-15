@@ -35,6 +35,7 @@ import {
   Alert,
   Tooltip,
 } from '@mui/material';
+
 import {
   Search,
   Visibility,
@@ -53,6 +54,7 @@ import {
   ErrorOutline,
   Info,
   ArrowBack,
+  Diamond
 } from '@mui/icons-material';
 import { format, parseISO } from 'date-fns';
 
@@ -69,6 +71,7 @@ interface Customer {
   pointsBalance: number;
   lastOrderDate: string;
   avatar?: string;
+  totalDiamonds?: number; 
 }
 
 interface Transaction {
@@ -116,6 +119,7 @@ const mockCustomers: Customer[] = [
     totalOrders: 24,
     totalSpent: 486.50,
     pointsBalance: 1240,
+     totalDiamonds: 450,
     lastOrderDate: '2024-11-05',
   },
   {
@@ -128,6 +132,7 @@ const mockCustomers: Customer[] = [
     totalOrders: 15,
     totalSpent: 328.75,
     pointsBalance: 890,
+    totalDiamonds: 300,
     lastOrderDate: '2024-11-08',
   },
   {
@@ -140,6 +145,7 @@ const mockCustomers: Customer[] = [
     totalOrders: 8,
     totalSpent: 156.20,
     pointsBalance: 320,
+    totalDiamonds: 150,
     lastOrderDate: '2024-09-15',
   },
   {
@@ -152,6 +158,7 @@ const mockCustomers: Customer[] = [
     totalOrders: 32,
     totalSpent: 678.90,
     pointsBalance: 2150,
+    totalDiamonds: 600,
     lastOrderDate: '2024-11-09',
   },
   {
@@ -164,6 +171,7 @@ const mockCustomers: Customer[] = [
     totalOrders: 5,
     totalSpent: 89.50,
     pointsBalance: 0,
+    totalDiamonds: 50,
     lastOrderDate: '2024-10-20',
   },
   {
@@ -176,6 +184,7 @@ const mockCustomers: Customer[] = [
     totalOrders: 18,
     totalSpent: 412.30,
     pointsBalance: 1580,
+    totalDiamonds: 350,
     lastOrderDate: '2024-11-07',
   },
 ];
@@ -371,47 +380,62 @@ const CustomerDetailsDialog = ({
             </Paper>
           </Grid>
 
-          <Grid size={{xs:12, md:4}}>
-            <Card sx={{ bgcolor: '#FFF5F7', borderRadius: 2 }}>
-              <CardContent>
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
-                  <ShoppingCart sx={{ color: '#F63D68', fontSize: 20 }} />
-                  <Typography color="text.secondary" fontSize={13}>Total Orders</Typography>
-                </Box>
-                <Typography fontSize={28} fontWeight={700} color="#F63D68">
-                  {customer.totalOrders}
-                </Typography>
-              </CardContent>
-            </Card>
-          </Grid>
+         <Grid size={{xs:12, md:3}}> {/* Change from md:4 to md:3 to fit 4 cards */}
+  <Card sx={{ bgcolor: '#FFF5F7', borderRadius: 2 }}>
+    <CardContent>
+      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
+        <ShoppingCart sx={{ color: '#F63D68', fontSize: 20 }} />
+        <Typography color="text.secondary" fontSize={13}>Total Orders</Typography>
+      </Box>
+      <Typography fontSize={28} fontWeight={700} color="#F63D68">
+        {customer.totalOrders}
+      </Typography>
+    </CardContent>
+  </Card>
+</Grid>
 
-          <Grid size={{xs:12, md:4}}>
-            <Card sx={{ bgcolor: '#FFF5F7', borderRadius: 2 }}>
-              <CardContent>
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
-                  <AttachMoney sx={{ color: '#F63D68', fontSize: 20 }} />
-                  <Typography color="text.secondary" fontSize={13}>Total Spent</Typography>
-                </Box>
-                <Typography fontSize={28} fontWeight={700} color="#F63D68">
-                  £{customer.totalSpent.toFixed(2)}
-                </Typography>
-              </CardContent>
-            </Card>
-          </Grid>
+<Grid size={{xs:12, md:3}}> {/* Change from md:4 to md:3 */}
+  <Card sx={{ bgcolor: '#FFF5F7', borderRadius: 2 }}>
+    <CardContent>
+      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
+        <AttachMoney sx={{ color: '#F63D68', fontSize: 20 }} />
+        <Typography color="text.secondary" fontSize={13}>Total Spent</Typography>
+      </Box>
+      <Typography fontSize={28} fontWeight={700} color="#F63D68">
+        £{customer.totalSpent.toFixed(2)}
+      </Typography>
+    </CardContent>
+  </Card>
+</Grid>
 
-          <Grid size={{xs:12, md:4}}>
-            <Card sx={{ bgcolor: '#FEF0C7', borderRadius: 2 }}>
-              <CardContent>
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
-                  <CheckCircle sx={{ color: '#B54708', fontSize: 20 }} />
-                  <Typography color="text.secondary" fontSize={13}>Points Balance</Typography>
-                </Box>
-                <Typography fontSize={28} fontWeight={700} color="#B54708">
-                  {customer.pointsBalance}
-                </Typography>
-              </CardContent>
-            </Card>
-          </Grid>
+<Grid size={{xs:12, md:3}}> {/* Change from md:4 to md:3 */}
+  <Card sx={{ bgcolor: '#FEF0C7', borderRadius: 2 }}>
+    <CardContent>
+      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
+        <CheckCircle sx={{ color: '#B54708', fontSize: 20 }} />
+        <Typography color="text.secondary" fontSize={13}>Points Balance</Typography>
+      </Box>
+      <Typography fontSize={28} fontWeight={700} color="#B54708">
+        {customer.pointsBalance}
+      </Typography>
+    </CardContent>
+  </Card>
+</Grid>
+
+{/* ADD THIS NEW CARD */}
+<Grid size={{xs:12, md:3}}>
+  <Card sx={{ bgcolor: '#E0F2FE', borderRadius: 2 }}>
+    <CardContent>
+      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
+        <span style={{ fontSize: 20 }}><Diamond sx={{ color: '#0284C7', fontSize: 20 }} /></span>
+        <Typography color="text.secondary" fontSize={13}>Total Diamonds</Typography>
+      </Box>
+      <Typography fontSize={28} fontWeight={700} color="#0284C7">
+        {customer.totalDiamonds || 0}
+      </Typography>
+    </CardContent>
+  </Card>
+</Grid>
 
           <Grid size={{xs:12}}>
             <Divider />
@@ -836,39 +860,46 @@ const TransactionLogs = ({
           Back to Customer Directory
         </Button>
 
-        {customer && (
-          <Paper sx={{ p: 3, borderRadius: 3, boxShadow: '0 1px 4px rgba(16,30,54,0.06)', mb: 3 }}>
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 3 }}>
-              <Avatar sx={{ width: 64, height: 64, bgcolor: '#F63D68', fontSize: 24 }}>
-                {customer.name.split(' ').map(n => n[0]).join('')}
-              </Avatar>
-              <Box sx={{ flex: 1 }}>
-                <Typography fontSize={24} fontWeight={700}>{customer.name}</Typography>
-                <Typography color="text.secondary">{customer.email}</Typography>
-              </Box>
-              <Box sx={{ display: 'flex', gap: 3 }}>
-                <Box sx={{ textAlign: 'center' }}>
-                  <Typography color="text.secondary" fontSize={13}>Total Orders</Typography>
-                  <Typography fontSize={24} fontWeight={700} color="#F63D68">
-                    {customer.totalOrders}
-                  </Typography>
-                </Box>
-                <Box sx={{ textAlign: 'center' }}>
-                  <Typography color="text.secondary" fontSize={13}>Total Spent</Typography>
-                  <Typography fontSize={24} fontWeight={700} color="#F63D68">
-                    £{customer.totalSpent.toFixed(2)}
-                  </Typography>
-                </Box>
-                <Box sx={{ textAlign: 'center' }}>
-                  <Typography color="text.secondary" fontSize={13}>Points Balance</Typography>
-                  <Typography fontSize={24} fontWeight={700} color="#B54708">
-                    {customer.pointsBalance}
-                  </Typography>
-                </Box>
-              </Box>
-            </Box>
-          </Paper>
-        )}
+      {customer && (
+  <Paper sx={{ p: 3, borderRadius: 3, boxShadow: '0 1px 4px rgba(16,30,54,0.06)', mb: 3 }}>
+    <Box sx={{ display: 'flex', alignItems: 'center', gap: 3 }}>
+      <Avatar sx={{ width: 64, height: 64, bgcolor: '#F63D68', fontSize: 24 }}>
+        {customer.name.split(' ').map(n => n[0]).join('')}
+      </Avatar>
+      <Box sx={{ flex: 1 }}>
+        <Typography fontSize={24} fontWeight={700}>{customer.name}</Typography>
+        <Typography color="text.secondary">{customer.email}</Typography>
+      </Box>
+      <Box sx={{ display: 'flex', gap: 3 }}>
+        <Box sx={{ textAlign: 'center' }}>
+          <Typography color="text.secondary" fontSize={13}>Total Orders</Typography>
+          <Typography fontSize={24} fontWeight={700} color="#F63D68">
+            {customer.totalOrders}
+          </Typography>
+        </Box>
+        <Box sx={{ textAlign: 'center' }}>
+          <Typography color="text.secondary" fontSize={13}>Total Spent</Typography>
+          <Typography fontSize={24} fontWeight={700} color="#F63D68">
+            £{customer.totalSpent.toFixed(2)}
+          </Typography>
+        </Box>
+        <Box sx={{ textAlign: 'center' }}>
+          <Typography color="text.secondary" fontSize={13}>Points Balance</Typography>
+          <Typography fontSize={24} fontWeight={700} color="#B54708">
+            {customer.pointsBalance}
+          </Typography>
+        </Box>
+        {/* ADD THIS NEW BOX FOR TOTAL DIAMONDS */}
+        <Box sx={{ textAlign: 'center' }}>
+          <Typography color="text.secondary" fontSize={13}>Total Diamonds</Typography>
+          <Typography fontSize={24} fontWeight={700} color="#0284C7">
+            {customer.totalDiamonds || 0}
+          </Typography>
+        </Box>
+      </Box>
+    </Box>
+  </Paper>
+)}
       </Box>
 
       {/* Stats Cards */}

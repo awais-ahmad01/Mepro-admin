@@ -88,16 +88,16 @@ const sidebarItems = [
       <path d="M12 17.27L18.18 21L16.54 13.97L22 9.24L14.81 8.63L12 2L9.19 8.63L2 9.24L7.46 13.97L5.82 21L12 17.27Z" fill="currentColor"/>
     </svg>
   ), path: "/rewards" },
-  { label: "Tiers", icon: (
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ display: 'block' }}>
-      <path d="M5 16L3 5L5.5 6.5L8 5L6 16H5ZM11 16L9 5L11.5 6.5L14 5L12 16H11ZM17 16L15 5L17.5 6.5L20 5L18 16H17ZM2 19H22V21H2V19Z" fill="currentColor"/>
-    </svg>
-  ), path: "/tiers" },
-  { label: "Points Pricing", icon: (
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ display: 'block' }}>
-      <path d="M11.8 10.9C9.53 10.31 8.8 9.7 8.8 8.75C8.8 7.66 9.81 6.9 11.5 6.9C13.28 6.9 13.94 7.75 14 9H16.21C16.14 7.28 15.09 5.7 13 5.19V3H10V5.16C8.06 5.58 6.5 6.84 6.5 8.77C6.5 11.08 8.41 12.23 11.2 12.9C13.7 13.5 14.2 14.38 14.2 15.31C14.2 16 13.71 17.1 11.5 17.1C9.44 17.1 8.63 16.18 8.59 15H6.32C6.39 17.14 8.03 18.42 10 18.83V21H13V18.85C14.95 18.5 16.5 17.35 16.5 15.3C16.5 12.46 14.07 11.5 11.8 10.9Z" fill="currentColor"/>
-    </svg>
-  ), path: "/points-management" },
+  // { label: "Tiers", icon: (
+  //   <svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ display: 'block' }}>
+  //     <path d="M5 16L3 5L5.5 6.5L8 5L6 16H5ZM11 16L9 5L11.5 6.5L14 5L12 16H11ZM17 16L15 5L17.5 6.5L20 5L18 16H17ZM2 19H22V21H2V19Z" fill="currentColor"/>
+  //   </svg>
+  // ), path: "/tiers" },
+  // { label: "Points Pricing", icon: (
+  //   <svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ display: 'block' }}>
+  //     <path d="M11.8 10.9C9.53 10.31 8.8 9.7 8.8 8.75C8.8 7.66 9.81 6.9 11.5 6.9C13.28 6.9 13.94 7.75 14 9H16.21C16.14 7.28 15.09 5.7 13 5.19V3H10V5.16C8.06 5.58 6.5 6.84 6.5 8.77C6.5 11.08 8.41 12.23 11.2 12.9C13.7 13.5 14.2 14.38 14.2 15.31C14.2 16 13.71 17.1 11.5 17.1C9.44 17.1 8.63 16.18 8.59 15H6.32C6.39 17.14 8.03 18.42 10 18.83V21H13V18.85C14.95 18.5 16.5 17.35 16.5 15.3C16.5 12.46 14.07 11.5 11.8 10.9Z" fill="currentColor"/>
+  //   </svg>
+  // ), path: "/points-management" },
   { label: "Invoice", icon: (
     <svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ display: 'block' }}>
       <path d="M14 2H6C4.9 2 4 2.9 4 4V20C4 21.1 4.89 22 5.99 22H18C19.1 22 20 21.1 20 20V8L14 2ZM18 20H6V4H13V9H18V20Z" fill="currentColor"/>

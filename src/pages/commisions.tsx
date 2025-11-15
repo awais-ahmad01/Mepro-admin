@@ -1966,7 +1966,7 @@ const styles = `
         <DialogContent>
           <Box sx={{ pt: 2 }}>
             <Alert severity="info" sx={{ mb: 3 }}>
-              Set transaction fees (12-18%) for each merchant tier. These fees are deducted from merchant transactions.
+              Set transaction fees (1-50%) for each merchant tier. These fees are deducted from merchant transactions.
             </Alert>
             <Grid container spacing={3}>
               <Grid size={{xs:12}}>

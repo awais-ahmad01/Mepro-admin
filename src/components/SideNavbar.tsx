@@ -88,6 +88,12 @@ const sidebarItems = [
       <path d="M12 17.27L18.18 21L16.54 13.97L22 9.24L14.81 8.63L12 2L9.19 8.63L2 9.24L7.46 13.97L5.82 21L12 17.27Z" fill="currentColor"/>
     </svg>
   ), path: "/rewards" },
+
+  { label: "Scratch Cards", icon: (
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ display: 'block' }}>
+      <path d="M5 16L3 5L5.5 6.5L8 5L6 16H5ZM11 16L9 5L11.5 6.5L14 5L12 16H11ZM17 16L15 5L17.5 6.5L20 5L18 16H17ZM2 19H22V21H2V19Z" fill="currentColor"/>
+    </svg>
+  ), path: "/scratch-cards" },
   // { label: "Tiers", icon: (
   //   <svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ display: 'block' }}>
   //     <path d="M5 16L3 5L5.5 6.5L8 5L6 16H5ZM11 16L9 5L11.5 6.5L14 5L12 16H11ZM17 16L15 5L17.5 6.5L20 5L18 16H17ZM2 19H22V21H2V19Z" fill="currentColor"/>

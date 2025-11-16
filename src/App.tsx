@@ -43,6 +43,8 @@ import FinanceDashboard from "./pages/finance";
 
 import DiamondManagement from "./pages/manageDiamonds";
 
+import ScratchCardManagement from "./pages/scratchCard";
+
 export default function App() {
   return (
     <AuthProvider>
@@ -71,6 +73,8 @@ export default function App() {
                   <Route path="/finance" element={<ProtectedRoute><DashboardLayout><FinanceDashboard /></DashboardLayout></ProtectedRoute>} />
 
                   <Route path="/diamonds" element={<ProtectedRoute><DashboardLayout><DiamondManagement /></DashboardLayout></ProtectedRoute>} />
+
+                    <Route path="/scratch-cards" element={<ProtectedRoute><DashboardLayout><ScratchCardManagement /></DashboardLayout></ProtectedRoute>} />
 
              <Route path="/sales-rep" element={<ProtectedRoute><DashboardLayout><SalesRepDashboard salesRepId="default-id" salesRepName="Sales Representative" /></DashboardLayout></ProtectedRoute>} />
 
